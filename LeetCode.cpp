@@ -1,92 +1,75 @@
 ﻿// LeetCode.cpp : Defines the entry point for the application.
 //
 
-#include <vector>
-#include <algorithm>
-#include <chrono>
-#include <random>
-#include <functional>
+#include <thread>
+#include <future>
 
 #include "LeetCode.h"
 
 using namespace std;
 
-class Solution {
+class NumMatrix {
 public:
-    double findMedianSortedArrays(vector<int>& nums1, vector<int>& nums2) {
-        if (nums1.empty() && nums2.empty())
-            return 0;
+    NumMatrix(vector<vector<int>>& matrix) {
+        fillSumMatrix(matrix);
+    }
 
-        if (nums1.empty()) {
-            double med = nums2.size() / 2.0;
-            double even = 1 - ceil(modf(med, &med));
+    int sumRegion(int row1, int col1, int row2, int col2) {
+        auto& matrix = m_sumMatrix;
+        int result{ 0 };
+        vector<future<int>> vFutures;;
 
-            return (nums2[med - even] + nums2[med]) / 2.0;
+        for (size_t row = row1; row <= row2; ++row) {
+            auto a = async(std::launch::async, [&matrix, row, col1, col2]() {
+                return accumulate(matrix[row].begin() + col1, matrix[row].begin() + col2 + 1, 0);
+            });
+
+            vFutures.push_back(std::move(a));
+
+            //result = accumulate(m_matrix[row].begin() + col1, m_matrix[row].begin() + col2 + 1, result);
         }
 
-        if (nums2.empty()) {
-            double med = nums1.size() / 2.0;
-            double even = 1 - ceil(modf(med, &med));
-
-            return (nums1[med - even] + nums1[med]) / 2.0;
-        }
-
-        auto nums1Iter = nums1.cbegin();
-        auto nums2Iter = nums2.cbegin();
-        auto prevIter = nums1.cbegin();
-        auto medianIndex = (nums1.size() + nums2.size()) / 2;
-        auto odd = (nums1.size() + nums2.size()) & 0x1;
-        
-        while (medianIndex > 0 && 
-                nums1Iter != nums1.cend() &&
-                nums2Iter != nums2.cend()) {
-            if (*nums1Iter < *nums2Iter) {
-                prevIter = nums1Iter++;
-            } else {
-                prevIter = nums2Iter++;
-            }
-            --medianIndex;
-        }
-
-        double result;
-
-        if (nums1Iter == nums1.cend()) {
-            advance(nums2Iter, medianIndex);
-            prevIter = medianIndex > 0 ? nums2Iter - 1 : prevIter;
-            result = odd ? *nums2Iter : (*prevIter + *nums2Iter) / 2.0;
-        } else if (nums2Iter == nums2.cend()) {
-            advance(nums1Iter, medianIndex);
-            prevIter = medianIndex > 0 ? nums1Iter - 1 : prevIter;
-            result = odd ? *nums1Iter : (*prevIter + *nums1Iter) / 2.0;
-        } else {
-            result = odd ? min(*nums1Iter, *nums2Iter) : (min(*nums1Iter, *nums2Iter) + *prevIter) / 2.0;
+        for (auto& fut : vFutures) {
+            result += fut.get();
         }
         
         return result;
     }
+
+private:
+    void fillSumMatrix(const vector<vector<int>>& matrix) {
+        m_sumMatrix = matrix;
+
+        partial_sum(m_sumMatrix[0].begin(), m_sumMatrix[0].end(), m_sumMatrix[0].begin());
+
+        for (size_t row = 1; row < m_sumMatrix.size(); ++row) {
+            auto upperRowIter = m_sumMatrix[row - 1].begin();
+            auto rowIter = m_sumMatrix[row].begin();
+            
+            *rowIter += *upperRowIter++;
+            
+            for_each(m_sumMatrix[row].begin()+1, m_sumMatrix[row].end(), [&rowIter, &upperRowIter](int& val) {
+                val += *rowIter++ + *upperRowIter++;
+            });
+        } 
+    }
+
+public:
+    vector<vector<int>> m_sumMatrix;
 };
 
 int main() {
-    minstd_rand engine;
-    uniform_int_distribution distribution(0, 200000);
+    vector<vector<int>> sampleVec{ {3, 0, 1, 4, 2},
+                                    {5, 6, 3, 2, 1},
+                                    {1, 2, 0, 1, 5},
+                                    {4, 1, 0, 1, 7},
+                                    {1, 0, 3, 0, 5} };
 
-    auto f = [&distribution, &engine]() { return distribution(engine); };
+    NumMatrix numMatrix(sampleVec);
 
-    vector<int> v1, v2;
-    generate_n(back_inserter(v1), 1000000, f);
-    generate_n(back_inserter(v2), 1000000, f);
-
-    sort(v1.begin(), v1.end());
-    sort(v2.begin(), v2.end());
-
-    Solution sol;
-    cout << sol.findMedianSortedArrays(v1, v2) << endl;
-    //cout << sol.findMedianSortedArrays({ 1,10,13 }, { 1, 2, 3, 4, 5 }) << endl;
-    //cout << sol.findMedianSortedArrays({ 1,3,5 }, { 2,4 }) << endl;
-    //cout << sol.findMedianSortedArrays({ 1 }, { 2, 3,4 }) << endl;
-    //cout << sol.findMedianSortedArrays({ 2 }, { 1, 3 }) << endl;
-    //cout << sol.findMedianSortedArrays({ 1 }, { 3, 4, 5, 6 }) << endl;
-    //cout << sol.findMedianSortedArrays({ 3, 4 }, { 1, 2 }) << endl;
+    cout << numMatrix.sumRegion(2, 1, 4, 3) << endl; // return 8 (i.e sum of the red rectangle)
+    cout << numMatrix.sumRegion(1, 2, 2, 4) << endl; // return 12 (i.e sum of the blue rectangle)
+    cout << numMatrix.sumRegion(1, 1, 2, 2) << endl; // return 11 (i.e sum of the green rectangle)
 
     return 0;
 }
