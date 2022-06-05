@@ -16,8 +16,8 @@ class Solution {
     using SetCells = set<Cell>;
 
 public:
-    vector<vector<string>> solveNQueens(int n) {
-        vector<vector<string>> result;
+    int totalNQueens(int n) {
+        int result = 0;
         int maxIndex = n - 1;
         Cell currentCell(0, 0);
         
@@ -32,9 +32,7 @@ public:
                     currentCell.first++;
                     currentCell.second = 0;
                 } else {
-                    m_qCells.push_back(currentCell);
-                    result.push_back(getField(n));
-                    m_qCells.pop_back();
+                    ++result;
 
                     traceBack(currentCell, maxIndex);
                 }
@@ -54,7 +52,7 @@ private:
     inline bool cellIsFree(const Cell& cell) {
         for (auto& qCell : m_qCells) {
             if (cell.first == qCell.first || cell.second == qCell.second ||
-                abs(cell.first - qCell.first) - abs(cell.second - qCell.second) == 0) {
+                abs(cell.first - qCell.first) == abs(cell.second - qCell.second)) {
                 return false;
             }
         }
@@ -76,36 +74,16 @@ private:
         m_searchFinished = true;
     }
 
-    vector<string> getField(int fieldSize) {
-        vector<string> result;
-        result.reserve(fieldSize);
-
-        for (const auto& qCell : m_qCells) {
-            result.push_back(string(fieldSize, '.'));
-            result.back().replace(qCell.second, 1, "Q");
-        }
-
-        return result;
-    }
-
 private:
     bool m_searchFinished = false;
     vector<Cell> m_qCells;
-
 };
 
 int main() {
 
     Solution sol;
 
-    auto result = sol.solveNQueens(9);
-
-    for (auto v : result) {
-        for (auto s : v) {
-            cout << s << endl;
-        }
-        cout << endl;
-    }
+    cout << sol.totalNQueens(9);
 
     return 0;
 }
