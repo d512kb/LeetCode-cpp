@@ -5,6 +5,8 @@
 
 #include <iostream>
 #include <vector>
+#include <set>
+#include <stack>
 #include <algorithm>
 #include <chrono>
 #include <random>
