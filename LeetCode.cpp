@@ -1,112 +1,121 @@
 ﻿// LeetCode.cpp : Defines the entry point for the application.
 //
 
-#include <thread>
-#include <future>
-
 #include "LeetCode.h"
 
 using namespace std;
 
-// free cells for any Q at the coords (x,y)
-//y + k, x + k + 1 / x - k - 1 (k = +-1..n)
-//y - k, x + k + 1 / x - k - 1
-//x + k, y + k + 1 / y - k - 1
-//x - k, y + k + 1 / y - k - 1
+//Definition for singly-linked list.
+struct ListNode {
+     int val;
+     ListNode *next;
+     ListNode(int x, ListNode* next = nullptr) : val(x), next(next) {}
+};
 
 class Solution {
-    using Cell = pair<int, int>;
-    using SetCells = set<Cell>;
-
 public:
-    int totalNQueens(int n) {
-        int maxIndex = n - 1;
-        auto threads = max(2u, thread::hardware_concurrency()-2);
+    ListNode* getIntersectionNode(ListNode* headA, ListNode* headB) {
+        if (headA == nullptr || headB == nullptr)
+            return nullptr;
 
-        auto searchProc = [this, maxIndex](Cell startCell) {
-            vector<Cell> qCells;
-            Cell currentCell = startCell;
-            int result = 0;
+        ListNode* a = headA;
+        ListNode* b = headB;
 
-            do {
-                if (cellIsFree(qCells, currentCell)) {
-                    if (currentCell.first != maxIndex) {
-                        qCells.push_back(currentCell);
+        int lengthA = 0;
+        int lengthB = 0;
 
-                        currentCell.first++;
-                        currentCell.second = 0;
-                    } else {
-                        ++result;
-
-                        traceBack(qCells, currentCell, maxIndex);
-                    }
-                } else {
-                    if (currentCell.second != maxIndex) {
-                        ++currentCell.second;
-                    } else {
-                        traceBack(qCells, currentCell, maxIndex);
-                    }
-                }
-            } while (!qCells.empty());
-            
-            return result;
-        };
-
-        using VecPair = pair<future<int>, shared_ptr<thread>>;
-        vector<VecPair> vec;
-
-        for (size_t i = 0; i < n; i++) {
-            packaged_task<int(Cell)> task(searchProc);
-            auto fut = task.get_future();
-            vec.push_back(make_pair(move(fut), make_shared<thread>(move(task), Cell(0, i))));
+        while (a->next && b->next) {
+            a = a->next;
+            b = b->next;
+            ++lengthA;
+            ++lengthB;
         }
 
-        for_each(vec.begin(), vec.end(), [](VecPair& v) { v.second->join(); });
+        while (a->next) {
+            a = a->next;
+            ++lengthA;
+        }
 
-        return accumulate(vec.begin(), vec.end(), 0, [](int a, VecPair& v2) { return a + v2.first.get(); });
-    }
+        while (b->next) {
+            b = b->next;
+            ++lengthB;
+        }
 
-private:
-    inline bool cellIsFree(const vector<Cell>& qCells, const Cell& cell) {
-        for (auto& qCell : qCells) {
-            if (cell.first == qCell.first || cell.second == qCell.second ||
-                abs(cell.first - qCell.first) == abs(cell.second - qCell.second)) {
-                return false;
+        if (a == b) {
+            a = headA;
+            b = headB;
+
+            while (lengthA > lengthB) {
+                a = a->next;
+                --lengthA;
             }
-        }
 
-        return true;
-    }
-    
-    inline bool cellIsFree(const Cell& cell) {
-        return cellIsFree(m_qCells, cell);
-    }
-
-    inline void traceBack(vector<Cell>& qCells, Cell& currentCell, int maxIndex) {
-        while (!qCells.empty()) {
-            currentCell = qCells.back();
-            qCells.pop_back();
-
-            if (currentCell.second != maxIndex) {
-                ++currentCell.second;
-                return;
+            while (lengthB > lengthA) {
+                b = b->next;
+                --lengthB;
             }
+
+            while (a != b) {
+                a = a->next;
+                b = b->next;
+            }
+
+            return a;
         }
-    }
 
-    inline void traceBack(Cell& currentCell, int maxIndex) {
-        return traceBack(m_qCells, currentCell, maxIndex);
+        return nullptr;
     }
+    ListNode* getIntersectionNodeFast(ListNode* headA, ListNode* headB) {
+        if (headA == nullptr || headB == nullptr)
+            return nullptr;
 
-private:
-    vector<Cell> m_qCells;
+        ListNode* a = headA;
+        ListNode* b = headB;
+
+        while (a != b) {
+            a = a == nullptr ? headB : a->next;
+            b = b == nullptr ? headA : b->next;
+        }
+
+        return a;
+    }
 };
 
 int main() {
 
     Solution sol;
 
-    cout << sol.totalNQueens(9);
+    ListNode* head = new ListNode(0);
+    ListNode* head2 = new ListNode(-100000);// head;// new ListNode(-100000);
+    
+    const int n = 1000000;
 
+    for (size_t i = 0; i < n; i++) {
+        head = new ListNode(i, head);
+        head2 = new ListNode(i-n, head2);
+    }
+
+    head2 = new ListNode(2323424, head2);
+    
+    int64_t sum = numeric_limits<int>::max();
+    
+    for (size_t i = 0; i < 10; i++) {
+        auto start = chrono::steady_clock::now();
+        cout << sol.getIntersectionNode(head, head2) << endl;
+        sum = min(sum, (chrono::steady_clock::now() - start).count());
+    }
+    
+    cout << sum / 100000 << endl << endl;
+
+    sum = numeric_limits<int>::max();
+
+    for (size_t i = 0; i < 10; i++) {
+        auto start = chrono::steady_clock::now();
+        cout << sol.getIntersectionNodeFast(head, head2) << endl;
+        sum = min(sum, (chrono::steady_clock::now() - start).count());
+    }
+
+    cout << sum / 100000;
+    
     return 0;
 }
