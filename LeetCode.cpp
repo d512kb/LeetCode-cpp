@@ -5,79 +5,22 @@
 
 using namespace std;
 
-//Definition for singly-linked list.
-struct ListNode {
-     int val;
-     ListNode *next;
-     ListNode(int x, ListNode* next = nullptr) : val(x), next(next) {}
-};
-
 class Solution {
 public:
-    ListNode* getIntersectionNode(ListNode* headA, ListNode* headB) {
-        if (headA == nullptr || headB == nullptr)
-            return nullptr;
-
-        ListNode* a = headA;
-        ListNode* b = headB;
-
-        int lengthA = 0;
-        int lengthB = 0;
-
-        while (a->next && b->next) {
-            a = a->next;
-            b = b->next;
-            ++lengthA;
-            ++lengthB;
-        }
-
-        while (a->next) {
-            a = a->next;
-            ++lengthA;
-        }
-
-        while (b->next) {
-            b = b->next;
-            ++lengthB;
-        }
-
-        if (a == b) {
-            a = headA;
-            b = headB;
-
-            while (lengthA > lengthB) {
-                a = a->next;
-                --lengthA;
-            }
-
-            while (lengthB > lengthA) {
-                b = b->next;
-                --lengthB;
-            }
-
-            while (a != b) {
-                a = a->next;
-                b = b->next;
-            }
-
-            return a;
-        }
-
-        return nullptr;
+    void merge(vector<int> &nums1, int m, vector<int> &nums2, int n) {      
+        std::merge(nums1.rend() - m, nums1.rend(),
+                   nums2.rbegin(), nums2.rend(), nums1.rbegin(), std::greater<>());
     }
-    ListNode* getIntersectionNodeFast(ListNode* headA, ListNode* headB) {
-        if (headA == nullptr || headB == nullptr)
-            return nullptr;
+    void handMerge(vector<int> &nums1, int m, vector<int> &nums2, int n) {
+        auto nums1Iter = nums1.rend() - m;
+        auto nums2Iter = nums2.rbegin();
+        auto resultIter = nums1.rbegin();
 
-        ListNode* a = headA;
-        ListNode* b = headB;
-
-        while (a != b) {
-            a = a == nullptr ? headB : a->next;
-            b = b == nullptr ? headA : b->next;
+        while (resultIter != nums1.rend()) {
+            if (nums1Iter == nums1.rend()) { copy(nums2Iter, nums2.rend(), resultIter); break; }
+            if (nums2Iter == nums2.rend()) { break; }
+            *resultIter++ = *nums1Iter > *nums2Iter ? *nums1Iter++ : *nums2Iter++;
         }
-
-        return a;
     }
 };
 
@@ -85,37 +28,12 @@ int main() {
 
     Solution sol;
 
-    ListNode* head = new ListNode(0);
-    ListNode* head2 = new ListNode(-100000);// head;// new ListNode(-100000);
-    
-    const int n = 1000000;
+    vector<int> vec1 = { 1, 2, 3, 0, 0, 0 };
+    vector<int> vec2 = { 2, 5, 6 };
+    vector<int> vec3 = { 2, 0 };
+    vector<int> vec4 = { 1 };
 
-    for (size_t i = 0; i < n; i++) {
-        head = new ListNode(i, head);
-        head2 = new ListNode(i-n, head2);
-    }
+    sol.handMerge(vec3, 1, vec4, 1);
 
-    head2 = new ListNode(2323424, head2);
-    
-    int64_t sum = numeric_limits<int>::max();
-    
-    for (size_t i = 0; i < 10; i++) {
-        auto start = chrono::steady_clock::now();
-        cout << sol.getIntersectionNode(head, head2) << endl;
-        sum = min(sum, (chrono::steady_clock::now() - start).count());
-    }
-    
-    cout << sum / 100000 << endl << endl;
-
-    sum = numeric_limits<int>::max();
-
-    for (size_t i = 0; i < 10; i++) {
-        auto start = chrono::steady_clock::now();
-        cout << sol.getIntersectionNodeFast(head, head2) << endl;
-        sum = min(sum, (chrono::steady_clock::now() - start).count());
-    }
-
-    cout << sum / 100000;
-    
     return 0;
 }
