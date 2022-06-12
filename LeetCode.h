@@ -14,3 +14,10 @@
 #include <functional>
 
 // TODO: Reference additional headers your program requires here.
+
+#define INIT_TIME(timerName) \
+    auto timerName = std::chrono::steady_clock::now();
+
+#define PRINT_ELAPSED(startTime) \
+    std::cout << "elapsed: " << (std::chrono::steady_clock::now() - startTime).count() / 1000000 << "ms" << std::endl; \
+    startTime = std::chrono::steady_clock::now();
