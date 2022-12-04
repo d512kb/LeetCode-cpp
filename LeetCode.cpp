@@ -2,32 +2,58 @@
 //
 
 #include "LeetCode.h"
+#include <limits>
 
 using namespace std;
 
 class Solution {
 public:
-    int minimumTotal(vector<vector<int>> &triangle) {
-        for (int row = triangle.size()-2; row >= 0; --row)
-        {
-            for (int col = 0; col < triangle[row].size(); ++col)
+    int minimumAverageDifference(vector<int> &nums) {
+        int64_t firstSum = 0;
+        int64_t secondSum = accumulate(nums.begin(), nums.end(), int64_t());
+        int minAverageDistance = numeric_limits<int>::max();
+        int minAverageDistanceIndex = 0;
+        
+        for (int i = 0; i < nums.size()-1; ++i) {
+            firstSum += nums[i];
+            secondSum -= nums[i];
+
+            int newMin = abs(static_cast<int>(firstSum / (i + 1)) -
+                             static_cast<int>(secondSum / (nums.size() - i - 1)));
+
+            if (newMin < minAverageDistance)
             {
-                triangle[row][col] += min(triangle[row+1][col], triangle[row+1][col+1]);
+                if (newMin == 0)
+                    return i;
+                
+                minAverageDistance = newMin;
+                minAverageDistanceIndex = i;
             }
         }
 
-        return triangle[0][0];
+        firstSum += nums[nums.size()-1];
+
+        if (static_cast<int>(firstSum / nums.size()) < minAverageDistance)
+        {
+            return nums.size() - 1;
+        }
+
+        return minAverageDistanceIndex;
     }
 };
 
 int main() {
     Solution sol;
 
-    vector<vector<int>> triangles = {{2}, {3, 4}, {6, 5, 7}, {4, 1, 8, 3}};
+    vector<int> nums = { 2,5,3,9,5,3 };
+    vector<int> nums2 = { 0 };
+    vector<int> nums3 = { 1,2,3,4,5 };
 
     INIT_TIME(timer);
 
-    cout << "result: " << sol.minimumTotal(triangles) << endl;
+    cout << "result 1: " << sol.minimumAverageDifference(nums) << endl;
+    cout << "result 2: " << sol.minimumAverageDifference(nums2) << endl;
+    cout << "result 2: " << sol.minimumAverageDifference(nums3) << endl;
 
     PRINT_ELAPSED(timer);
 
