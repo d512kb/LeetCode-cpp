@@ -6,39 +6,42 @@
 
 using namespace std;
 
+//Definition for a binary tree node.
+struct TreeNode {
+    int val;
+    TreeNode *left;
+    TreeNode *right;
+    TreeNode() : val(0), left(nullptr), right(nullptr) {}
+    TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}
+    TreeNode(int x, TreeNode *left, TreeNode *right) : val(x), left(left), right(right) {}
+};
+
 class Solution {
 public:
-    int minimumAverageDifference(vector<int> &nums) {
-        int64_t firstSum = 0;
-        int64_t secondSum = accumulate(nums.begin(), nums.end(), int64_t());
-        int minAverageDistance = numeric_limits<int>::max();
-        int minAverageDistanceIndex = 0;
+    int rangeSumBST(TreeNode *root, int low, int high)
+    {
+        uint64_t result{ 0 };
+        rangeSumBSTRecur(root, low, high, result);
+        return result;
+    }
+private:
+    void rangeSumBSTRecur(TreeNode* root, int low, int high, uint64_t& result)
+    {
+        if (root == nullptr)
+            return;
         
-        for (int i = 0; i < nums.size()-1; ++i) {
-            firstSum += nums[i];
-            secondSum -= nums[i];
+        if (root->val >= low && root->val <= high)
+            result += root->val;
 
-            int newMin = abs(static_cast<int>(firstSum / (i + 1)) -
-                             static_cast<int>(secondSum / (nums.size() - i - 1)));
-
-            if (newMin < minAverageDistance)
-            {
-                if (newMin == 0)
-                    return i;
-                
-                minAverageDistance = newMin;
-                minAverageDistanceIndex = i;
-            }
-        }
-
-        firstSum += nums[nums.size()-1];
-
-        if (static_cast<int>(firstSum / nums.size()) < minAverageDistance)
+        if (root->val >= high)
+            rangeSumBSTRecur(root->left, low, high, result);
+        else if (root->val <= low)
+            rangeSumBSTRecur(root->right, low, high, result);
+        else
         {
-            return nums.size() - 1;
+            rangeSumBSTRecur(root->left, low, high, result);
+            rangeSumBSTRecur(root->right, low, high, result);
         }
-
-        return minAverageDistanceIndex;
     }
 };
 
@@ -50,10 +53,6 @@ int main() {
     vector<int> nums3 = { 1,2,3,4,5 };
 
     INIT_TIME(timer);
-
-    cout << "result 1: " << sol.minimumAverageDifference(nums) << endl;
-    cout << "result 2: " << sol.minimumAverageDifference(nums2) << endl;
-    cout << "result 2: " << sol.minimumAverageDifference(nums3) << endl;
 
     PRINT_ELAPSED(timer);
 
