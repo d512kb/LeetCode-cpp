@@ -2,25 +2,75 @@
 //
 
 #include "LeetCode.h"
-#include <map>
 
 using namespace std;
 
+// Definition for a binary tree node.
+struct TreeNode {
+    int val;
+    TreeNode* left;
+    TreeNode* right;
+    TreeNode() : val(0), left(nullptr), right(nullptr) {}
+    TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}
+    TreeNode(int x, TreeNode* left, TreeNode* right) : val(x), left(left), right(right) {}
+};
+
 class Solution {
 public:
-    vector<int> twoSum(vector<int>& nums, int target) {
-        map<int, int> indexes;
+    bool leafSimilar(TreeNode* root1, TreeNode* root2) {
+        stack<TreeNode*> backtrace;
+        vector<int> leaves;
+        leaves.reserve(200);
 
-        for (int i = 0; i < nums.size(); ++i) {
-            auto complement = indexes.find(target - nums[i]);
-            if (complement != indexes.end()) {
-                return { i, complement->second };
+        while (root1 != nullptr) {
+            if (root1->right != nullptr) {
+                backtrace.push(root1->right);
+            }
+
+            if (root1->left != nullptr) {
+                root1 = root1->left;
+                continue;
             }
             
-            indexes.insert({ nums[i], i });
+            if (root1->right == nullptr) {
+                leaves.push_back(root1->val);
+            }
+
+            if (backtrace.empty()) {
+                root1 = nullptr;
+            } else {
+                root1 = backtrace.top();
+                backtrace.pop();
+            }
         }
 
-        return {};
+        int leafIndex = 0;
+
+        while (root2 != nullptr) {
+            if (root2->right != nullptr) {
+                backtrace.push(root2->right);
+            }
+
+            if (root2->left != nullptr) {
+                root2 = root2->left;
+                continue;
+            }
+
+            if (root2->right == nullptr) {
+                if (leafIndex == leaves.size() || leaves[leafIndex++] != root2->val) {
+                    return false;
+                }
+            }
+
+            if (backtrace.empty()) {
+                root2 = nullptr;
+            } else {
+                root2 = backtrace.top();
+                backtrace.pop();
+            }
+        }
+
+        return leafIndex == leaves.size();
     }
 };
 
@@ -28,9 +78,6 @@ int main() {
     Solution sol;
 
     INIT_TIME(timer);
-
-    vector<int> data{ 3,2,4 };
-    sol.twoSum(data, 6);
 
     PRINT_ELAPSED(timer);
 
