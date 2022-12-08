@@ -2,57 +2,35 @@
 //
 
 #include "LeetCode.h"
-#include <limits>
+#include <map>
 
 using namespace std;
 
-//Definition for a binary tree node.
-struct TreeNode {
-    int val;
-    TreeNode *left;
-    TreeNode *right;
-    TreeNode() : val(0), left(nullptr), right(nullptr) {}
-    TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}
-    TreeNode(int x, TreeNode *left, TreeNode *right) : val(x), left(left), right(right) {}
-};
-
 class Solution {
 public:
-    int rangeSumBST(TreeNode *root, int low, int high)
-    {
-        uint64_t result{ 0 };
-        rangeSumBSTRecur(root, low, high, result);
-        return result;
-    }
-private:
-    void rangeSumBSTRecur(TreeNode* root, int low, int high, uint64_t& result)
-    {
-        if (root == nullptr)
-            return;
-        
-        if (root->val >= low && root->val <= high)
-            result += root->val;
+    vector<int> twoSum(vector<int>& nums, int target) {
+        map<int, int> indexes;
 
-        if (root->val >= high)
-            rangeSumBSTRecur(root->left, low, high, result);
-        else if (root->val <= low)
-            rangeSumBSTRecur(root->right, low, high, result);
-        else
-        {
-            rangeSumBSTRecur(root->left, low, high, result);
-            rangeSumBSTRecur(root->right, low, high, result);
+        for (int i = 0; i < nums.size(); ++i) {
+            auto complement = indexes.find(target - nums[i]);
+            if (complement != indexes.end()) {
+                return { i, complement->second };
+            }
+            
+            indexes.insert({ nums[i], i });
         }
+
+        return {};
     }
 };
 
 int main() {
     Solution sol;
 
-    vector<int> nums = { 2,5,3,9,5,3 };
-    vector<int> nums2 = { 0 };
-    vector<int> nums3 = { 1,2,3,4,5 };
-
     INIT_TIME(timer);
+
+    vector<int> data{ 3,2,4 };
+    sol.twoSum(data, 6);
 
     PRINT_ELAPSED(timer);
 
