@@ -5,72 +5,20 @@
 
 using namespace std;
 
-// Definition for a binary tree node.
-struct TreeNode {
-    int val;
-    TreeNode* left;
-    TreeNode* right;
-    TreeNode() : val(0), left(nullptr), right(nullptr) {}
-    TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}
-    TreeNode(int x, TreeNode* left, TreeNode* right) : val(x), left(left), right(right) {}
-};
-
 class Solution {
 public:
-    bool leafSimilar(TreeNode* root1, TreeNode* root2) {
-        stack<TreeNode*> backtrace;
-        vector<int> leaves;
-        leaves.reserve(200);
+    bool isPalindrome(int x) {
+        if (x < 0 || (x > 0 && x % 10 == 0))
+            return false;
 
-        while (root1 != nullptr) {
-            if (root1->right != nullptr) {
-                backtrace.push(root1->right);
-            }
+        int y{ 0 };
 
-            if (root1->left != nullptr) {
-                root1 = root1->left;
-                continue;
-            }
-            
-            if (root1->right == nullptr) {
-                leaves.push_back(root1->val);
-            }
-
-            if (backtrace.empty()) {
-                root1 = nullptr;
-            } else {
-                root1 = backtrace.top();
-                backtrace.pop();
-            }
+        while (x > y) {
+            y = y * 10 + x % 10;
+            x /= 10;
         }
 
-        int leafIndex = 0;
-
-        while (root2 != nullptr) {
-            if (root2->right != nullptr) {
-                backtrace.push(root2->right);
-            }
-
-            if (root2->left != nullptr) {
-                root2 = root2->left;
-                continue;
-            }
-
-            if (root2->right == nullptr) {
-                if (leafIndex == leaves.size() || leaves[leafIndex++] != root2->val) {
-                    return false;
-                }
-            }
-
-            if (backtrace.empty()) {
-                root2 = nullptr;
-            } else {
-                root2 = backtrace.top();
-                backtrace.pop();
-            }
-        }
-
-        return leafIndex == leaves.size();
+        return x == y || x == y / 10;
     }
 };
 
@@ -78,6 +26,8 @@ int main() {
     Solution sol;
 
     INIT_TIME(timer);
+
+    sol.isPalindrome(12321);
 
     PRINT_ELAPSED(timer);
 
