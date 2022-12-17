@@ -9,64 +9,37 @@ using namespace std;
 
 class Solution {
 public:
-    int myAtoi(string s) {
-        int64_t result{ 0 };
-        int charIndex{ 0 };
-        bool sign{ false };
-
-        if (s.empty())
-            return result;
-
-        while (isSpace(s[charIndex])) {
-            ++charIndex;
-
-            if (charIndex == s.size())
-                return result;
+    int divide(int dividend, int divisor) {
+        if (divisor == -1) {
+            if (dividend == numeric_limits<int>::min())
+                return numeric_limits<int>::max();
+            else
+                return -dividend;
+        } else if (divisor == 1) {
+            return dividend;
         }
 
-        if (isSign(s[charIndex])) {
-            sign = s[charIndex] == '-';
-            ++charIndex;
+        bool resultIsNegative = false;
 
-            if (charIndex == s.size())
-                return result;
+        if (dividend > 0) {
+            dividend = -dividend;
+            resultIsNegative = !resultIsNegative;
         }
 
-        while (s[charIndex] == '0') {
-            ++charIndex;
-
-            if (charIndex == s.size())
-                return result;
+        if (divisor > 0) {
+            divisor = -divisor;
+            resultIsNegative = !resultIsNegative;
         }
 
-        while (isDigit(s[charIndex]) && charIndex < s.size()) {
-            result = result * 10 + chtoi(s[charIndex]);
-            ++charIndex;
+        int result = dividend <= divisor;
+        int stepSize = divisor;
 
-            if ((sign && -result < numeric_limits<int>::min()) || result > numeric_limits<int>::max()) {
-                return sign ? numeric_limits<int>::min() : numeric_limits<int>::max();
-            }
+        while (dividend - divisor <= stepSize) {
+            divisor += stepSize;
+            ++result;
         }
 
-        if ((sign && result < numeric_limits<int>::min()) || result > numeric_limits<int>::max()) {
-            return sign ? numeric_limits<int>::min() : numeric_limits<int>::max();
-        }
-
-        return sign ? -result : result;
-    }
-
-private:
-    inline bool isDigit(char ch) {
-        return 48 <= ch && ch <= 57;
-    }
-    inline bool isSpace(char ch) {
-        return ch == ' ';
-    }
-    inline bool isSign(char ch) {
-        return ch == '-' || ch == '+';
-    }
-    inline int chtoi(char ch) {
-        return ch - 48;
+        return resultIsNegative ? -result : result;
     }
 };
 
@@ -75,9 +48,8 @@ int main() {
 
     INIT_TIME(timer);
 
-    cout << sol.myAtoi("3.14159") << endl;
+    cout << sol.divide(numeric_limits<int>::max(), 2) << endl;
 
     PRINT_ELAPSED(timer);
-
     return 0;
 }
