@@ -7,52 +7,47 @@
 
 using namespace std;
 
+//Definition for singly-linked list.
+struct ListNode {
+    int val;
+    ListNode* next;
+    ListNode(int x, ListNode* next = nullptr) : val(x), next(next) {}
+};
+
 class Solution {
 public:
-    Solution() {
-        m_calculatedValues.reserve(1000);
+	ListNode* detectCycle(ListNode* head) {
+		if (head == nullptr)
+			return nullptr;
 
-        precalc();
-    }
+		ListNode* a = head;
+		ListNode* b = head;
 
-    int numTilings(int n) {
-        return calc(n);
-    }
+		while (b != nullptr && b->next != nullptr) {
+			a = a->next;
+			b = b->next->next;
 
-private:
-    void precalc() {
-        m_calculatedValues.push_back(1); // zero value, filler
-        m_calculatedValues.push_back(1); // value for n == 1;
-        m_calculatedValues.push_back(2); // value for n == 2;
-        m_calculatedValues.push_back(5); // value for n == 3;
-    }
+			if (a == b)
+				break;
+		}
 
-    int calc(int n) {
-        int lastN = m_calculatedValues.size() - 1;
+		if (b == nullptr || b->next == nullptr)
+			return nullptr;
 
-        while (lastN++ < n) {
-            int64_t nextNVal = 2 * m_calculatedValues[lastN - 1] - m_calculatedValues[lastN - 2] + 2;
-            nextNVal %= m_modulo;
+		ListNode* nodeInLoop = b;
+		a = head;
+		b = b->next;
 
-            // calculate complements
-            int complementIndex;
-            for (complementIndex = 0; complementIndex < lastN - 4; ++complementIndex) {
-                nextNVal += 4 * (lastN - (complementIndex + 4)) * static_cast<int64_t>(m_calculatedValues[complementIndex]);
-                nextNVal %= m_modulo;
-            }
+		if (nodeInLoop == nodeInLoop->next)
+			return nodeInLoop;
 
-            nextNVal += m_calculatedValues[complementIndex];
-            nextNVal %= m_modulo;
-            
-            m_calculatedValues.push_back(nextNVal);
-        }
+		while (a != b) {
+			a = a->next;
+			b = b == nodeInLoop ? head : b->next;
+		}
 
-        return m_calculatedValues[n];
-    }
-
-private:
-    vector<int> m_calculatedValues;
-    const int m_modulo = 1000000007;
+		return a;
+	}
 };
 
 int main() {
@@ -60,7 +55,7 @@ int main() {
 
     INIT_TIME(timer);
 
-    cout << sol.numTilings(8) << endl;
+    cout << endl;
 
     PRINT_ELAPSED(timer);
     return 0;
