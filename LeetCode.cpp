@@ -7,47 +7,58 @@
 
 using namespace std;
 
-//Definition for singly-linked list.
-struct ListNode {
-    int val;
-    ListNode* next;
-    ListNode(int x, ListNode* next = nullptr) : val(x), next(next) {}
-};
-
 class Solution {
 public:
-	ListNode* detectCycle(ListNode* head) {
-		if (head == nullptr)
-			return nullptr;
+    bool equalFrequency(string word) {
+        sort(word.begin(), word.end());
 
-		ListNode* a = head;
-		ListNode* b = head;
+        size_t i = 0;
+        vector<int> frequencies;
+        frequencies.reserve(100);
 
-		while (b != nullptr && b->next != nullptr) {
-			a = a->next;
-			b = b->next->next;
+        while (i < word.size()) {
+            frequencies.push_back(countFrequency(word, i));
+        }
 
-			if (a == b)
-				break;
-		}
+        sort(frequencies.begin(), frequencies.end());
 
-		if (b == nullptr || b->next == nullptr)
-			return nullptr;
+        if (frequencies[0] == 1) {
+            if (frequencies[1] == 1) {
+                --frequencies.back();
+            } else {
+                --frequencies[0];
+            }
+        } else {
+            --frequencies.back();
+        }
 
-		ListNode* nodeInLoop = b;
-		a = head;
-		b = b->next;
+        int targetFreq = frequencies[0] == 0 ? frequencies[1] : frequencies[0];
 
-		if (nodeInLoop == nodeInLoop->next)
-			return nodeInLoop;
+        for (const auto& freq : frequencies) {
+            if (freq != 0 && freq != targetFreq) {
+                return false;
+            }
+        }
 
-		while (a != b) {
-			a = a->next;
-			b = b == nodeInLoop ? head : b->next;
-		}
+        return true;
+    }
 
-		return a;
-	}
+private:
+    size_t countFrequency(const string& word, size_t& startIndex) {
+        if (startIndex >= word.size()) {
+            return -1;
+        }
+
+        char ch = word[startIndex];
+        size_t result{ 0 };
+
+        while (startIndex < word.size() && word[startIndex] == ch) {
+            ++result;
+            ++startIndex;
+        }
+
+        return result;
+    }
 };
 
 int main() {
