@@ -9,55 +9,30 @@ using namespace std;
 
 class Solution {
 public:
-    bool equalFrequency(string word) {
-        sort(word.begin(), word.end());
-
-        size_t i = 0;
-        vector<int> frequencies;
-        frequencies.reserve(100);
-
-        while (i < word.size()) {
-            frequencies.push_back(countFrequency(word, i));
-        }
-
-        sort(frequencies.begin(), frequencies.end());
-
-        if (frequencies[0] == 1) {
-            if (frequencies[1] == 1) {
-                --frequencies.back();
-            } else {
-                --frequencies[0];
-            }
-        } else {
-            --frequencies.back();
-        }
-
-        int targetFreq = frequencies[0] == 0 ? frequencies[1] : frequencies[0];
-
-        for (const auto& freq : frequencies) {
-            if (freq != 0 && freq != targetFreq) {
-                return false;
-            }
-        }
-
-        return true;
-    }
-
-private:
-    size_t countFrequency(const string& word, size_t& startIndex) {
-        if (startIndex >= word.size()) {
+    int distMoney(int money, int children) {
+        if (money < children)
             return -1;
+
+        int maxDistribution = money / 8;
+        int restMoney = money - maxDistribution * 8;
+
+        while (restMoney < (children - maxDistribution) || maxDistribution > children) {
+            --maxDistribution;
+            restMoney += 8;
         }
 
-        char ch = word[startIndex];
-        size_t result{ 0 };
+        while (maxDistribution >= 0) {
+            int restChildren = children - maxDistribution;
 
-        while (startIndex < word.size() && word[startIndex] == ch) {
-            ++result;
-            ++startIndex;
+            if ((restChildren == 1 && restMoney == 4) || (restChildren == 0 && restMoney > 0)) {
+                --maxDistribution;
+                restMoney += 8;
+            } else {
+                break;
+            }
         }
 
-        return result;
+        return maxDistribution;
     }
 };
 
