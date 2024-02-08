@@ -11,12 +11,19 @@ class Solution {
 public:
     int removeDuplicates(vector<int>& nums) {
         int firstIndex = 0;
+        bool metAgain = false;
         for (int secondIndex = 1; secondIndex < nums.size(); ++secondIndex) {
             if (nums[firstIndex] == nums[secondIndex]) {
-                continue;
+                if (metAgain) {
+                    continue;
+                } else {
+                    nums[++firstIndex] = nums[secondIndex];
+                    metAgain = true;
+                }
+            } else {
+                nums[++firstIndex] = nums[secondIndex];
+                metAgain = false;
             }
-
-            nums[++firstIndex] = nums[secondIndex];
         }
 
         return firstIndex + 1;
