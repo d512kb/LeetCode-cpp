@@ -9,24 +9,24 @@ using namespace std;
 
 class Solution {
 public:
-    int removeDuplicates(vector<int>& nums) {
-        int firstIndex = 0;
-        bool metAgain = false;
-        for (int secondIndex = 1; secondIndex < nums.size(); ++secondIndex) {
-            if (nums[firstIndex] == nums[secondIndex]) {
-                if (metAgain) {
-                    continue;
-                } else {
-                    nums[++firstIndex] = nums[secondIndex];
-                    metAgain = true;
-                }
+    int majorityElement(vector<int>& nums) {
+        int val = nums[0];
+        int vote = 1;
+
+        for (int i = 1; i < nums.size(); ++i) {
+            if (val == nums[i]) {
+                ++vote;
             } else {
-                nums[++firstIndex] = nums[secondIndex];
-                metAgain = false;
+                --vote;
+
+                if (vote == 0) {
+                    vote = 1;
+                    val = nums[i];
+                }
             }
         }
 
-        return firstIndex + 1;
+        return val;
     }
 };
 
