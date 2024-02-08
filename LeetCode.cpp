@@ -9,30 +9,17 @@ using namespace std;
 
 class Solution {
 public:
-    int distMoney(int money, int children) {
-        if (money < children)
-            return -1;
-
-        int maxDistribution = money / 8;
-        int restMoney = money - maxDistribution * 8;
-
-        while (restMoney < (children - maxDistribution) || maxDistribution > children) {
-            --maxDistribution;
-            restMoney += 8;
-        }
-
-        while (maxDistribution >= 0) {
-            int restChildren = children - maxDistribution;
-
-            if ((restChildren == 1 && restMoney == 4) || (restChildren == 0 && restMoney > 0)) {
-                --maxDistribution;
-                restMoney += 8;
+    int removeElement(vector<int>& nums, int val) {
+        int stepBack = 0;
+        for (int i = 0; i < nums.size(); ++i) {
+            if (nums[i] == val) {
+                ++stepBack;
             } else {
-                break;
+                nums[i - stepBack] = nums[i];
             }
         }
 
-        return maxDistribution;
+        return nums.size() - stepBack;
     }
 };
 
