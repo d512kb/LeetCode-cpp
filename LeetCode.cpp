@@ -9,18 +9,30 @@ using namespace std;
 
 class Solution {
 public:
-    bool canJump(vector<int>& nums) {
-        int steps = 1;
+    int jump(vector<int>& nums) {
+        int jumpCount = 0;
 
-        for (int i = nums.size() - 2; i >= 0; --i) {
-            if (nums[i] < steps) {
-                ++steps;
-            } else {
-                steps = 1;
+        for (int i = 0; i < nums.size() - 1; ++i) {
+            if (i + nums[i] >= nums.size() - 1) {
+                return jumpCount + 1; // last jump
             }
+
+            int maxJumpIndex = i + 1;
+            int maxJump = nums[maxJumpIndex] + 1; // count an extra step
+            int jumpMaxIndex = i + nums[i];
+
+            for (int j = maxJumpIndex, k = 1; j <= jumpMaxIndex; ++j, ++k) {
+                if (nums[j] + k >= maxJump) {
+                    maxJumpIndex = j;
+                    maxJump = nums[maxJumpIndex] + k;
+                }
+            }
+
+            i = maxJumpIndex - 1;
+            ++jumpCount;
         }
 
-        return steps == 1;
+        return jumpCount;
     }
 };
 
@@ -29,7 +41,8 @@ int main() {
 
     INIT_TIME(timer);
 
-    cout << endl;
+    vector<int> v{ 2,3,1,1,4 };
+    sol.jump(v);
 
     PRINT_ELAPSED(timer);
     return 0;
