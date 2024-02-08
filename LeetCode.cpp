@@ -9,17 +9,17 @@ using namespace std;
 
 class Solution {
 public:
-    int removeElement(vector<int>& nums, int val) {
-        int stepBack = 0;
-        for (int i = 0; i < nums.size(); ++i) {
-            if (nums[i] == val) {
-                ++stepBack;
-            } else {
-                nums[i - stepBack] = nums[i];
+    int removeDuplicates(vector<int>& nums) {
+        int firstIndex = 0;
+        for (int secondIndex = 1; secondIndex < nums.size(); ++secondIndex) {
+            if (nums[firstIndex] == nums[secondIndex]) {
+                continue;
             }
+
+            nums[++firstIndex] = nums[secondIndex];
         }
 
-        return nums.size() - stepBack;
+        return firstIndex + 1;
     }
 };
 
