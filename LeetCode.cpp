@@ -9,20 +9,18 @@ using namespace std;
 
 class Solution {
 public:
-    int maxProfit(vector<int>& prices) {
-        int profit = 0;
-        int sum = 0;
+    bool canJump(vector<int>& nums) {
+        int steps = 1;
 
-        for (int i = 1; i < prices.size(); ++i) {
-            if (prices[i - 1] < prices[i]) {
-                sum += prices[i] - prices[i - 1];
+        for (int i = nums.size() - 2; i >= 0; --i) {
+            if (nums[i] < steps) {
+                ++steps;
             } else {
-                profit += sum;
-                sum = 0;
+                steps = 1;
             }
         }
 
-        return profit + sum;
+        return steps == 1;
     }
 };
 
