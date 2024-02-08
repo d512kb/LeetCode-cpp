@@ -9,24 +9,34 @@ using namespace std;
 
 class Solution {
 public:
-    int majorityElement(vector<int>& nums) {
-        int val = nums[0];
-        int vote = 1;
+    void rotate(vector<int>& nums, int k) {
+        k = k % nums.size();
 
-        for (int i = 1; i < nums.size(); ++i) {
-            if (val == nums[i]) {
-                ++vote;
-            } else {
-                --vote;
+        if (k == 0)
+            return;
 
-                if (vote == 0) {
-                    vote = 1;
-                    val = nums[i];
-                }
+        int buf1 = nums[0];
+        int buf2;
+
+        int startIndex = 0;
+        int newIndex = startIndex;
+
+        for (int i = 0; i < nums.size(); ++i) {
+            newIndex = (newIndex + k) % nums.size();
+
+            if (newIndex == startIndex) {
+                nums[startIndex] = buf1;
+                buf1 = nums[++startIndex];
+
+                newIndex = startIndex;
+
+                continue;
             }
-        }
 
-        return val;
+            buf2 = nums[newIndex];
+            nums[newIndex] = buf1;
+            buf1 = buf2;
+        }
     }
 };
 
