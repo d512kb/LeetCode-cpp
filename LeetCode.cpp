@@ -9,34 +9,21 @@ using namespace std;
 
 class Solution {
 public:
-    void rotate(vector<int>& nums, int k) {
-        k = k % nums.size();
+    int maxProfit(vector<int>& prices) {
+        int sum = 0;
+        int maxSum = 0;
 
-        if (k == 0)
-            return;
+        for (int i = 1; i < prices.size(); ++i) {
+            sum += prices[i] - prices[i - 1];
 
-        int buf1 = nums[0];
-        int buf2;
-
-        int startIndex = 0;
-        int newIndex = startIndex;
-
-        for (int i = 0; i < nums.size(); ++i) {
-            newIndex = (newIndex + k) % nums.size();
-
-            if (newIndex == startIndex) {
-                nums[startIndex] = buf1;
-                buf1 = nums[++startIndex];
-
-                newIndex = startIndex;
-
-                continue;
+            if (sum < 0) {
+                sum = 0;
+            } else if (sum > maxSum) {
+                maxSum = sum;
             }
-
-            buf2 = nums[newIndex];
-            nums[newIndex] = buf1;
-            buf1 = buf2;
         }
+
+        return maxSum;
     }
 };
 
