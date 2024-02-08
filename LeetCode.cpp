@@ -10,20 +10,19 @@ using namespace std;
 class Solution {
 public:
     int maxProfit(vector<int>& prices) {
+        int profit = 0;
         int sum = 0;
-        int maxSum = 0;
 
         for (int i = 1; i < prices.size(); ++i) {
-            sum += prices[i] - prices[i - 1];
-
-            if (sum < 0) {
+            if (prices[i - 1] < prices[i]) {
+                sum += prices[i] - prices[i - 1];
+            } else {
+                profit += sum;
                 sum = 0;
-            } else if (sum > maxSum) {
-                maxSum = sum;
             }
         }
 
-        return maxSum;
+        return profit + sum;
     }
 };
 
