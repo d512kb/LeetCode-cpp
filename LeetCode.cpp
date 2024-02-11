@@ -10,23 +10,20 @@ using namespace std;
 
 class Solution {
 public:
-    vector<int> productExceptSelf(vector<int>& nums) {
-        vector<int> result(nums);
+    int canCompleteCircuit(vector<int>& gas, vector<int>& cost) {
+        int path = 0;
+        int max = -1;
+        int index = -1;
 
-        for (int i = 1, j = nums.size() - 2; i < nums.size(), j >= 0; ++i, --j) {
-            nums[i] *= nums[i - 1];
-            result[j] *= result[j + 1];
+        for (int i = gas.size() - 1; i >= 0; --i) {
+            path += gas[i] - cost[i];
+            if (path > max) {
+                max = path;
+                index = i;
+            }
         }
 
-        result.front() = result[1];
-
-        for (int i = 1; i < nums.size() - 1; ++i) {
-            result[i] = nums[i - 1] * result[i + 1];
-        }
-
-        result.back() = nums[nums.size() - 2];
-
-        return result;
+        return path < 0 ? -1 : index;
     }
 };
 
