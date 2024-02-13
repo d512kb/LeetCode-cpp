@@ -10,25 +10,35 @@ using namespace std;
 
 class Solution {
 public:
-    int candy(vector<int>& ratings) {
-        if (ratings.size() == 1)
-            return 1;
-
-        vector<int> candies(ratings.size(), 1);
-
-        for (int i = 1; i < ratings.size(); ++i) {
-            if (ratings[i] > ratings[i - 1]) {
-                candies[i] = candies[i - 1] + 1;
+    int trap(vector<int>& height) {
+        pair<int, int> maxHeight{ 0,0 };
+        int localWater = 0;
+        int totalWater = 0;
+        for (int i = 0; i < height.size(); ++i) {
+            if (height[i] >= maxHeight.first) {
+                totalWater += localWater;
+                localWater = 0;
+                maxHeight.first = height[i];
+                maxHeight.second = i;
+            } else {
+                localWater += maxHeight.first - height[i];
             }
         }
 
-        for (int i = ratings.size() - 2; i >= 0; --i) {
-            if (ratings[i] > ratings[i + 1]) {
-                candies[i] = max(candies[i], candies[i + 1] + 1);
+        maxHeight.first = 0;
+        localWater = 0;
+
+        for (int i = height.size() - 1; i > maxHeight.second; --i) {
+            if (height[i] >= maxHeight.first) {
+                totalWater += localWater;
+                localWater = 0;
+                maxHeight.first = height[i];
+            } else {
+                localWater += maxHeight.first - height[i];
             }
         }
 
-        return accumulate(candies.begin(), candies.end(), 0);
+        return totalWater + localWater;
     }
 };
 
