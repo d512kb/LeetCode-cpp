@@ -10,36 +10,56 @@ using namespace std;
 
 class Solution {
 public:
-    int trap(vector<int>& height) {
-        pair<int, int> maxHeight{ 0,0 };
-        int localWater = 0;
-        int totalWater = 0;
-        for (int i = 0; i < height.size(); ++i) {
-            if (height[i] >= maxHeight.first) {
-                totalWater += localWater;
-                localWater = 0;
-                maxHeight.first = height[i];
-                maxHeight.second = i;
-            } else {
-                localWater += maxHeight.first - height[i];
-            }
-        }
+	int romanToInt(string s) {
+		int result = 0;
 
-        maxHeight.first = 0;
-        localWater = 0;
+		int I = 0;
+		int X = 0;
+		int C = 0;
 
-        for (int i = height.size() - 1; i > maxHeight.second; --i) {
-            if (height[i] >= maxHeight.first) {
-                totalWater += localWater;
-                localWater = 0;
-                maxHeight.first = height[i];
-            } else {
-                localWater += maxHeight.first - height[i];
-            }
-        }
+		for (const auto& c: s) {
+			switch (c) {
+			case 'I':
+				I = 1;
+				result += 1;
+				break;
+			case 'V':
+				result += 5 - 2 * I;
+				I = 0;
+				break;
+			case 'X':
+				X = 10 * (1 - I);
+				result += 10 - 2 * I;
+				I = 0;
+				break;
+			case 'L':
+				result += 50 - 2 * X;
+				I = 0;
+				X = 0;
+				break;
+			case 'C':
+				C = 100 * (1 - X / 10);
+				result += 100 - 2 * X;
+				I = 0;
+				X = 0;
+				break;
+			case 'D':
+				result += 500 - 2 * C;
+				I = 0;
+				X = 0;
+				C = 0;
+				break;
+			case 'M':
+				result += 1000 - 2 * C;
+				I = 0;
+				X = 0;
+				C = 0;
+				break;
+			}
+		}
 
-        return totalWater + localWater;
-    }
+		return result;
+	}
 };
 
 int main() {
