@@ -10,20 +10,25 @@ using namespace std;
 
 class Solution {
 public:
-    int canCompleteCircuit(vector<int>& gas, vector<int>& cost) {
-        int path = 0;
-        int max = -1;
-        int index = -1;
+    int candy(vector<int>& ratings) {
+        if (ratings.size() == 1)
+            return 1;
 
-        for (int i = gas.size() - 1; i >= 0; --i) {
-            path += gas[i] - cost[i];
-            if (path > max) {
-                max = path;
-                index = i;
+        vector<int> candies(ratings.size(), 1);
+
+        for (int i = 1; i < ratings.size(); ++i) {
+            if (ratings[i] > ratings[i - 1]) {
+                candies[i] = candies[i - 1] + 1;
             }
         }
 
-        return path < 0 ? -1 : index;
+        for (int i = ratings.size() - 2; i >= 0; --i) {
+            if (ratings[i] > ratings[i + 1]) {
+                candies[i] = max(candies[i], candies[i + 1] + 1);
+            }
+        }
+
+        return accumulate(candies.begin(), candies.end(), 0);
     }
 };
 
