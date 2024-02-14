@@ -10,18 +10,16 @@ using namespace std;
 
 class Solution {
 public:
-    int lengthOfLastWord(string s) {
-        auto lastChar = find_if(s.rbegin(), s.rend(), [](unsigned char c) { return !isspace(c); });
-        int len = 0;
+    string longestCommonPrefix(vector<string>& strs) {
+        auto firstStr = strs[0];
+        long prefixLen = firstStr.size();
 
-        while (lastChar != s.rend()) {
-            if (*lastChar++ == ' ')
-                return len;
-
-            ++len;
+        for (int i = 1; i < strs.size(); ++i) {
+            auto mis = mismatch(firstStr.begin(), firstStr.begin()+prefixLen, strs[i].begin());
+            prefixLen = min(prefixLen, static_cast<long>(distance(firstStr.begin(), mis.first)));
         }
 
-        return len;
+        return firstStr.substr(0, prefixLen);
     }
 };
 
