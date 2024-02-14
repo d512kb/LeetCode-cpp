@@ -10,56 +10,34 @@ using namespace std;
 
 class Solution {
 public:
-	int romanToInt(string s) {
-		int result = 0;
+    string intToRoman(int num) {
+        string result;
 
-		int I = 0;
-		int X = 0;
-		int C = 0;
+        vector<pair<int, string>> steps = {
+            {1000, "M"},
+            {900, "CM"},
+            {500, "D"},
+            {400, "CD"},
+            {100, "C"},
+            {90, "XC"},
+            {50, "L"},
+            {40, "XL"},
+            {10, "X"},
+            {9, "IX"},
+            {5, "V"},
+            {4, "IV"},
+            {1, "I"}
+        };
 
-		for (const auto& c: s) {
-			switch (c) {
-			case 'I':
-				I = 1;
-				result += 1;
-				break;
-			case 'V':
-				result += 5 - 2 * I;
-				I = 0;
-				break;
-			case 'X':
-				X = 10 * (1 - I);
-				result += 10 - 2 * I;
-				I = 0;
-				break;
-			case 'L':
-				result += 50 - 2 * X;
-				I = 0;
-				X = 0;
-				break;
-			case 'C':
-				C = 100 * (1 - X / 10);
-				result += 100 - 2 * X;
-				I = 0;
-				X = 0;
-				break;
-			case 'D':
-				result += 500 - 2 * C;
-				I = 0;
-				X = 0;
-				C = 0;
-				break;
-			case 'M':
-				result += 1000 - 2 * C;
-				I = 0;
-				X = 0;
-				C = 0;
-				break;
-			}
-		}
+        for (const auto& step : steps) {
+            while (num >= step.first) {
+                result.append(step.second);
+                num -= step.first;
+            }
+        }
 
-		return result;
-	}
+        return result;
+    }
 };
 
 int main() {
