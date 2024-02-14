@@ -10,33 +10,18 @@ using namespace std;
 
 class Solution {
 public:
-    string intToRoman(int num) {
-        string result;
+    int lengthOfLastWord(string s) {
+        auto lastChar = find_if(s.rbegin(), s.rend(), [](unsigned char c) { return !isspace(c); });
+        int len = 0;
 
-        vector<pair<int, string>> steps = {
-            {1000, "M"},
-            {900, "CM"},
-            {500, "D"},
-            {400, "CD"},
-            {100, "C"},
-            {90, "XC"},
-            {50, "L"},
-            {40, "XL"},
-            {10, "X"},
-            {9, "IX"},
-            {5, "V"},
-            {4, "IV"},
-            {1, "I"}
-        };
+        while (lastChar != s.rend()) {
+            if (*lastChar++ == ' ')
+                return len;
 
-        for (const auto& step : steps) {
-            while (num >= step.first) {
-                result.append(step.second);
-                num -= step.first;
-            }
+            ++len;
         }
 
-        return result;
+        return len;
     }
 };
 
