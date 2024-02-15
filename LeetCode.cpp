@@ -10,36 +10,47 @@ using namespace std;
 
 class Solution {
 public:
-    string reverseWords(string s) {
-        string result(s.size()+1, ' '); // extra space to allow iterator increment
+    string convert(string s, int numRows) {
+        if (numRows == 1)
+            return s;
 
-        auto outIter = result.begin();
-        auto firstChar = s.rbegin();
-        auto firstSpace = s.rbegin();
-        
-        while (true) {
-            firstChar = find_if_not(firstSpace, s.rend(), ::isspace);
-            firstSpace = find(firstChar, s.rend(), ' ');
+        vector<string> rows(numRows, "");
 
-            if (firstChar == s.rend())
-                break;
+        int currentRow = 0;
+        int rowInc = 1;
 
-            outIter = reverse_copy(firstChar, firstSpace, outIter);
-            ++outIter;
+        for (int i = 0; i < s.size(); ++i) {
+            rows[currentRow] += s[i];
+            currentRow += rowInc;
+
+            if (currentRow < 0 || currentRow > numRows - 1) {
+                rowInc = -rowInc;
+                currentRow += 2 * rowInc;
+            }
         }
 
-        result.resize(distance(result.begin(), outIter)-1);
-        
+        string result;
+
+        for (const auto& s : rows) {
+            result += s;
+        }
+
         return result;
     }
 };
 
 int main() {
-    INIT_TIME(timer);
+    string s;
+
+    for (int i = 0; i < 10000000; ++i) {
+        s += 'A';
+    }
 
     Solution sol;
+    
+    INIT_TIME(timer);
 
-    cout << sol.reverseWords("the sky is blue");
+    auto result = sol.convert(s, 1000);
 
     PRINT_ELAPSED(timer);
     return 0;
