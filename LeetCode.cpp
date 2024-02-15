@@ -14,25 +14,28 @@ public:
         if (numRows == 1)
             return s;
 
-        vector<string> rows(numRows, "");
+        string result(s.size(), ' ');
+        int jInc = 2 * (numRows - 1);
+        int resultIndex = 0;
+        int currentLine = 0;
 
-        int currentRow = 0;
-        int rowInc = 1;
+        for (int j = currentLine; j < s.size(); j += jInc) {
+            result[resultIndex++] = s[j];
+        }
 
-        for (int i = 0; i < s.size(); ++i) {
-            rows[currentRow] += s[i];
-            currentRow += rowInc;
+        for (currentLine = 1; currentLine < numRows - 1; ++currentLine) {
+            int jMed = jInc - 2 * currentLine;
+            for (int j = currentLine; j < s.size(); j += jInc) {
+                result[resultIndex++] = s[j];
 
-            if (currentRow < 0 || currentRow > numRows - 1) {
-                rowInc = -rowInc;
-                currentRow += 2 * rowInc;
+                if (j + jMed < s.size()) {
+                    result[resultIndex++] = s[j + jMed];
+                }
             }
         }
 
-        string result;
-
-        for (const auto& s : rows) {
-            result += s;
+        for (int j = currentLine; j < s.size(); j += jInc) {
+            result[resultIndex++] = s[j];
         }
 
         return result;
