@@ -10,67 +10,63 @@ using namespace std;
 
 class Solution {
 public:
-    int strStr(string haystack, string needle) {
-        if (needle.size() > haystack.size())
-            return -1;
+    vector<string> fullJustify(vector<string>& words, int maxWidth) {
+        int filledWidth = 0;
+        int spacesUsed = 0;
+        int wordsAdjusted = 0;
+        vector<string> result;
 
-        if (needle.size() <= 1) {
-            auto pos = find(haystack.begin(), haystack.end(), needle[0]);
+        for (int i = 0; i < words.size(); ++i) {
+            filledWidth += words[i].size();
 
-            return pos == haystack.end() ? -1 : distance(haystack.begin(), pos);
-        }
-
-        uint32_t k = needle.size();
-        uint64_t a = 3;
-        uint64_t an = 1;
-        uint64_t n = 101;
-        uint32_t haystackHash = haystack[k - 1] % n;
-        uint32_t needleHash = needle[k-1] % n;
-
-        for (int i = k - 2; i >= 0; --i) {
-            an *= a;
-            an %= n;
-            
-            haystackHash = (haystackHash + haystack[i] * an) % n;
-            needleHash = (needleHash + needle[i] * an) % n;
-        }
-
-        int i = k;
-
-        if (haystackHash == needleHash) {
-            if (mismatch(needle.begin(), needle.end(), haystack.begin() + i - k).first == needle.end()) {
-                return i - k;
-            }
-        }
-
-        while (i < haystack.size()) {
-            haystackHash = (haystackHash + n - (haystack[i - k] * an) % n) % n;
-            haystackHash = (haystackHash * a) % n;
-            haystackHash = (haystackHash + haystack[i]) % n;
-            
-            ++i;
-
-            if (haystackHash == needleHash) {
-                if (mismatch(needle.begin(), needle.end(), haystack.begin() + i - k).first == needle.end()) {
-                    return i-k;
+            if (filledWidth + spacesUsed >= maxWidth || i == words.size() - 1) {
+                if (filledWidth + spacesUsed > maxWidth) {
+                    filledWidth -= words[i].size();
+                    --i;
                 }
+
+                int unusedSpace = maxWidth - filledWidth;
+                int wordsToPlace = i + 1 - wordsAdjusted;
+                string justifiedLine;
+
+                if (wordsToPlace > 1) {
+                    int spacesPerWord = i == words.size() - 1 ? 1 : unusedSpace / (wordsToPlace - 1);
+                    int extraSpace = i == words.size() - 1 ? 0 : unusedSpace % (wordsToPlace - 1);
+
+                    for (int wordIndex = wordsAdjusted; wordIndex < i; ++wordIndex) {
+                        justifiedLine += words[wordIndex];
+                        justifiedLine.append(spacesPerWord, ' ');
+                        if (extraSpace > 0) {
+                            justifiedLine.append(" ");
+                            --extraSpace;
+                        }
+                    }
+
+                    justifiedLine += words[i]; // last word in the line
+
+                    if (i == words.size() - 1) {
+                        justifiedLine.append(maxWidth - justifiedLine.size(), ' ');
+                    }
+                } else {
+                    justifiedLine += words[i];
+                    justifiedLine.append(unusedSpace, ' ');
+                }
+
+                result.push_back(std::move(justifiedLine));
+                wordsAdjusted += wordsToPlace;
+                spacesUsed = 0;
+                filledWidth = 0;
+            } else {
+                ++spacesUsed;
             }
         }
 
-        return -1;
+        return result;
     }
 };
 
 int main() {
-    Solution sol;
-
-    string hay(10000000, 'a');
-    hay.back() = 'b';
-    string needle("aaaab");
-    
     INIT_TIME(timer);
-
-    cout << sol.strStr(hay, needle);
 
     PRINT_ELAPSED(timer);
     return 0;
