@@ -10,58 +10,20 @@ using namespace std;
 
 class Solution {
 public:
-    vector<string> fullJustify(vector<string>& words, int maxWidth) {
-        int filledWidth = 0;
-        int spacesUsed = 0;
-        int wordsAdjusted = 0;
-        vector<string> result;
+    bool isPalindrome(string s) {
+        int a = 0;
+        int b = s.size() - 1;
 
-        for (int i = 0; i < words.size(); ++i) {
-            filledWidth += words[i].size();
+        while (a < b) {
+            if (!isalnum(s[a])) { ++a; continue; }
+            if (!isalnum(s[b])) { --b; continue; }
 
-            if (filledWidth + spacesUsed >= maxWidth || i == words.size() - 1) {
-                if (filledWidth + spacesUsed > maxWidth) {
-                    filledWidth -= words[i].size();
-                    --i;
-                }
-
-                int unusedSpace = maxWidth - filledWidth;
-                int wordsToPlace = i + 1 - wordsAdjusted;
-                string justifiedLine;
-
-                if (wordsToPlace > 1) {
-                    int spacesPerWord = i == words.size() - 1 ? 1 : unusedSpace / (wordsToPlace - 1);
-                    int extraSpace = i == words.size() - 1 ? 0 : unusedSpace % (wordsToPlace - 1);
-
-                    for (int wordIndex = wordsAdjusted; wordIndex < i; ++wordIndex) {
-                        justifiedLine += words[wordIndex];
-                        justifiedLine.append(spacesPerWord, ' ');
-                        if (extraSpace > 0) {
-                            justifiedLine.append(" ");
-                            --extraSpace;
-                        }
-                    }
-
-                    justifiedLine += words[i]; // last word in the line
-
-                    if (i == words.size() - 1) {
-                        justifiedLine.append(maxWidth - justifiedLine.size(), ' ');
-                    }
-                } else {
-                    justifiedLine += words[i];
-                    justifiedLine.append(unusedSpace, ' ');
-                }
-
-                result.push_back(std::move(justifiedLine));
-                wordsAdjusted += wordsToPlace;
-                spacesUsed = 0;
-                filledWidth = 0;
-            } else {
-                ++spacesUsed;
+            if (tolower(s[a++]) != tolower(s[b--])) {
+                return false;
             }
         }
 
-        return result;
+        return true;
     }
 };
 
