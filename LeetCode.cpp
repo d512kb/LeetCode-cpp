@@ -10,20 +10,16 @@ using namespace std;
 
 class Solution {
 public:
-    bool isPalindrome(string s) {
-        int a = 0;
-        int b = s.size() - 1;
+    bool isSubsequence(string s, string t) {
+        int sIndex = 0;
 
-        while (a < b) {
-            if (!isalnum(s[a])) { ++a; continue; }
-            if (!isalnum(s[b])) { --b; continue; }
-
-            if (tolower(s[a++]) != tolower(s[b--])) {
-                return false;
+        for (int i = 0; i < t.size() && sIndex < s.size(); ++i) {
+            if (t[i] == s[sIndex]) {
+                ++sIndex;
             }
         }
 
-        return true;
+        return sIndex == s.size();
     }
 };
 
