@@ -10,21 +10,38 @@ using namespace std;
 
 class Solution {
 public:
-    int maxArea(vector<int>& height) {
-        int a = 0, b = height.size() - 1;
-        int maxArea = (b - a) * min(height[a], height[b]);
+    vector<vector<int>> threeSum(vector<int>& nums) {
+        sort(nums.begin(), nums.end());
 
-        while (a < b) {
-            if (height[a] < height[b]) {
-                ++a;
-            } else {
-                --b;
+        int a = 0;
+        int sum = 0;
+        vector<vector<int>> result;
+
+        while (a < nums.size() - 2) {
+            int b = a + 1;
+            int c = nums.size() - 1;
+
+            while (b < c) {
+                sum = nums[a] + nums[b] + nums[c];
+
+                if (sum < 0) {
+                    ++b;
+                } else if (sum > 0) {
+                    --c;
+                } else {
+                    result.push_back({ nums[a], nums[b], nums[c] });
+                    ++b; --c;
+                    while (b < c && nums[b] == nums[b - 1]) ++b;
+                    while (b < c && nums[c] == nums[c + 1]) --c;
+                }
             }
 
-            maxArea = max(maxArea, (b - a) * min(height[a], height[b]));
+            ++a;
+            while (a < b && nums[a] == nums[a - 1])
+                ++a;
         }
 
-        return maxArea;
+        return result;
     }
 };
 
