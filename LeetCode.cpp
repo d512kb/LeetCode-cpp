@@ -10,16 +10,21 @@ using namespace std;
 
 class Solution {
 public:
-    bool isSubsequence(string s, string t) {
-        int sIndex = 0;
+    int maxArea(vector<int>& height) {
+        int a = 0, b = height.size() - 1;
+        int maxArea = (b - a) * min(height[a], height[b]);
 
-        for (int i = 0; i < t.size() && sIndex < s.size(); ++i) {
-            if (t[i] == s[sIndex]) {
-                ++sIndex;
+        while (a < b) {
+            if (height[a] < height[b]) {
+                ++a;
+            } else {
+                --b;
             }
+
+            maxArea = max(maxArea, (b - a) * min(height[a], height[b]));
         }
 
-        return sIndex == s.size();
+        return maxArea;
     }
 };
 
