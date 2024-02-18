@@ -10,21 +10,22 @@ using namespace std;
 
 class Solution {
 public:
-    int minSubArrayLen(int target, vector<int>& nums) {
+    int lengthOfLongestSubstring(string s) {
+        unordered_map<char, int> chars;
+
         int a = 0, b = 0;
-        int sum = 0;
-        int minLen = nums.size() + 1;
+        int lenMax = 0;
 
-        while (b < nums.size()) {
-            sum += nums[b++];
-
-            while (sum >= target) {
-                minLen = min(minLen, b - a);
-                sum -= nums[a++];
+        for (b; b < s.size(); ++b) {
+            if (chars.contains(s[b])) {
+                lenMax = max(lenMax, b - a);
+                a = chars[s[b]] + 1;
             }
+
+            chars[s[b]] = b;
         }
 
-        return minLen == nums.size() + 1 ? 0 : minLen;
+        return max(lenMax, b - a);
     }
 };
 
