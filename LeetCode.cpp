@@ -10,22 +10,32 @@ using namespace std;
 
 class Solution {
 public:
-    int lengthOfLongestSubstring(string s) {
-        unordered_map<char, int> chars;
+    vector<int> findSubstring(string s, vector<string>& words) {
+        unordered_map<string, int> wordsNumber;
+        unordered_map<string, int> wordsCount;
 
-        int a = 0, b = 0;
-        int lenMax = 0;
-
-        for (b; b < s.size(); ++b) {
-            if (chars.contains(s[b])) {
-                lenMax = max(lenMax, b - a);
-                a = chars[s[b]] + 1;
-            }
-
-            chars[s[b]] = b;
+        for (const auto& word : words) {
+            ++wordsNumber[word];
         }
 
-        return max(lenMax, b - a);
+        int wordSize = words.front().size();
+        int permLen = words.size() * wordSize;
+        int maxIndex = s.size() - permLen;
+        vector<int> result;
+
+        for (int i = 0; i <= maxIndex; ++i) {
+            wordsCount = wordsNumber;
+            int checkIndex = 0;
+
+            while (checkIndex < permLen && --wordsCount[s.substr(i+checkIndex, wordSize)] >= 0) {
+                checkIndex += wordSize;
+            }
+
+            if (checkIndex == permLen)
+                result.push_back(i);
+        }
+
+        return result;
     }
 };
 
