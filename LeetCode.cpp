@@ -11,72 +11,46 @@ using namespace std;
 
 class Solution {
 public:
-    vector<int> findSubstring(string s, vector<string>& words) {
-        unordered_map<string, int> wordsNumber;
-        int wordLen = words.front().size();
-        int permLen = words.size() * wordLen;
-        vector<int> result;
+    string minWindow(string s, string t) {
+        if (s.size() < t.size() || t.empty())
+            return "";
 
-        if (s.size() < permLen)
-            return result;
+        vector<int> charsData(123, 0);
+        vector<int> countChars(123, 0);
 
-        for (const auto& word : words) {
-            ++wordsNumber[word];
+        for (const auto& c : t) {
+            ++charsData[c];
         }
 
-        for (int baseIndex = 0; baseIndex < wordLen; ++baseIndex) {
-            unordered_map<string, int> windowWordsNumber;
-            queue<string> windowWords;
-            int wordCount = 0;
-            int startIndex = baseIndex;
+        int a = 0, b = 0;
+        int collected = 0;
+        int minLen = s.size()+1;
+        pair<int, int> minPos{ a, b };
 
-            for (startIndex; startIndex < baseIndex + permLen; startIndex += wordLen) {
-                string word = s.substr(startIndex, wordLen);
-                auto iter = wordsNumber.find(word);
+        while (b < s.size()) {
+            const char c = s[b++];
 
-                if (iter != wordsNumber.end()) {
-                    windowWords.push(word);
-
-                    if (++windowWordsNumber[word] <= iter->second) {
-                        ++wordCount;
-                    }
-                } else {
-                    windowWords.emplace("");
-                }
-
-                if (wordCount == words.size()) {
-                    result.push_back(startIndex - permLen + wordLen);
-                }
+            if (++countChars[c] <= charsData[c]) {
+                ++collected;
             }
 
-            for (startIndex; startIndex <= s.size() - wordLen; startIndex += wordLen) {
-                string word = s.substr(startIndex, wordLen);
-                auto iter = wordsNumber.find(word);
+            while (a < b && collected == t.size()) {
+                const char c = s[a];
 
-                if (iter != wordsNumber.end()) {
-                    windowWords.push(word);
-
-                    if (++windowWordsNumber[word] <= iter->second) {
-                        ++wordCount;
+                if (countChars[c]-- <= charsData[c]) {
+                    if (b - a < minLen) {
+                        minPos.first = a;
+                        minPos.second = b;
+                        minLen = b - a;
                     }
-                } else {
-                    windowWords.emplace("");
+                    --collected;
                 }
 
-                if (!windowWords.front().empty()) {
-                    if (--windowWordsNumber[windowWords.front()] < wordsNumber[windowWords.front()])
-                        --wordCount;
-                }
-
-                windowWords.pop();
-
-                if (wordCount == words.size()) {
-                    result.push_back(startIndex - permLen + wordLen);
-                }
+                ++a;
             }
         }
 
-        return result;
+        return { s.begin() + minPos.first, s.begin() + minPos.second };
     }
 };
 
