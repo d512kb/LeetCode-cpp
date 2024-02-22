@@ -12,6 +12,9 @@
 #include <random>
 #include <numeric>
 #include <functional>
+#include <map>
+#include <unordered_set>
+#include <queue>
 
 // TODO: Reference additional headers your program requires here.
 

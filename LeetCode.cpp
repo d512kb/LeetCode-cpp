@@ -2,39 +2,41 @@
 //
 
 #include "LeetCode.h"
-#include <map>
-#include <unordered_set>
-#include <stack>
-#include <queue>
 
 using namespace std;
 
 class Solution {
 public:
-    bool isValidSudoku(vector<vector<char>>& board) {
-        vector<int> h, v, z;
+    vector<int> spiralOrder(vector<vector<int>>& matrix) {
+        int firstRowIndex = 0;
+        int lastRowIndex = matrix.size() - 1;
+        int firstColIndex = 0;
+        int lastColIndex = matrix.front().size() - 1;
 
-        for (int i = 0; i < 9; ++i) {
-            h.assign(64, 0);
-            v.assign(64, 0);
-            z.assign(64, 0);
+        vector<int> result;
+        int n = matrix.size() * matrix.front().size();
+        result.reserve(n);
 
-            for (int j = 0; j < 9; ++j) {
-                char& hc = board[i][j];
-                char& vc = board[j][i];
-                char& zc = board[i / 3 * 3 + j / 3][i % 3 * 3 + j % 3];
-
-                if (hc != 46 && ++h[hc] > 1) {
-                    return false;
-                } else if (vc != 46 && ++v[vc] > 1) {
-                    return false;
-                } else if (zc != 46 && ++z[zc] > 1) {
-                    return false;
-                }
+        while (n > 0) {
+            for (int i = firstColIndex; i <= lastColIndex && n > 0; ++i, --n) {
+                result.push_back(matrix[firstRowIndex][i]);
             }
+            ++firstRowIndex;
+            for (int i = firstRowIndex; i <= lastRowIndex && n > 0; ++i, --n) {
+                result.push_back(matrix[i][lastColIndex]);
+            }
+            --lastColIndex;
+            for (int i = lastColIndex; i >= firstColIndex && n > 0; --i, --n) {
+                result.push_back(matrix[lastRowIndex][i]);
+            }
+            --lastRowIndex;
+            for (int i = lastRowIndex; i >= firstRowIndex && n > 0; --i, --n) {
+                result.push_back(matrix[i][firstColIndex]);
+            }
+            ++firstColIndex;
         }
 
-        return true;
+        return result;
     }
 };
 
