@@ -7,33 +7,34 @@ using namespace std;
 
 class Solution {
 public:
-    void setZeroes(vector<vector<int>>& matrix) {
-        bool colZero = false;
+    void gameOfLife(vector<vector<int>>& board) {
+        vector<vector<int>> nextBoard(board);
+        int rMax = board.size() - 1;
+        int cMax = board.front().size() - 1;
 
-        for (int r = 0; r < matrix.size(); ++r) {
-            if (matrix[r][0] == 0) {
-                colZero = true;
-            }
+        vector<pair<int, int>> dirs{ {-1,-1},{-1,0},{-1, 1}, {0,-1}, {0,1}, {1,-1},{1,0},{1,1} };
 
-            for (int c = 1; c < matrix.front().size(); ++c) {
-                if (matrix[r][c] == 0) {
-                    matrix[0][c] = 0;
-                    matrix[r][0] = 0;
+        for (int r = 0; r <= rMax; ++r) {
+            for (int c = 0; c <= cMax; ++c) {
+                int n = 0;
+
+                for (const auto& dir : dirs) {
+                    int rc = r + dir.first;
+                    int cc = c + dir.second;
+
+                    if (rc >= 0 && rc <= rMax && cc >= 0 && cc <= cMax)
+                        n += board[rc][cc];
+                }
+
+                if (board[r][c] == 0) {
+                    nextBoard[r][c] = n == 3;
+                } else {
+                    nextBoard[r][c] = n > 1 && n < 4;
                 }
             }
         }
 
-        for (int r = matrix.size() - 1; r >= 0; --r) {
-            for (int c = 1; c < matrix.front().size(); ++c) {
-                if (matrix[0][c] == 0 || matrix[r][0] == 0) {
-                    matrix[r][c] = 0;
-                }
-            }
-
-            if (colZero) {
-                matrix[r][0] = 0;
-            }
-        }
+        board = nextBoard;
     }
 };
 
