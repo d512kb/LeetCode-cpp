@@ -7,18 +7,22 @@ using namespace std;
 
 class Solution {
 public:
-    bool canConstruct(string ransomNote, string magazine) {
-        vector<int> chars(128);
-        int mLen = magazine.size();
-        int i = 0;
+    bool isIsomorphic(string s, string t) {
+        unordered_map<char, char> map;
+        char sMap[256]{ 0 };
+        char tMap[256]{ 0 };
 
-        for (const char& c : ransomNote) {
-            while (chars[c] == 0 && i < mLen) {
-                ++chars[magazine[i++]];
-            }
+        for (int i = 0; i < s.size(); ++i) {
+            char& sChar = sMap[s[i]];
+            char& tChar = tMap[t[i]];
 
-            if (--chars[c] < 0)
+            if (sChar != 0 && sChar != t[i])
                 return false;
+            else if (tChar != 0 && tChar != s[i])
+                return false;
+
+            sChar = t[i];
+            tChar = s[i];
         }
 
         return true;
