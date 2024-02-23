@@ -7,31 +7,35 @@ using namespace std;
 
 class Solution {
 public:
-    bool isIsomorphic(string s, string t) {
-        unordered_map<char, char> map;
-        char sMap[256]{ 0 };
-        char tMap[256]{ 0 };
+    bool wordPattern(string pattern, string s) {
+        vector<string> hashChar(128);
+        unordered_map<string, char> hashStr;
+        istringstream sstr(s);
+        string str;
 
-        for (int i = 0; i < s.size(); ++i) {
-            char& sChar = sMap[s[i]];
-            char& tChar = tMap[t[i]];
-
-            if (sChar != 0 && sChar != t[i])
+        for (const char& c : pattern) {
+            if (!(sstr >> str)) {
                 return false;
-            else if (tChar != 0 && tChar != s[i])
-                return false;
+            }
 
-            sChar = t[i];
-            tChar = s[i];
+            auto iter = hashStr.find(str);
+
+            if (hashChar[c].empty() && iter == hashStr.end()) {
+                hashChar[c].assign(str);
+                hashStr.emplace(move(str), c);
+            } else if (hashChar[c] != str) {
+                return false;
+            }
         }
 
-        return true;
+        return !(sstr >> str);
     }
 };
 
 int main() {
     INIT_TIME(timer);
-
+    Solution sol;
+    cout << sol.wordPattern("a", "dog");
     PRINT_ELAPSED(timer);
     return 0;
 }
