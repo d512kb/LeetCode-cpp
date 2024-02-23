@@ -7,36 +7,17 @@ using namespace std;
 
 class Solution {
 public:
-    vector<int> spiralOrder(vector<vector<int>>& matrix) {
-        int firstRowIndex = 0;
-        int lastRowIndex = matrix.size() - 1;
-        int firstColIndex = 0;
-        int lastColIndex = matrix.front().size() - 1;
-
-        vector<int> result;
-        int n = matrix.size() * matrix.front().size();
-        result.reserve(n);
-
-        while (n > 0) {
-            for (int i = firstColIndex; i <= lastColIndex && n > 0; ++i, --n) {
-                result.push_back(matrix[firstRowIndex][i]);
+    void rotate(vector<vector<int>>& matrix) {
+        for (int i = 0; i < matrix.size() / 2; ++i) {
+            int b = matrix.size() - i - 1;
+            for (int j = i; j < b; ++j) {
+                int t = matrix[i][j];
+                swap(t, matrix[j][b]);
+                swap(t, matrix[b][b - j + i]);
+                swap(t, matrix[b - j + i][i]);
+                swap(t, matrix[i][j]);
             }
-            ++firstRowIndex;
-            for (int i = firstRowIndex; i <= lastRowIndex && n > 0; ++i, --n) {
-                result.push_back(matrix[i][lastColIndex]);
-            }
-            --lastColIndex;
-            for (int i = lastColIndex; i >= firstColIndex && n > 0; --i, --n) {
-                result.push_back(matrix[lastRowIndex][i]);
-            }
-            --lastRowIndex;
-            for (int i = lastRowIndex; i >= firstRowIndex && n > 0; --i, --n) {
-                result.push_back(matrix[i][firstColIndex]);
-            }
-            ++firstColIndex;
         }
-
-        return result;
     }
 };
 
