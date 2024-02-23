@@ -7,15 +7,31 @@ using namespace std;
 
 class Solution {
 public:
-    void rotate(vector<vector<int>>& matrix) {
-        for (int i = 0; i < matrix.size() / 2; ++i) {
-            int b = matrix.size() - i - 1;
-            for (int j = i; j < b; ++j) {
-                int t = matrix[i][j];
-                swap(t, matrix[j][b]);
-                swap(t, matrix[b][b - j + i]);
-                swap(t, matrix[b - j + i][i]);
-                swap(t, matrix[i][j]);
+    void setZeroes(vector<vector<int>>& matrix) {
+        bool colZero = false;
+
+        for (int r = 0; r < matrix.size(); ++r) {
+            if (matrix[r][0] == 0) {
+                colZero = true;
+            }
+
+            for (int c = 1; c < matrix.front().size(); ++c) {
+                if (matrix[r][c] == 0) {
+                    matrix[0][c] = 0;
+                    matrix[r][0] = 0;
+                }
+            }
+        }
+
+        for (int r = matrix.size() - 1; r >= 0; --r) {
+            for (int c = 1; c < matrix.front().size(); ++c) {
+                if (matrix[0][c] == 0 || matrix[r][0] == 0) {
+                    matrix[r][c] = 0;
+                }
+            }
+
+            if (colZero) {
+                matrix[r][0] = 0;
             }
         }
     }
