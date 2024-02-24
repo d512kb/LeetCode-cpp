@@ -7,35 +7,29 @@ using namespace std;
 
 class Solution {
 public:
-    bool wordPattern(string pattern, string s) {
-        vector<string> hashChar(128);
-        unordered_map<string, char> hashStr;
-        istringstream sstr(s);
-        string str;
+    bool isAnagram(string s, string t) {
+        if (s.size() != t.size())
+            return false;
 
-        for (const char& c : pattern) {
-            if (!(sstr >> str)) {
-                return false;
-            }
+        short sChars[128]{ 0 }, tChars[128]{ 0 };
 
-            auto iter = hashStr.find(str);
-
-            if (hashChar[c].empty() && iter == hashStr.end()) {
-                hashChar[c].assign(str);
-                hashStr.emplace(move(str), c);
-            } else if (hashChar[c] != str) {
-                return false;
-            }
+        for (int i = 0; i < s.size(); ++i) {
+            ++sChars[s[i]];
+            ++tChars[t[i]];
         }
 
-        return !(sstr >> str);
+        for (int i = 0; i < 128; ++i) {
+            if (sChars[i] != tChars[i])
+                return false;
+        }
+
+        return true;
     }
 };
 
 int main() {
     INIT_TIME(timer);
-    Solution sol;
-    cout << sol.wordPattern("a", "dog");
+
     PRINT_ELAPSED(timer);
     return 0;
 }
