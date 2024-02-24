@@ -7,35 +7,22 @@ using namespace std;
 
 class Solution {
 public:
-    vector<int> twoSum(vector<int>& nums, int target) {
-        vector sorted(nums);
-        sort(sorted.begin(), sorted.end());
+    bool isHappy(int n) {
+        while (n != 1) {
+            int t = 0;
 
-        int a = 0, b = nums.size() - 1;
-
-        while (a < b) {
-            int sum = sorted[a] + sorted[b];
-
-            if (sum > target) {
-                --b;
-            } else if (sum < target) {
-                ++a;
-            } else {
-                break;
+            while (n) {
+                t += (n % 10) * (n % 10);
+                n /= 10;
             }
+
+            n = t;
+
+            if (t == 4)
+                return false;
         }
 
-        a = sorted[a];
-        b = sorted[b];
-        vector<int> result;
-
-        for (int i = 0; i < nums.size(); ++i) {
-            if (nums[i] == a || nums[i] == b) {
-                result.push_back(i);
-            }
-        }
-
-        return result;
+        return true;
     }
 };
 
