@@ -7,23 +7,35 @@ using namespace std;
 
 class Solution {
 public:
-    bool isAnagram(string s, string t) {
-        if (s.size() != t.size())
-            return false;
+    vector<int> twoSum(vector<int>& nums, int target) {
+        vector sorted(nums);
+        sort(sorted.begin(), sorted.end());
 
-        short sChars[128]{ 0 }, tChars[128]{ 0 };
+        int a = 0, b = nums.size() - 1;
 
-        for (int i = 0; i < s.size(); ++i) {
-            ++sChars[s[i]];
-            ++tChars[t[i]];
+        while (a < b) {
+            int sum = sorted[a] + sorted[b];
+
+            if (sum > target) {
+                --b;
+            } else if (sum < target) {
+                ++a;
+            } else {
+                break;
+            }
         }
 
-        for (int i = 0; i < 128; ++i) {
-            if (sChars[i] != tChars[i])
-                return false;
+        a = sorted[a];
+        b = sorted[b];
+        vector<int> result;
+
+        for (int i = 0; i < nums.size(); ++i) {
+            if (nums[i] == a || nums[i] == b) {
+                result.push_back(i);
+            }
         }
 
-        return true;
+        return result;
     }
 };
 
