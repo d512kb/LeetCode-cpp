@@ -7,34 +7,22 @@ using namespace std;
 
 class Solution {
 public:
-    int longestConsecutive(vector<int>& nums) {
-        unordered_set<int> check;
+    vector<string> summaryRanges(vector<int>& nums) {
+        vector<string> result;
 
-        for (int i = 0; i < nums.size(); ++i) {
-            check.insert(nums[i]);
-        }
+        int a = 0;
+        int b = 0;
 
-        int maxLen = 0;
-
-        while (!check.empty()) {
-            int m = *check.begin();
-            int v = m;
-            int len = 0;
-
-            while (check.erase(v--)) {
-                ++len;
+        while (a < nums.size()) {
+            while (b < nums.size() - 1 && nums[b + 1] == nums[b] + 1) {
+                ++b;
             }
 
-            v = m + 1;
-
-            while (check.erase(v++)) {
-                ++len;
-            }
-
-            maxLen = max(maxLen, len);
+            result.push_back(a == b ? to_string(nums[a]) : to_string(nums[a]) + "->" + to_string(nums[b]));
+            a = b = b + 1;
         }
 
-        return maxLen;
+        return result;
     }
 };
 
