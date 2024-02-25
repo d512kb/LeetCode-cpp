@@ -7,22 +7,34 @@ using namespace std;
 
 class Solution {
 public:
-    vector<vector<string>> groupAnagrams(vector<string>& strs) {
-        unordered_map<string, vector<string>> mp;
+    int longestConsecutive(vector<int>& nums) {
+        unordered_set<int> check;
 
-        for (const string& str : strs) {
-            string s(str);
-            sort(s.begin(), s.end());
-            mp[s].push_back(str);
+        for (int i = 0; i < nums.size(); ++i) {
+            check.insert(nums[i]);
         }
 
-        vector<vector<string>> result;
+        int maxLen = 0;
 
-        for (auto& i : mp) {
-            result.push_back(move(i.second));
+        while (!check.empty()) {
+            int m = *check.begin();
+            int v = m;
+            int len = 0;
+
+            while (check.erase(v--)) {
+                ++len;
+            }
+
+            v = m + 1;
+
+            while (check.erase(v++)) {
+                ++len;
+            }
+
+            maxLen = max(maxLen, len);
         }
 
-        return result;
+        return maxLen;
     }
 };
 
