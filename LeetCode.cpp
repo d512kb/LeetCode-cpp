@@ -7,21 +7,22 @@ using namespace std;
 
 class Solution {
 public:
-    bool containsNearbyDuplicate(vector<int>& nums, int k) {
-        unordered_map<int, int> metNums;
+    vector<vector<string>> groupAnagrams(vector<string>& strs) {
+        unordered_map<string, vector<string>> mp;
 
-        for (int i = 0; i < nums.size(); ++i) {
-            auto ins = metNums.emplace(nums[i], i);
-            if (!ins.second) {
-                if (i - ins.first->second <= k) {
-                    return true;
-                } else {
-                    ins.first->second = i;
-                }
-            }
+        for (const string& str : strs) {
+            string s(str);
+            sort(s.begin(), s.end());
+            mp[s].push_back(str);
         }
 
-        return false;
+        vector<vector<string>> result;
+
+        for (auto& i : mp) {
+            result.push_back(move(i.second));
+        }
+
+        return result;
     }
 };
 
