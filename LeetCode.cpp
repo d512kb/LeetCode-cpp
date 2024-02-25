@@ -7,22 +7,21 @@ using namespace std;
 
 class Solution {
 public:
-    bool isHappy(int n) {
-        while (n != 1) {
-            int t = 0;
+    bool containsNearbyDuplicate(vector<int>& nums, int k) {
+        unordered_map<int, int> metNums;
 
-            while (n) {
-                t += (n % 10) * (n % 10);
-                n /= 10;
+        for (int i = 0; i < nums.size(); ++i) {
+            auto ins = metNums.emplace(nums[i], i);
+            if (!ins.second) {
+                if (i - ins.first->second <= k) {
+                    return true;
+                } else {
+                    ins.first->second = i;
+                }
             }
-
-            n = t;
-
-            if (t == 4)
-                return false;
         }
 
-        return true;
+        return false;
     }
 };
 
