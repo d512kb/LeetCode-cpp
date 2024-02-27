@@ -8,33 +8,24 @@ using namespace std;
 class Solution {
 public:
     vector<vector<int>> insert(vector<vector<int>>& intervals, vector<int>& newInterval) {
-        if (intervals.empty())
-            return { {newInterval[0], newInterval[1]} };
-
-        auto bIter = lower_bound(intervals.begin(), intervals.end(), newInterval[1], [](const auto& a, const auto& b) {
-            return a[1] < b;
-        });
-
-        auto aIter = lower_bound(intervals.begin(), bIter, newInterval[0], [](const auto& a, const auto& b) {
-            return a[1] < b;
-        });
-
         vector<vector<int>> result;
+        int i = 0;
 
-        move(intervals.begin(), aIter, back_inserter(result));
-
-        const int newA = aIter == intervals.end() ? newInterval[0] : min(aIter->front(), newInterval[0]);
-        const int& newB = newInterval[1];
-
-        if (bIter == intervals.end() || newB < bIter->front()) {
-            result.push_back({ newA, newB });
-            aIter = bIter;
-        } else {
-            result.push_back({ newA, bIter->back() });
-            aIter = bIter + 1;
+        while (i < intervals.size() && intervals[i][1] < newInterval[0]) {
+            result.push_back(intervals[i++]);
         }
 
-        move(aIter, intervals.end(), back_inserter(result));
+        while (i < intervals.size() && intervals[i][0] <= newInterval[1]) {
+            newInterval[0] = min(newInterval[0], intervals[i][0]);
+            newInterval[1] = max(newInterval[1], intervals[i][1]);
+            ++i;
+        }
+
+        result.push_back(newInterval);
+
+        while (i < intervals.size()) {
+            result.push_back(intervals[i++]);
+        }
 
         return result;
     }
