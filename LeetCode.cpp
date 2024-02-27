@@ -7,24 +7,34 @@ using namespace std;
 
 class Solution {
 public:
-    vector<vector<int>> merge(vector<vector<int>>& intervals) {
+    vector<vector<int>> insert(vector<vector<int>>& intervals, vector<int>& newInterval) {
+        if (intervals.empty())
+            return { {newInterval[0], newInterval[1]} };
+
+        auto bIter = lower_bound(intervals.begin(), intervals.end(), newInterval[1], [](const auto& a, const auto& b) {
+            return a[1] < b;
+        });
+
+        auto aIter = lower_bound(intervals.begin(), bIter, newInterval[0], [](const auto& a, const auto& b) {
+            return a[1] < b;
+        });
+
         vector<vector<int>> result;
-        sort(intervals.begin(), intervals.end(), [](const auto& a, const auto& b) { return a[0] < b[0]; });
 
-        int a = 0;
-        int b = 0;
+        move(intervals.begin(), aIter, back_inserter(result));
 
-        while (a < intervals.size()) {
-            int maxRight = intervals[a][1];
+        const int newA = aIter == intervals.end() ? newInterval[0] : min(aIter->front(), newInterval[0]);
+        const int& newB = newInterval[1];
 
-            while (b < intervals.size() - 1 && intervals[b + 1][0] <= maxRight) {
-                ++b;
-                maxRight = max(maxRight, intervals[b][1]);
-            }
-
-            result.push_back({ intervals[a][0], maxRight });
-            a = b = b + 1;
+        if (bIter == intervals.end() || newB < bIter->front()) {
+            result.push_back({ newA, newB });
+            aIter = bIter;
+        } else {
+            result.push_back({ newA, bIter->back() });
+            aIter = bIter + 1;
         }
+
+        move(aIter, intervals.end(), back_inserter(result));
 
         return result;
     }
@@ -32,10 +42,6 @@ public:
 
 int main() {
     INIT_TIME(timer);
-
-    Solution sol;
-    vector<vector<int>> v {{2, 3}, {4, 5}, {6, 7}, {8, 9}, {1, 10}};
-    sol.merge(v);
 
     PRINT_ELAPSED(timer);
     return 0;
