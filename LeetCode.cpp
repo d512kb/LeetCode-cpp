@@ -7,20 +7,22 @@ using namespace std;
 
 class Solution {
 public:
-    int findMinArrowShots(vector<vector<int>>& points) {
-        sort(points.begin(), points.end(), [](auto& a, auto& b) { return a[1] < b[1]; });
+    bool isValid(string s) {
+        stack<char> st;
 
-        int r = points[0][1];
-        int n = 1;
+        for (char& c : s) {
+            if (c == '(' || c == '{' || c == '[') {
+                st.push(c);
+            } else {
+                if (st.empty() ||
+                    (c == ')' && st.top() != '(') || (c == '}' && st.top() != '{') || (c == ']' && st.top() != '['))
+                    return false;
 
-        for (auto& p : points) {
-            if (p[0] > r) {
-                r = p[1];
-                ++n;
+                st.pop();
             }
         }
 
-        return n;
+        return st.empty();
     }
 };
 
