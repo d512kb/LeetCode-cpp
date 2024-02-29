@@ -5,48 +5,32 @@
 
 using namespace std;
 
-class MinStack {
+class Solution {
 public:
-    MinStack() {
+    int evalRPN(vector<string>& tokens) {
+        vector<int> operands;
+        unordered_map<string, function<int(int, int)>> operators{
+            {"+", plus<int>()},
+            {"-", minus<int>()},
+            {"*", multiplies<int>()},
+            {"/", divides<int>()}
+        };
 
-    }
+        for (string& token : tokens) {
+            const auto& op = operators.find(token);
 
-    void push(int val) {
-        m_stack.push(val);
-
-        if (m_mins.empty() || val <= m_mins.top()) {
-            m_mins.push(val);
+            if (op != operators.end()) {
+                int b = operands.back();
+                operands.pop_back();
+                operands.back() = op->second(operands.back(), b);
+            } else {
+                operands.push_back(stoi(token));
+            }
         }
+
+        return operands.front();
     }
-
-    void pop() {
-        if (m_stack.top() <= m_mins.top())
-            m_mins.pop();
-
-        m_stack.pop();
-    }
-
-    int top() {
-        return m_stack.top();
-    }
-
-    int getMin() {
-        return m_mins.top();
-    }
-
-private:
-    stack<int> m_stack;
-    stack<int> m_mins;
 };
-
-/**
- * Your MinStack object will be instantiated and called as such:
- * MinStack* obj = new MinStack();
- * obj->push(val);
- * obj->pop();
- * int param_3 = obj->top();
- * int param_4 = obj->getMin();
- */
 
 int main() {
     INIT_TIME(timer);
