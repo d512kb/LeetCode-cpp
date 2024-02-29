@@ -7,27 +7,38 @@ using namespace std;
 
 class Solution {
 public:
-    bool isValid(string s) {
-        stack<char> st;
+    string simplifyPath(string path) {
+        vector<string> v;
+        int a = 0;
 
-        for (char& c : s) {
-            if (c == '(' || c == '{' || c == '[') {
-                st.push(c);
-            } else {
-                if (st.empty() ||
-                    (c == ')' && st.top() != '(') || (c == '}' && st.top() != '{') || (c == ']' && st.top() != '['))
-                    return false;
+        while (a < path.size()) {
+            int b = path.find('/', a);
+            b = b == string::npos ? path.size() : b;
+            string s = path.substr(a, b - a);
 
-                st.pop();
+            if (s == ".." && !v.empty()) {
+                v.pop_back();
+            } else if (s != ".." && s != "/" && s != "." && !s.empty()) {
+                v.push_back(s);
             }
+
+            a = b + 1;
         }
 
-        return st.empty();
+        string result;
+        for (string& s : v) {
+            result.append("/").append(s);
+        }
+
+        return result.empty() ? "/" : result;
     }
 };
 
 int main() {
     INIT_TIME(timer);
+
+    Solution sol;
+    sol.simplifyPath("/../");
 
     PRINT_ELAPSED(timer);
     return 0;
