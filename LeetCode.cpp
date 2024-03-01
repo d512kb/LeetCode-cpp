@@ -15,34 +15,30 @@ using namespace std;
  
  class Solution {
  public:
-     ListNode* addTwoNumbers(ListNode* l1, ListNode* l2) {
+     ListNode* mergeTwoLists(ListNode* list1, ListNode* list2) {
          ListNode* r = new ListNode(0);
          ListNode* n = r;
-         int c = 0;
 
-         while (l1 && l2) {
-             n->next = new ListNode(l1->val + l2->val + c);
+         while (list1 && list2) {
+             n->next = new ListNode(0);
              n = n->next;
-             c = n->val / 10;
-             n->val %= 10;
 
-             l1 = l1->next;
-             l2 = l2->next;
+             if (list1->val <= list2->val) {
+                 n->val = list1->val;
+                 list1 = list1->next;
+             } else {
+                 n->val = list2->val;
+                 list2 = list2->next;
+             }
          }
 
-         auto l = l1 ? l1 : l2;
+         auto list = list1 ? list1 : list2;
 
-         while (l) {
-             n->next = new ListNode(l->val + c);
+         while (list) {
+             n->next = new ListNode(0);
              n = n->next;
-             c = n->val / 10;
-             n->val %= 10;
-
-             l = l->next;
-         }
-
-         if (c) {
-             n->next = new ListNode(1);
+             n->val = list->val;
+             list = list->next;
          }
 
          auto result = r->next;
