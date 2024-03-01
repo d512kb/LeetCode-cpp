@@ -10,22 +10,45 @@ using namespace std;
      int val;
      ListNode *next;
      ListNode(int x) : val(x), next(NULL) {}
+     ListNode(int x, ListNode* next) : val(x), next(next) {}
  };
  
  class Solution {
  public:
-     bool hasCycle(ListNode* head) {
-         ListNode* node = head;
+     ListNode* addTwoNumbers(ListNode* l1, ListNode* l2) {
+         ListNode* r = new ListNode(0);
+         ListNode* n = r;
+         int c = 0;
 
-         while (head && node && node->next) {
-             head = head->next;
-             node = node->next->next;
+         while (l1 && l2) {
+             n->next = new ListNode(l1->val + l2->val + c);
+             n = n->next;
+             c = n->val / 10;
+             n->val %= 10;
 
-             if (head == node)
-                 return true;
+             l1 = l1->next;
+             l2 = l2->next;
          }
 
-         return false;
+         auto l = l1 ? l1 : l2;
+
+         while (l) {
+             n->next = new ListNode(l->val + c);
+             n = n->next;
+             c = n->val / 10;
+             n->val %= 10;
+
+             l = l->next;
+         }
+
+         if (c) {
+             n->next = new ListNode(1);
+         }
+
+         auto result = r->next;
+         delete r;
+
+         return result;
      }
  };
 
