@@ -7,34 +7,53 @@ using namespace std;
 
 class Solution {
 public:
-    int evalRPN(vector<string>& tokens) {
-        vector<int> operands;
-        unordered_map<string, function<int(int, int)>> operators{
-            {"+", plus<int>()},
-            {"-", minus<int>()},
-            {"*", multiplies<int>()},
-            {"/", divides<int>()}
-        };
+    int calculate(string s) {
+        int ind = 0;
+        return calculateRecur(0, s, ind);
+    }
 
-        for (string& token : tokens) {
-            const auto& op = operators.find(token);
+private:
+    int calculateRecur(int sum, const string& s, int& ind) {
+        string num;
+        bool minus = false;
 
-            if (op != operators.end()) {
-                int b = operands.back();
-                operands.pop_back();
-                operands.back() = op->second(operands.back(), b);
-            } else {
-                operands.push_back(stoi(token));
+        for (int i = ind; i < s.size(); ++i) {
+            if (s[i] == ' ') {
+                continue;
+            } else if (s[i] >= '0' && s[i] <= '9') {
+                num.push_back(s[i]);
+            } else if (s[i] == '(') {
+                int b = calculateRecur(0, s, ++i);
+                sum = minus ? sum - b : sum + b;
+            } else if (s[i] == ')') {
+                ind = i;
+                break;
+            } else if (s[i] == '-' || s[i] == '+') {
+                if (!num.empty()) {
+                    int b = stoi(num);
+                    sum = minus ? sum - b : sum + b;
+                    num.clear();
+                }
+
+                minus = s[i] == '-';
             }
         }
 
-        return operands.front();
+        if (!num.empty()) {
+            int b = stoi(num);
+            sum = minus ? sum - b : sum + b;
+        }
+
+        return sum;
     }
 };
 
 int main() {
     INIT_TIME(timer);
 
+    Solution sol;
+    sol.calculate("1-(-2)");
+        
     PRINT_ELAPSED(timer);
     return 0;
 }
