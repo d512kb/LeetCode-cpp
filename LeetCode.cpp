@@ -8,41 +8,35 @@ using namespace std;
 class Solution {
 public:
     int calculate(string s) {
-        int ind = 0;
-        return calculateRecur(0, s, ind);
-    }
+        int num = 0;
+        int sum = 0;
+        int sign = 1;
+        vector<pair<int, int>> sums;
 
-private:
-    int calculateRecur(int sum, const string& s, int& ind) {
-        string num;
-        bool minus = false;
-
-        for (int i = ind; i < s.size(); ++i) {
+        for (int i = 0; i < s.size(); ++i) {
             if (s[i] == ' ') {
                 continue;
             } else if (s[i] >= '0' && s[i] <= '9') {
-                num.push_back(s[i]);
+                num = num * 10 + (s[i] - '0');
             } else if (s[i] == '(') {
-                int b = calculateRecur(0, s, ++i);
-                sum = minus ? sum - b : sum + b;
+                sums.emplace_back(sum, sign);
+                sign = 1;
+                sum = 0;
             } else if (s[i] == ')') {
-                ind = i;
-                break;
-            } else if (s[i] == '-' || s[i] == '+') {
-                if (!num.empty()) {
-                    int b = stoi(num);
-                    sum = minus ? sum - b : sum + b;
-                    num.clear();
-                }
+                sum = sum + sign * num;
+                num = 0;
 
-                minus = s[i] == '-';
+                sum = sums.back().first + sums.back().second * sum;
+                sums.pop_back();
+            } else if (s[i] == '-' || s[i] == '+') {
+                sum += sign * num;
+                num = 0;
+
+                sign = ',' - s[i];
             }
         }
 
-        if (!num.empty()) {
-            int b = stoi(num);
-            sum = minus ? sum - b : sum + b;
-        }
+        sum += sign * num;
 
         return sum;
     }
@@ -52,7 +46,7 @@ int main() {
     INIT_TIME(timer);
 
     Solution sol;
-    sol.calculate("1-(-2)");
+    sol.calculate("1 - ((2 - 3) - (4 - 5))");
         
     PRINT_ELAPSED(timer);
     return 0;
