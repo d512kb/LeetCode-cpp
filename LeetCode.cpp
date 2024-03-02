@@ -5,52 +5,71 @@
 
 using namespace std;
 
-// Definition for singly-linked list.
- struct ListNode {
-     int val;
-     ListNode *next;
-     ListNode(int x) : val(x), next(NULL) {}
-     ListNode(int x, ListNode* next) : val(x), next(next) {}
- };
+// Definition for a Node.
+class Node {
+public:
+    int val;
+    Node* next;
+    Node* random;
+
+    Node(int _val) {
+        val = _val;
+        next = NULL;
+        random = NULL;
+    }
+};
  
- class Solution {
- public:
-     ListNode* mergeTwoLists(ListNode* list1, ListNode* list2) {
-         ListNode* r = new ListNode(0);
-         ListNode* n = r;
+class Solution {
+public:
+    Node* copyRandomList(Node* head) {
+        unordered_map<Node*, int> nodeCache;
+        unordered_map<int, Node*> newNodes;
+        Node* headNew = new Node(0);
+        Node* n = headNew;
+        int nodeIndex = 0;
 
-         while (list1 && list2) {
-             n->next = new ListNode(0);
-             n = n->next;
+        Node* h = head;
+        while (h) {
+            nodeCache[h] = nodeIndex++;
+            h = h->next;
+        }
 
-             if (list1->val <= list2->val) {
-                 n->val = list1->val;
-                 list1 = list1->next;
-             } else {
-                 n->val = list2->val;
-                 list2 = list2->next;
-             }
-         }
+        nodeIndex = 0;
 
-         auto list = list1 ? list1 : list2;
+        while (head) {
+            auto& newNode = newNodes[nodeIndex++];
+            n->next = newNode == nullptr ? new Node(head->val) : newNode;
+            n = n->next;
+            newNode = n;
 
-         while (list) {
-             n->next = new ListNode(0);
-             n = n->next;
-             n->val = list->val;
-             list = list->next;
-         }
+            if (head->random) {
+                auto& newRandom = newNodes[nodeCache[head->random]];
+                n->random = newRandom == nullptr ? new Node(head->random->val) : newRandom;
+                newRandom = n->random;
+            }
 
-         auto result = r->next;
-         delete r;
+            head = head->next;
+        }
 
-         return result;
-     }
- };
+        n = headNew->next;
+        delete headNew;
+
+        return n;
+    }
+};
 
 int main() {
     INIT_TIME(timer);
         
+    Node* n1 = new Node(1);
+    Node* n2 = new Node(2);
+    n1->next = n2;
+    n1->random = n2;
+    n2->random = n2;
+
+    Solution sol;
+    auto node = sol.copyRandomList(n1);
+
     PRINT_ELAPSED(timer);
     return 0;
 }
