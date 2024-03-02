@@ -22,39 +22,25 @@ public:
 class Solution {
 public:
     Node* copyRandomList(Node* head) {
-        unordered_map<Node*, int> nodeCache;
-        unordered_map<int, Node*> newNodes;
-        Node* headNew = new Node(0);
-        Node* n = headNew;
-        int nodeIndex = 0;
+        unordered_map<Node*, Node*> nodesMap;
 
         Node* h = head;
         while (h) {
-            nodeCache[h] = nodeIndex++;
+            nodesMap[h] = new Node(h->val);
             h = h->next;
         }
 
-        nodeIndex = 0;
+        h = head;
 
-        while (head) {
-            auto& newNode = newNodes[nodeIndex++];
-            n->next = newNode == nullptr ? new Node(head->val) : newNode;
-            n = n->next;
-            newNode = n;
+        while (h) {
+            auto& node = nodesMap[h];
+            node->next = nodesMap[h->next];
+            node->random = nodesMap[h->random];
 
-            if (head->random) {
-                auto& newRandom = newNodes[nodeCache[head->random]];
-                n->random = newRandom == nullptr ? new Node(head->random->val) : newRandom;
-                newRandom = n->random;
-            }
-
-            head = head->next;
+            h = h->next;
         }
 
-        n = headNew->next;
-        delete headNew;
-
-        return n;
+        return nodesMap[head];
     }
 };
 
