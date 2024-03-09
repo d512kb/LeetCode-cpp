@@ -5,69 +5,49 @@
 
 using namespace std;
 
-// Definition for a Node.
-class Node {
-public:
+// Definition for singly-linked list.
+struct ListNode {
     int val;
-    Node* next;
-    Node* random;
-
-    Node(int _val) {
-        val = _val;
-        next = NULL;
-        random = NULL;
-    }
+    ListNode* next;
+    ListNode(int x) : val(x), next(NULL) {}
+    ListNode(int x, ListNode* next) : val(x), next(next) {}
 };
  
 class Solution {
 public:
-    Node* copyRandomList(Node* head) {
-        if (head == nullptr)
-            return nullptr;
+    ListNode* reverseBetween(ListNode* head, int left, int right) {
+        ListNode* prev = nullptr;
+        ListNode* node = head;
+        int c = 1;
 
-        Node* h = head;
-        while (h) {
-            Node* newNode = new Node(h->val);
-            newNode->next = h->next;
-            h->next = newNode;
-            h = newNode->next;
+        while (c < left) {
+            prev = node;
+            node = node->next;
+            ++c;
         }
 
-        h = head;
-        while (h) {
-            h->next->random = h->random ? h->random->next : nullptr;
-            h = h->next->next;
+        ListNode* preLeft = prev;
+        ListNode* leftNode = node;
+
+        while (c <= right) {
+            ListNode* next = node->next;
+            node->next = prev;
+            prev = node;
+            node = next;
+            ++c;
         }
 
-        Node* newHead = new Node(0);
-        Node* nh = newHead;
+        if (left > 1)
+            preLeft->next = prev;
 
-        while (head) {
-            nh->next = head->next;
-            nh = nh->next;
-            head->next = nh->next;
+        leftNode->next = node;
 
-            head = head->next;
-        }
-
-        nh = newHead->next;
-        delete newHead;
-
-        return nh;
+        return left > 1 ? head : prev;
     }
 };
 
 int main() {
     INIT_TIME(timer);
-        
-    Node* n1 = new Node(1);
-    Node* n2 = new Node(2);
-    n1->next = n2;
-    n1->random = n2;
-    n2->random = n2;
-
-    Solution sol;
-    auto node = sol.copyRandomList(n1);
 
     PRINT_ELAPSED(timer);
     return 0;
