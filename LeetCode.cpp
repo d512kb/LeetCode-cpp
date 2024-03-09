@@ -15,34 +15,30 @@ struct ListNode {
  
 class Solution {
 public:
-    ListNode* reverseBetween(ListNode* head, int left, int right) {
-        ListNode* prev = nullptr;
-        ListNode* node = head;
-        int c = 1;
+    ListNode* removeNthFromEnd(ListNode* head, int n) {
+        ListNode* fast = head;
 
-        while (c < left) {
-            prev = node;
-            node = node->next;
-            ++c;
+        for (int i = 1; i < n; ++i) {
+            fast = fast->next;
         }
 
-        ListNode* preLeft = prev;
-        ListNode* leftNode = node;
+        ListNode* preHead = new ListNode(0, head);
+        ListNode* prev = preHead;
 
-        while (c <= right) {
-            ListNode* next = node->next;
-            node->next = prev;
-            prev = node;
-            node = next;
-            ++c;
+        while (fast->next) {
+            prev = head;
+            head = head->next;
+            fast = fast->next;
         }
 
-        if (left > 1)
-            preLeft->next = prev;
+        head = head->next;
+        delete prev->next;
+        prev->next = head;
 
-        leftNode->next = node;
+        head = preHead->next;
+        delete preHead;
 
-        return left > 1 ? head : prev;
+        return head;
     }
 };
 
