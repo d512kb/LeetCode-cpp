@@ -15,27 +15,31 @@ struct ListNode {
  
 class Solution {
 public:
-    ListNode* rotateRight(ListNode* head, int k) {
-        if (!head)
-            return nullptr;
-
-        ListNode* node = head;
-        int n = 1;
+    ListNode* partition(ListNode* head, int x) {
+        ListNode* preHead = new ListNode(0, head);
+        ListNode* insertAfter = preHead;
+        ListNode* node = preHead;
 
         while (node->next) {
-            node = node->next;
-            ++n;
+            if (node->next->val < x) {
+                auto nodeToMove = node->next;
+
+                if (nodeToMove != insertAfter->next) {
+                    node->next = nodeToMove->next;
+                    nodeToMove->next = insertAfter->next;
+                    insertAfter->next = nodeToMove;
+                } else {
+                    node = node->next;
+                }
+
+                insertAfter = nodeToMove;
+            } else {
+                node = node->next;
+            }
         }
 
-        int s = n - k % n;
-        node->next = head;
-
-        for (; s > 0; --s) {
-            node = node->next;
-        }
-
-        head = node->next;
-        node->next = nullptr;
+        head = preHead->next;
+        delete preHead;
 
         return head;
     }
