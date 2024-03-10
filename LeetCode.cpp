@@ -13,36 +13,50 @@ struct ListNode {
     ListNode(int x, ListNode* next) : val(x), next(next) {}
 };
  
-class Solution {
+class LRUCache {
 public:
-    ListNode* partition(ListNode* head, int x) {
-        ListNode* preHead = new ListNode(0, head);
-        ListNode* insertAfter = preHead;
-        ListNode* node = preHead;
+    LRUCache(int capacity) : m_capacity(capacity) {
 
-        while (node->next) {
-            if (node->next->val < x) {
-                auto nodeToMove = node->next;
+    }
 
-                if (nodeToMove != insertAfter->next) {
-                    node->next = nodeToMove->next;
-                    nodeToMove->next = insertAfter->next;
-                    insertAfter->next = nodeToMove;
-                } else {
-                    node = node->next;
-                }
+    int get(int key) {
+        auto iter = m_data.find(key);
 
-                insertAfter = nodeToMove;
-            } else {
-                node = node->next;
-            }
+        if (iter != m_data.end()) {
+            iter->second.second = updateCache(iter->second.second);
+            return iter->second.first;
         }
 
-        head = preHead->next;
-        delete preHead;
-
-        return head;
+        return -1;
     }
+
+    void put(int key, int value) {
+        auto iter = m_data.find(key);
+
+        if (iter != m_data.end()) {
+            iter->second.first = value;
+            iter->second.second = updateCache(iter->second.second);
+        } else {
+            if (m_data.size() == m_capacity) {
+                m_data.erase(m_cache.back());
+                m_cache.pop_back();
+            }
+
+            m_cache.push_front(key);
+            m_data.insert({ key, {value, m_cache.begin()} });
+        }
+    }
+
+private:
+    list<int>::iterator updateCache(const list<int>::iterator& iter) {
+        m_cache.splice(m_cache.begin(), m_cache, iter);
+
+        return m_cache.begin();
+    }
+private:
+    unordered_map<int, pair<int, list<int>::iterator>> m_data;
+    list<int> m_cache;
+    int m_capacity;
 };
 
 int main() {
