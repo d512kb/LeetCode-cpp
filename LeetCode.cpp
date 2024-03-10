@@ -15,30 +15,27 @@ struct ListNode {
  
 class Solution {
 public:
-    ListNode* deleteDuplicates(ListNode* head) {
-        ListNode* preHead = new ListNode(0, head);
-        ListNode* prev = preHead;
+    ListNode* rotateRight(ListNode* head, int k) {
+        if (!head)
+            return nullptr;
 
-        while (head && head->next) {
-            if (head->val == head->next->val) {
-                int val = head->val;
+        ListNode* node = head;
+        int n = 1;
 
-                while (head && head->val == val) {
-                    auto next = head->next;
-                    delete head;
-                    head = next;
-                }
-
-                prev->next = head;
-                continue;
-            }
-
-            prev = head;
-            head = head->next;
+        while (node->next) {
+            node = node->next;
+            ++n;
         }
 
-        head = preHead->next;
-        delete preHead;
+        int s = n - k % n;
+        node->next = head;
+
+        for (; s > 0; --s) {
+            node = node->next;
+        }
+
+        head = node->next;
+        node->next = nullptr;
 
         return head;
     }
