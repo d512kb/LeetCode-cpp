@@ -18,15 +18,17 @@ struct TreeNode {
  
 class Solution {
 public:
-    TreeNode* invertTree(TreeNode* root) {
-        if (root) {
-            swap(root->left, root->right);
+    bool isSymmetric(TreeNode* root) {
+        return isSymmetricRecur(root->left, root->right);
+    }
+private:
+    bool isSymmetricRecur(TreeNode* nodeLeft, TreeNode* nodeRight) {
+        if (!nodeLeft || !nodeRight)
+            return nodeLeft == nodeRight;
 
-            invertTree(root->left);
-            invertTree(root->right);
-        }
-
-        return root;
+        return nodeLeft->val == nodeRight->val
+            && isSymmetricRecur(nodeLeft->left, nodeRight->right)
+            && isSymmetricRecur(nodeLeft->right, nodeRight->left);
     }
 };
 
