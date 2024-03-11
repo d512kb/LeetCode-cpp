@@ -17,28 +17,29 @@ struct TreeNode {
  
 class Solution {
 public:
-    TreeNode* buildTree(vector<int>& preorder, vector<int>& inorder) {
+    TreeNode* buildTree(vector<int>& inorder, vector<int>& postorder) {
         unordered_map<int, int> indexes;
 
         for (int i = 0; i < inorder.size(); ++i) {
             indexes[inorder[i]] = i;
         }
 
-        auto iter = preorder.begin();
-        return buildTreeHelper(iter, indexes, 0, inorder.size());
+        auto iter = postorder.rbegin();
+        return buildTreeHelper(iter, indexes, 0, indexes.size());
     }
 private:
-    TreeNode* buildTreeHelper(vector<int>::iterator& pIter, const unordered_map<int, int>& indexes, int from, int to) {
-        if (from == to)
+    TreeNode* buildTreeHelper(vector<int>::reverse_iterator& pIter, const unordered_map<int, int>& indexes, int from, int to) {
+        if (from == to) {
             return nullptr;
+        }
 
         int itemIndex = indexes.at(*pIter);
-        TreeNode* parent = new TreeNode(*pIter++);
+        TreeNode* node = new TreeNode(*pIter++);
 
-        parent->left = buildTreeHelper(pIter, indexes, from, itemIndex);
-        parent->right = buildTreeHelper(pIter, indexes, ++itemIndex, to);
+        node->right = buildTreeHelper(pIter, indexes, itemIndex + 1, to);
+        node->left = buildTreeHelper(pIter, indexes, from, itemIndex);
 
-        return parent;
+        return node;
     }
 };
 
