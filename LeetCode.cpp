@@ -5,74 +5,41 @@
 
 using namespace std;
 
-// Definition for singly-linked list.
-struct ListNode {
+//Definition for a binary tree node.
+
+struct TreeNode {
     int val;
-    ListNode* next;
-    ListNode(int x) : val(x), next(NULL) {}
-    ListNode(int x, ListNode* next) : val(x), next(next) {}
+    TreeNode *left;
+    TreeNode *right;
+    TreeNode() : val(0), left(nullptr), right(nullptr) {}
+    TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}
+    TreeNode(int x, TreeNode *left, TreeNode *right) : val(x), left(left), right(right) {}
 };
  
 class Solution {
 public:
-    ListNode* reverseKGroup(ListNode* head, int k) {
-        ListNode* node = head;
-        ListNode* prev = nullptr;
-        ListNode* next = nullptr;
-        ListNode* preHead = new ListNode(0, head);
-        ListNode* kHead = preHead;
-        ListNode* kHeadPrev = nullptr;
-        int i = 0;
+    int maxDepth(TreeNode* root) {
+        int maxDepth = 0;
 
-        while (node) {
-            ListNode* kTail = node;
+        maxDepthRecur(root, 0, maxDepth);
 
-            for (i = 0; node && i < k; ++i) {
-                next = node->next;
-                node->next = prev;
-                prev = node;
-                node = next;
-            }
+        return maxDepth;
+    }
 
-            kHead->next = prev;
-            kHeadPrev = kHead;
-            kHead = kTail;
+private:
+    void maxDepthRecur(TreeNode* root, int depth, int& maxDepth) {
+        if (!root) {
+            maxDepth = max(maxDepth, depth);
+            return;
         }
 
-        if (i == k) {
-            kHead->next = nullptr;
-        } else {
-            prev = nullptr;
-            node = kHeadPrev->next;
-
-            while (--i >= 0) {
-                next = node->next;
-                node->next = prev;
-                prev = node;
-                node = next;
-            }
-
-            kHeadPrev->next = prev;
-        }
-
-        head = preHead->next;
-        delete preHead;
-
-        return head;
+        maxDepthRecur(root->left, depth + 1, maxDepth);
+        maxDepthRecur(root->right, depth + 1, maxDepth);
     }
 };
 
 int main() {
     INIT_TIME(timer);
-
-    Solution sol;
-
-    vector<ListNode> ln{ ListNode(1), ListNode(2), ListNode(3), ListNode(4) };
-    ln[0].next = &ln[1];
-    ln[1].next = &ln[2];
-    ln[2].next = &ln[3];
-
-    auto head = sol.reverseKGroup(&ln[0], 2);
 
     PRINT_ELAPSED(timer);
     return 0;
