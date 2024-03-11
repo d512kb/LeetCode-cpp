@@ -6,7 +6,6 @@
 using namespace std;
 
 //Definition for a binary tree node.
-
 struct TreeNode {
     int val;
     TreeNode *left;
@@ -18,17 +17,28 @@ struct TreeNode {
  
 class Solution {
 public:
-    bool isSymmetric(TreeNode* root) {
-        return isSymmetricRecur(root->left, root->right);
+    TreeNode* buildTree(vector<int>& preorder, vector<int>& inorder) {
+        unordered_map<int, int> indexes;
+
+        for (int i = 0; i < inorder.size(); ++i) {
+            indexes[inorder[i]] = i;
+        }
+
+        auto iter = preorder.begin();
+        return buildTreeHelper(iter, indexes, 0, inorder.size());
     }
 private:
-    bool isSymmetricRecur(TreeNode* nodeLeft, TreeNode* nodeRight) {
-        if (!nodeLeft || !nodeRight)
-            return nodeLeft == nodeRight;
+    TreeNode* buildTreeHelper(vector<int>::iterator& pIter, const unordered_map<int, int>& indexes, int from, int to) {
+        if (from == to)
+            return nullptr;
 
-        return nodeLeft->val == nodeRight->val
-            && isSymmetricRecur(nodeLeft->left, nodeRight->right)
-            && isSymmetricRecur(nodeLeft->right, nodeRight->left);
+        int itemIndex = indexes.at(*pIter);
+        TreeNode* parent = new TreeNode(*pIter++);
+
+        parent->left = buildTreeHelper(pIter, indexes, from, itemIndex);
+        parent->right = buildTreeHelper(pIter, indexes, ++itemIndex, to);
+
+        return parent;
     }
 };
 
