@@ -18,14 +18,15 @@ struct TreeNode {
  
 class Solution {
 public:
-    bool isSameTree(TreeNode* p, TreeNode* q) {
-        if (p == q)
-            return true;
+    TreeNode* invertTree(TreeNode* root) {
+        if (root) {
+            swap(root->left, root->right);
 
-        if (p == nullptr || q == nullptr)
-            return false;
+            invertTree(root->left);
+            invertTree(root->right);
+        }
 
-        return p->val == q->val && isSameTree(p->left, q->left) && isSameTree(p->right, q->right);
+        return root;
     }
 };
 
