@@ -18,23 +18,14 @@ struct TreeNode {
  
 class Solution {
 public:
-    int maxDepth(TreeNode* root) {
-        int maxDepth = 0;
+    bool isSameTree(TreeNode* p, TreeNode* q) {
+        if (p == q)
+            return true;
 
-        maxDepthRecur(root, 0, maxDepth);
+        if (p == nullptr || q == nullptr)
+            return false;
 
-        return maxDepth;
-    }
-
-private:
-    void maxDepthRecur(TreeNode* root, int depth, int& maxDepth) {
-        if (!root) {
-            maxDepth = max(maxDepth, depth);
-            return;
-        }
-
-        maxDepthRecur(root->left, depth + 1, maxDepth);
-        maxDepthRecur(root->right, depth + 1, maxDepth);
+        return p->val == q->val && isSameTree(p->left, q->left) && isSameTree(p->right, q->right);
     }
 };
 
