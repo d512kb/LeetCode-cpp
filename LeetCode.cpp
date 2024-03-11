@@ -13,54 +13,66 @@ struct ListNode {
     ListNode(int x, ListNode* next) : val(x), next(next) {}
 };
  
-class LRUCache {
+class Solution {
 public:
-    LRUCache(int capacity) : m_capacity(capacity) {
+    ListNode* reverseKGroup(ListNode* head, int k) {
+        ListNode* node = head;
+        ListNode* prev = nullptr;
+        ListNode* next = nullptr;
+        ListNode* preHead = new ListNode(0, head);
+        ListNode* kHead = preHead;
+        ListNode* kHeadPrev = nullptr;
+        int i = 0;
 
-    }
+        while (node) {
+            ListNode* kTail = node;
 
-    int get(int key) {
-        auto iter = m_data.find(key);
-
-        if (iter != m_data.end()) {
-            iter->second.second = updateCache(iter->second.second);
-            return iter->second.first;
-        }
-
-        return -1;
-    }
-
-    void put(int key, int value) {
-        auto iter = m_data.find(key);
-
-        if (iter != m_data.end()) {
-            iter->second.first = value;
-            iter->second.second = updateCache(iter->second.second);
-        } else {
-            if (m_data.size() == m_capacity) {
-                m_data.erase(m_cache.back());
-                m_cache.pop_back();
+            for (i = 0; node && i < k; ++i) {
+                next = node->next;
+                node->next = prev;
+                prev = node;
+                node = next;
             }
 
-            m_cache.push_front(key);
-            m_data.insert({ key, {value, m_cache.begin()} });
+            kHead->next = prev;
+            kHeadPrev = kHead;
+            kHead = kTail;
         }
-    }
 
-private:
-    list<int>::iterator updateCache(const list<int>::iterator& iter) {
-        m_cache.splice(m_cache.begin(), m_cache, iter);
+        if (i == k) {
+            kHead->next = nullptr;
+        } else {
+            prev = nullptr;
+            node = kHeadPrev->next;
 
-        return m_cache.begin();
+            while (--i >= 0) {
+                next = node->next;
+                node->next = prev;
+                prev = node;
+                node = next;
+            }
+
+            kHeadPrev->next = prev;
+        }
+
+        head = preHead->next;
+        delete preHead;
+
+        return head;
     }
-private:
-    unordered_map<int, pair<int, list<int>::iterator>> m_data;
-    list<int> m_cache;
-    int m_capacity;
 };
 
 int main() {
     INIT_TIME(timer);
+
+    Solution sol;
+
+    vector<ListNode> ln{ ListNode(1), ListNode(2), ListNode(3), ListNode(4) };
+    ln[0].next = &ln[1];
+    ln[1].next = &ln[2];
+    ln[2].next = &ln[3];
+
+    auto head = sol.reverseKGroup(&ln[0], 2);
 
     PRINT_ELAPSED(timer);
     return 0;
