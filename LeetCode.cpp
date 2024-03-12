@@ -5,41 +5,49 @@
 
 using namespace std;
 
-//Definition for a binary tree node.
-struct TreeNode {
+class Node {
+public:
     int val;
-    TreeNode *left;
-    TreeNode *right;
-    TreeNode() : val(0), left(nullptr), right(nullptr) {}
-    TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}
-    TreeNode(int x, TreeNode *left, TreeNode *right) : val(x), left(left), right(right) {}
+    Node* left;
+    Node* right;
+    Node* next;
+
+    Node() : val(0), left(NULL), right(NULL), next(NULL) {}
+
+    Node(int _val) : val(_val), left(NULL), right(NULL), next(NULL) {}
+
+    Node(int _val, Node* _left, Node* _right, Node* _next)
+        : val(_val), left(_left), right(_right), next(_next) {}
 };
  
 class Solution {
 public:
-    TreeNode* buildTree(vector<int>& inorder, vector<int>& postorder) {
-        unordered_map<int, int> indexes;
+    Node* connect(Node* root) {
+        Node* preHead = new Node();
+        Node* prev = preHead;
+        Node* node = root;
 
-        for (int i = 0; i < inorder.size(); ++i) {
-            indexes[inorder[i]] = i;
+        while (node) {
+            if (node->left) {
+                prev->next = node->left;
+                prev = node->left;
+            }
+            if (node->right) {
+                prev->next = node->right;
+                prev = node->right;
+            }
+            node = node->next;
+
+            if (!node) {
+                node = preHead->next;
+                preHead->next = nullptr;
+                prev = preHead;
+            }
         }
 
-        auto iter = postorder.rbegin();
-        return buildTreeHelper(iter, indexes, 0, indexes.size());
-    }
-private:
-    TreeNode* buildTreeHelper(vector<int>::reverse_iterator& pIter, const unordered_map<int, int>& indexes, int from, int to) {
-        if (from == to) {
-            return nullptr;
-        }
+        delete preHead;
 
-        int itemIndex = indexes.at(*pIter);
-        TreeNode* node = new TreeNode(*pIter++);
-
-        node->right = buildTreeHelper(pIter, indexes, itemIndex + 1, to);
-        node->left = buildTreeHelper(pIter, indexes, from, itemIndex);
-
-        return node;
+        return root;
     }
 };
 
