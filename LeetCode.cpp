@@ -17,15 +17,28 @@ struct TreeNode {
  
 class Solution {
 public:
-    bool hasPathSum(TreeNode* root, int targetSum) {
-        if (root == nullptr)
-            return false;
+    int sumNumbers(TreeNode* root) {
+        sumNumbersHelper(root, 0);
 
-        if (root->left == nullptr && root->right == nullptr)
-            return targetSum == root->val;
-
-        return hasPathSum(root->left, targetSum - root->val) || hasPathSum(root->right, targetSum - root->val);
+        return m_sum;
     }
+private:
+    void sumNumbersHelper(TreeNode* node, int number) {
+        if (!node)
+            return;
+
+        number = number * 10 + node->val;
+
+        if (node->left == nullptr && node->right == nullptr) {
+            m_sum += number;
+            return;
+        }
+
+        sumNumbersHelper(node->left, number);
+        sumNumbersHelper(node->right, number);
+    }
+
+    int m_sum{ 0 };
 };
 
 int main() {
