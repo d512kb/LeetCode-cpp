@@ -15,28 +15,33 @@ struct TreeNode {
     TreeNode(int x, TreeNode* left, TreeNode* right) : val(x), left(left), right(right) {}
 };
  
-class Solution {
+class BSTIterator {
 public:
-    int maxPathSum(TreeNode* root) {
-        calcTree(root);
-        return m_maxSum;
+    BSTIterator(TreeNode* root) {
+        if (root)
+            saveTree(root);
     }
 
+    int next() {
+        TreeNode* node = m_backTrack.back();
+        m_backTrack.pop_back();
+        if (node->right)
+            saveTree(node->right);
+        return node->val;
+    }
+
+    bool hasNext() {
+        return !m_backTrack.empty();
+    }
 private:
-    int calcTree(TreeNode* node) {
-        if (!node)
-            return 0;
-
-        int leftSum = calcTree(node->left);
-        int rightSum = calcTree(node->right);
-        int maxSum = leftSum > rightSum ? leftSum : rightSum;
-        int sum = node->val + leftSum + rightSum;
-
-        m_maxSum = sum > m_maxSum ? sum : m_maxSum;
-
-        return node->val + maxSum > 0 ? node->val + maxSum : 0;
+    void saveTree(TreeNode* node) {
+        while (node) {
+            m_backTrack.push_back(node);
+            node = node->left;
+        }
     }
-    int m_maxSum{ numeric_limits<int>::min() };
+
+    vector<TreeNode*> m_backTrack;
 };
 
 int main() {
