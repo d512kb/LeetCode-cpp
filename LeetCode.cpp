@@ -17,28 +17,26 @@ struct TreeNode {
  
 class Solution {
 public:
-    int sumNumbers(TreeNode* root) {
-        sumNumbersHelper(root, 0);
-
-        return m_sum;
+    int maxPathSum(TreeNode* root) {
+        calcTree(root);
+        return m_maxSum;
     }
+
 private:
-    void sumNumbersHelper(TreeNode* node, int number) {
+    int calcTree(TreeNode* node) {
         if (!node)
-            return;
+            return 0;
 
-        number = number * 10 + node->val;
+        int leftSum = calcTree(node->left);
+        int rightSum = calcTree(node->right);
+        int maxSum = leftSum > rightSum ? leftSum : rightSum;
+        int sum = node->val + leftSum + rightSum;
 
-        if (node->left == nullptr && node->right == nullptr) {
-            m_sum += number;
-            return;
-        }
+        m_maxSum = sum > m_maxSum ? sum : m_maxSum;
 
-        sumNumbersHelper(node->left, number);
-        sumNumbersHelper(node->right, number);
+        return node->val + maxSum > 0 ? node->val + maxSum : 0;
     }
-
-    int m_sum{ 0 };
+    int m_maxSum{ numeric_limits<int>::min() };
 };
 
 int main() {
