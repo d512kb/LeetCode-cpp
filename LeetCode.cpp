@@ -17,23 +17,27 @@ struct TreeNode {
  
 class Solution {
 public:
-    vector<int> rightSideView(TreeNode* root) {
-        vector<int> result;
+    vector<double> averageOfLevels(TreeNode* root) {
+        vector<double> result;
+        deque<TreeNode*> q;
+        q.push_back(root);
 
-        rightSideViewHelper(root, 1, result);
+        while (!q.empty()) {
+            int s = q.size();
+            double sum = 0;
+
+            for (int i = 0; i < s; ++i) {
+                TreeNode* node = q.front();
+                sum += node->val;
+                q.pop_front();
+                if (node->left) q.push_back(node->left);
+                if (node->right) q.push_back(node->right);
+            }
+
+            result.push_back(sum / s);
+        }
 
         return result;
-    }
-private:
-    void rightSideViewHelper(TreeNode* node, int h, vector<int>& nodes) {
-        if (!node)
-            return;
-
-        if (h > nodes.size())
-            nodes.push_back(node->val);
-
-        rightSideViewHelper(node->right, h + 1, nodes);
-        rightSideViewHelper(node->left, h + 1, nodes);
     }
 };
 
