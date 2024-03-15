@@ -17,23 +17,24 @@ struct TreeNode {
  
 class Solution {
 public:
-    int getMinimumDifference(TreeNode* root) {
-        int result = numeric_limits<int>::max();
-        int prevVal = numeric_limits<int>::max();
-        helper(root, prevVal, result);
-        return result;
+    int kthSmallest(TreeNode* root, int k) {
+        vector<int> items;
+        helper(root, k, items);
+        return items.back();
     }
 private:
-    void helper(TreeNode* node, int& prevVal, int& minVal) {
+    bool helper(TreeNode* node, int k, vector<int>& items) {
         if (!node)
-            return;
+            return false;
 
-        helper(node->left, prevVal, minVal);
+        if (helper(node->left, k, items))
+            return true;
 
-        minVal = min(minVal, abs(node->val - prevVal));
-        prevVal = node->val;
+        items.push_back(node->val);
+        if (items.size() == k)
+            return true;
 
-        helper(node->right, prevVal, minVal);
+        return helper(node->right, k, items);
     }
 };
 
