@@ -17,24 +17,24 @@ struct TreeNode {
  
 class Solution {
 public:
-    int kthSmallest(TreeNode* root, int k) {
-        vector<int> items;
-        helper(root, k, items);
-        return items.back();
+    bool isValidBST(TreeNode* root) {
+        int64_t p = numeric_limits<int64_t>::min();
+        return helper(root, p);
     }
+
 private:
-    bool helper(TreeNode* node, int k, vector<int>& items) {
+    bool helper(TreeNode* node, int64_t& prevVal) {
         if (!node)
+            return true;
+
+        bool left = helper(node->left, prevVal);
+
+        if (node->val <= prevVal)
             return false;
 
-        if (helper(node->left, k, items))
-            return true;
+        prevVal = node->val;
 
-        items.push_back(node->val);
-        if (items.size() == k)
-            return true;
-
-        return helper(node->right, k, items);
+        return left && helper(node->right, prevVal);
     }
 };
 
