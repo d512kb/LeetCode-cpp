@@ -5,36 +5,51 @@
 
 using namespace std;
 
-//Definition for a binary tree node.
-struct TreeNode {
-    int val;
-    TreeNode* left;
-    TreeNode* right;
-    TreeNode() : val(0), left(nullptr), right(nullptr) {}
-    TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}
-    TreeNode(int x, TreeNode* left, TreeNode* right) : val(x), left(left), right(right) {}
-};
- 
 class Solution {
 public:
-    bool isValidBST(TreeNode* root) {
-        int64_t p = numeric_limits<int64_t>::min();
-        return helper(root, p);
-    }
+    int numIslands(vector<vector<char>>& grid) {
+        int rows = grid.size();
+        int cols = grid.front().size();
+        int islands = 0;
 
-private:
-    bool helper(TreeNode* node, int64_t& prevVal) {
-        if (!node)
-            return true;
+        for (int i = 0; i < rows; ++i) {
+            for (int j = 0; j < cols; ++j) {
+                if (grid[i][j] == '1') {
+                    deque<pair<int, int>> cells;
+                    cells.emplace_back(i, j);
+                    grid[i][j] = '0';
+                    ++islands;
 
-        bool left = helper(node->left, prevVal);
+                    while (!cells.empty()) {
+                        int c = cells.size();
 
-        if (node->val <= prevVal)
-            return false;
+                        for (; c > 0; --c) {
+                            auto [i, j] = cells.front();
+                            cells.pop_front();
 
-        prevVal = node->val;
+                            if (i - 1 >= 0 && grid[i - 1][j] == '1') {
+                                cells.emplace_back(i - 1, j);
+                                grid[i - 1][j] = '0';
+                            }
+                            if (i + 1 < rows && grid[i + 1][j] == '1') {
+                                cells.emplace_back(i + 1, j);
+                                grid[i + 1][j] = '0';
+                            }
+                            if (j - 1 >= 0 && grid[i][j - 1] == '1') {
+                                cells.emplace_back(i, j - 1);
+                                grid[i][j - 1] = '0';
+                            }
+                            if (j + 1 < cols && grid[i][j + 1] == '1') {
+                                cells.emplace_back(i, j + 1);
+                                grid[i][j + 1] = '0';
+                            }
+                        }
+                    }
+                }
+            }
+        }
 
-        return left && helper(node->right, prevVal);
+        return islands;
     }
 };
 
