@@ -5,73 +5,63 @@
 
 using namespace std;
 
-// Definition for a Node.
-class Node {
-public:
-    int val;
-    vector<Node*> neighbors;
-    Node() {
-        val = 0;
-        neighbors = vector<Node*>();
-    }
-    Node(int _val) {
-        val = _val;
-        neighbors = vector<Node*>();
-    }
-    Node(int _val, vector<Node*> _neighbors) {
-        val = _val;
-        neighbors = _neighbors;
-    }
-};
-
 class Solution {
+    using Graph = unordered_map<string, unordered_map<string, double>>;
 public:
-    Node* cloneGraph(Node* node) {
-        if (!node)
-            return nullptr;
+    vector<double> calcEquation(vector<vector<string>>& equations, vector<double>& values, vector<vector<string>>& queries) {
+        Graph graph;
 
-        unordered_map<Node*, Node*> mapping;
-        Node* result = new Node(node->val);
-        mapping.emplace(node, result);
+        for (int i = 0; i < equations.size(); ++i) {
+            graph[equations[i][0]].emplace(equations[i][0], 1);
+            graph[equations[i][1]].emplace(equations[i][1], 1);
+            graph[equations[i][0]].emplace(equations[i][1], values[i]);
+            graph[equations[i][1]].emplace(equations[i][0], 1 / values[i]);
+        }
 
-        deque<Node*> q;
-        q.push_back(node);
+        vector<double> result;
 
-        while (!q.empty()) {
-            int s = q.size();
+        for (const auto& query : queries) {
+            unordered_set<string> visited;
+            double path = findPath(graph, visited, query[0], query[1]);
 
-            for (; s > 0; --s) {
-                node = q.front();
-                q.pop_front();
-
-                for (Node* n : node->neighbors) {
-                    auto iter = mapping.find(n);
-
-                    if (iter == mapping.end()) {
-                        iter = mapping.emplace(n, new Node(n->val)).first;
-                        q.push_back(n);
-                    }
-
-                    mapping[node]->neighbors.push_back(iter->second);
-                }
-            }
+            result.push_back(path > 0 ? path : -1);
         }
 
         return result;
+    }
+private:
+    double findPath(const Graph& graph, unordered_set<string>& visited, string a, string b) {
+        auto iter = graph.find(a);
+
+        if (iter == graph.end())
+            return 0;
+
+        visited.insert(a);
+
+        if (a == b)
+            return 1;
+
+        double val = 0;
+
+        for (const auto& neighbor : iter->second) {
+            if (!visited.contains(neighbor.first)) {
+                val += neighbor.second * findPath(graph, visited, neighbor.first, b);
+            }
+        }
+
+        return val;
     }
 };
 
 int main() {
     INIT_TIME(timer);
 
-    Node nodes[]{ 0,1,2,3,4 };
-    nodes[1].neighbors.assign({ &nodes[2], &nodes[4] });
-    nodes[2].neighbors.assign({ &nodes[1], &nodes[3] });
-    nodes[3].neighbors.assign({ &nodes[2], &nodes[4] });
-    nodes[4].neighbors.assign({ &nodes[1], &nodes[3] });
+    vector<vector<string>> equations{ {"a", "b"}, {"b", "c"}, {"a", "c"}};
+    vector<double> values{ 2, 3, 6 };
+    vector<vector<string>> queries{ {"a", "c"}, { "b", "a" }, {"a", "e"}, {"a", "a"}, {"x","x"} };
 
     Solution sol;
-    auto cl = sol.cloneGraph(&nodes[1]);
+    auto result = sol.calcEquation(equations, values, queries);
 
     PRINT_ELAPSED(timer);
     return 0;
