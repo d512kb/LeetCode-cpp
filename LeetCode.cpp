@@ -7,37 +7,40 @@ using namespace std;
 
 class Solution {
 public:
-    bool canFinish(int numCourses, vector<vector<int>>& prerequisites) {
-        unordered_map<int, unordered_set<int>> dependents;
+    vector<int> findOrder(int numCourses, vector<vector<int>>& prerequisites) {
+        unordered_map<int, vector<int>> dependents;
         vector<int> depsCount(numCourses, 0);
 
-        for (const auto& pre : prerequisites) {
-            dependents[pre[1]].insert(pre[0]);
-            ++depsCount[pre[0]];
+        for (const auto& p : prerequisites) {
+            dependents[p[1]].push_back(p[0]);
+            ++depsCount[p[0]];
         }
 
-        deque<int> q;
+        queue<int> q;
+        vector<int> result;
 
         for (int i = 0; i < depsCount.size(); ++i) {
-            if (depsCount[i] == 0) {
-                q.push_back(i);
-            }
+            if (depsCount[i] == 0)
+                q.push(i);
         }
 
         while (!q.empty()) {
             int i = q.front();
+            result.push_back(i);
 
-            for (int dep : dependents[i]) {
+            for (const auto& dep : dependents[i]) {
                 if (--depsCount[dep] == 0) {
-                    q.push_back(dep);
+                    q.push(dep);
                 }
             }
 
-            dependents.erase(i);
-            q.pop_front();
+            q.pop();
         }
 
-        return dependents.empty();
+        if (result.size() != numCourses)
+            result.clear();
+
+        return result;
     }
 };
 
