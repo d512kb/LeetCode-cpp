@@ -7,67 +7,67 @@ using namespace std;
 
 class Solution {
 public:
-    int snakesAndLadders(vector<vector<int>>& board) {
-        int n = board.size();
-        int n2 = n * n;
+    int minMutation(string startGene, string endGene, vector<string>& bank) {
+        vector<vector<string>> path(bank.size() + 1);
+        list<string> genes(bank.begin(), bank.end());
 
-        vector<int> linear(n2 + 1);
-
-        int i = 1;
-        for (int line = n - 1; line > 0; line -= 2) {
-            for (int item : board[line]) {
-                linear[i++] = item;
-            }
-
-            auto a = board[line - 1].rbegin();
-            auto b = board[line - 1].rend();
-            for (a; a < b; ++a) {
-                linear[i++] = *a;
-            }
+        auto startIter = find(genes.begin(), genes.end(), startGene);
+        if (startIter == genes.end()) {
+            genes.push_front(startGene);
+            startIter = genes.begin();
         }
 
-        if (n % 2) {
-            for (int item : board[0]) {
-                linear[i++] = item;
-            }
+        auto iter = find(genes.begin(), genes.end(), endGene);
+        if (iter != genes.end()) {
+            if (startIter == iter)
+                return 0;
+        } else {
+            return -1;
         }
 
-        queue<int> q;
-        q.push(1);
-        linear[1] = 0;
-        int stepCount = 0;
+        path[0].push_back(move(*iter));
+        genes.erase(iter);
+        int index = 1;
 
-        while (!q.empty()) {
-            int s = q.size();
-            ++stepCount;
+        while (!genes.empty()) {
+            for (const string& prevGene : path[index - 1]) {
+                auto it = genes.begin();
 
-            for (; s > 0; --s) {
-                int a = q.front();
-                q.pop();
-
-                for (int next = 1; next <= 6; ++next) {
-                    if (a + next == n2 || linear[a + next] == n2)
-                        return stepCount;
-
-                    if (linear[a + next])
-                        q.push(linear[a + next] == -1 ? a + next : linear[a + next]);
-
-                    linear[a + next] = 0;
+                while (it != genes.end()) {
+                    if (calcDiff(prevGene, *it) == 1) {
+                        if (startIter == it) { return index; }
+                        path[index].push_back(move(*it));
+                        it = genes.erase(it);
+                    } else {
+                        ++it;
+                    }
                 }
             }
+
+            if (path[index++].empty())
+                break;
         }
 
         return -1;
+    }
+private:
+    int calcDiff(const string& gene1, const string& gene2) {
+        int diff = 0;
+        for (int i = 0; i < 8; ++i) {
+            if (gene1[i] != gene2[i])
+                ++diff;
+        }
+        return diff;
     }
 };
 
 int main() {
     INIT_TIME(timer);
 
-    vector<vector<int>> v {{-1, -1, -1, -1, -1, -1}, {-1, -1, -1, -1, -1, -1}, {-1, -1, -1, -1, -1, -1}, {-1, 35, -1, -1, 13, -1}, {-1, -1, -1, -1, -1, -1}, {-1, 15, -1, -1, -1, -1}};
+    vector<string> bank{ "AACCGATT","AACCGATA","AAACGATA","AAACGGTA" };
 
     Solution sol;
-    int i = sol.snakesAndLadders(v);
+    int i = sol.minMutation("AACCGGTT", "AAACGGTA", bank);
 
     PRINT_ELAPSED(timer);
     return 0;
