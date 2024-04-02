@@ -7,67 +7,53 @@ using namespace std;
 
 class Solution {
 public:
-    int minMutation(string startGene, string endGene, vector<string>& bank) {
-        vector<vector<string>> path(bank.size() + 1);
-        list<string> genes(bank.begin(), bank.end());
+    int ladderLength(string beginWord, string endWord, vector<string>& wordList) {
+        unordered_set<string> words(wordList.begin(), wordList.end());
 
-        auto startIter = find(genes.begin(), genes.end(), startGene);
-        if (startIter == genes.end()) {
-            genes.push_front(startGene);
-            startIter = genes.begin();
-        }
+        auto endIter = words.find(endWord);
+        if (endIter == words.end())
+            return 0;
 
-        auto iter = find(genes.begin(), genes.end(), endGene);
-        if (iter != genes.end()) {
-            if (startIter == iter)
-                return 0;
-        } else {
-            return -1;
-        }
+        queue<string> q;
+        q.push(beginWord);
+        int wordCount{ 1 };
 
-        path[0].push_back(move(*iter));
-        genes.erase(iter);
-        int index = 1;
+        while (!q.empty()) {
+            ++wordCount;
+            int i = q.size();
 
-        while (!genes.empty()) {
-            for (const string& prevGene : path[index - 1]) {
-                auto it = genes.begin();
+            for (; i > 0; --i) {
+                string word(move(q.front()));
+                int wordSize = word.size();
+                q.pop();
 
-                while (it != genes.end()) {
-                    if (calcDiff(prevGene, *it) == 1) {
-                        if (startIter == it) { return index; }
-                        path[index].push_back(move(*it));
-                        it = genes.erase(it);
-                    } else {
-                        ++it;
+                for (int w = 0; w < wordSize; ++w) {
+                    char prevC = word[w];
+
+                    for (int c = 'a'; c <= 'z'; ++c) {
+                        word[w] = c;
+
+                        auto iter = words.find(word);
+                        if (iter != words.end()) {
+                            if (iter == endIter)
+                                return wordCount;
+
+                            q.push(words.extract(iter).value());
+                            words.erase(iter);
+                        }
                     }
+
+                    word[w] = prevC;
                 }
             }
-
-            if (path[index++].empty())
-                break;
         }
 
-        return -1;
-    }
-private:
-    int calcDiff(const string& gene1, const string& gene2) {
-        int diff = 0;
-        for (int i = 0; i < 8; ++i) {
-            if (gene1[i] != gene2[i])
-                ++diff;
-        }
-        return diff;
+        return 0;
     }
 };
 
 int main() {
     INIT_TIME(timer);
-
-    vector<string> bank{ "AACCGATT","AACCGATA","AAACGATA","AAACGGTA" };
-
-    Solution sol;
-    int i = sol.minMutation("AACCGGTT", "AAACGGTA", bank);
 
     PRINT_ELAPSED(timer);
     return 0;
