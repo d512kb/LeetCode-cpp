@@ -5,52 +5,62 @@
 
 using namespace std;
 
-class Solution {
+class Trie {
+    struct Node {
+        Node() : c(0), word(false), nodes{ nullptr } {}
+        Node(char c) : c(c), word(false), nodes{ nullptr } {}
+
+        char c;
+        bool word;
+        Node* nodes[26];
+    };
 public:
-    int ladderLength(string beginWord, string endWord, vector<string>& wordList) {
-        unordered_set<string> words(wordList.begin(), wordList.end());
+    Trie() {
 
-        auto endIter = words.find(endWord);
-        if (endIter == words.end())
-            return 0;
+    }
 
-        queue<string> q;
-        q.push(beginWord);
-        int wordCount{ 1 };
+    void insert(string word) {
+        int wordSize = word.size();
+        Node* node = &root;
 
-        while (!q.empty()) {
-            ++wordCount;
-            int i = q.size();
-
-            for (; i > 0; --i) {
-                string word(move(q.front()));
-                int wordSize = word.size();
-                q.pop();
-
-                for (int w = 0; w < wordSize; ++w) {
-                    char prevC = word[w];
-
-                    for (int c = 'a'; c <= 'z'; ++c) {
-                        word[w] = c;
-
-                        auto iter = words.find(word);
-                        if (iter != words.end()) {
-                            if (iter == endIter)
-                                return wordCount;
-
-                            q.push(words.extract(iter).value());
-                            words.erase(iter);
-                        }
-                    }
-
-                    word[w] = prevC;
-                }
+        for (int i = 0; i < wordSize; ++i) {
+            int idx = word[i] - 'a';
+            if (!node->nodes[idx]) {
+                node->nodes[idx] = new Node(word[i]);
             }
+            node = node->nodes[idx];
         }
 
-        return 0;
+        node->word = true;
     }
+
+    bool search(string word) {
+        return search(word, false);
+    }
+
+    bool startsWith(string prefix) {
+        return search(prefix, true);
+    }
+private:
+    bool search(const string& word, bool prefixOnly) {
+        int wordSize = word.size();
+        Node* node = &root;
+
+        for (int i = 0; i < wordSize; ++i) {
+            int idx = word[i] - 'a';
+            if (!node->nodes[idx]) {
+                return false;
+            }
+            node = node->nodes[idx];
+        }
+
+        return prefixOnly || node->word;
+    }
+
+private:
+    Node root;
 };
+
 
 int main() {
     INIT_TIME(timer);
