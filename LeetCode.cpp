@@ -6,60 +6,32 @@
 using namespace std;
 
 class Solution {
-    struct CellsTaken {
-        CellsTaken(int n) : n(n), colsTaken(n, 0), lDiagsTaken(n * 2 - 1, 0), rDiagsTaken(n * 2 - 1, 0) { }
-
-        bool setCellTaken(int row, int col) {
-            int lDiagIdx = row + (n - col - 1);
-            int rDiagIdx = row + col;
-
-            if (colsTaken[col] || lDiagsTaken[lDiagIdx] || rDiagsTaken[rDiagIdx])
-                return false;
-
-            colsTaken[col] = 1;
-            lDiagsTaken[lDiagIdx] = 1;
-            rDiagsTaken[rDiagIdx] = 1;
-
-            return true;
-        }
-
-        void setCellFree(int row, int col) {
-            int lDiagIdx = row + (n - col - 1);
-            int rDiagIdx = row + col;
-
-            colsTaken[col] = 0;
-            lDiagsTaken[lDiagIdx] = 0;
-            rDiagsTaken[rDiagIdx] = 0;
-        }
-
-        int n;
-        vector<int> colsTaken;
-        vector<int> lDiagsTaken;
-        vector<int> rDiagsTaken;
-    };
 public:
-    int totalNQueens(int n) {
-        CellsTaken cellsTaken(n);
+    vector<string> generateParenthesis(int n) {
+        vector<string> result;
+        string s;
 
-        int counter = 0;
-        int result = 0;
-        calcPos(cellsTaken, 0, n, counter, result);
+        generate(n, n, s, result);
+
         return result;
     }
 private:
-    void calcPos(CellsTaken& cellsTaken, int row, int n, int& counter, int& result) {
-        if (counter == n) {
-            ++result;
+    void generate(int a, int b, string& s, vector<string>& result) {
+        if (!a && !b) {
+            result.push_back(s);
             return;
         }
 
-        for (int c = 0; c < n; ++c) {
-            if (cellsTaken.setCellTaken(row, c)) {
-                ++counter;
-                calcPos(cellsTaken, row + 1, n, counter, result);
-                --counter;
-                cellsTaken.setCellFree(row, c);
-            }
+        if (a) {
+            s.push_back('(');
+            generate(a - 1, b, s, result);
+            s.pop_back();
+        }
+
+        if (a < b) {
+            s.push_back(')');
+            generate(a, b - 1, s, result);
+            s.pop_back();
         }
     }
 };
