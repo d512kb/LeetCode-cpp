@@ -7,32 +7,40 @@ using namespace std;
 
 class Solution {
 public:
-    vector<string> generateParenthesis(int n) {
-        vector<string> result;
-        string s;
+    bool exist(vector<vector<char>>& board, string word) {
+        for (int r = 0; r < board.size(); ++r) {
+            for (int c = 0; c < board.front().size(); ++c) {
+                if (exist(board, r, c, word, 0)) {
+                    return true;
+                }
+            }
+        }
 
-        generate(n, n, s, result);
+        return false;
+    }
+
+private:
+    bool exist(vector<vector<char>>& board, int r, int c, const string& word, int index) {
+        if (index == word.size()) {
+            return true;
+        }
+
+        if (r < 0 || r >= board.size() || c < 0 || c >= board.front().size() || word[index] != board[r][c]) {
+            return false;
+        }
+
+        char ch = board[r][c];
+        board[r][c] = 0;
+        ++index;
+
+        bool result = exist(board, r + 1, c, word, index)
+            || exist(board, r - 1, c, word, index)
+            || exist(board, r, c + 1, word, index)
+            || exist(board, r, c - 1, word, index);
+
+        board[r][c] = ch;
 
         return result;
-    }
-private:
-    void generate(int a, int b, string& s, vector<string>& result) {
-        if (!a && !b) {
-            result.push_back(s);
-            return;
-        }
-
-        if (a) {
-            s.push_back('(');
-            generate(a - 1, b, s, result);
-            s.pop_back();
-        }
-
-        if (a < b) {
-            s.push_back(')');
-            generate(a, b - 1, s, result);
-            s.pop_back();
-        }
     }
 };
 
