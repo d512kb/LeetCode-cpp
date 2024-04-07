@@ -6,31 +6,60 @@
 using namespace std;
 
 class Solution {
+    struct CellsTaken {
+        CellsTaken(int n) : n(n), colsTaken(n, 0), lDiagsTaken(n * 2 - 1, 0), rDiagsTaken(n * 2 - 1, 0) { }
+
+        bool setCellTaken(int row, int col) {
+            int lDiagIdx = row + (n - col - 1);
+            int rDiagIdx = row + col;
+
+            if (colsTaken[col] || lDiagsTaken[lDiagIdx] || rDiagsTaken[rDiagIdx])
+                return false;
+
+            colsTaken[col] = 1;
+            lDiagsTaken[lDiagIdx] = 1;
+            rDiagsTaken[rDiagIdx] = 1;
+
+            return true;
+        }
+
+        void setCellFree(int row, int col) {
+            int lDiagIdx = row + (n - col - 1);
+            int rDiagIdx = row + col;
+
+            colsTaken[col] = 0;
+            lDiagsTaken[lDiagIdx] = 0;
+            rDiagsTaken[rDiagIdx] = 0;
+        }
+
+        int n;
+        vector<int> colsTaken;
+        vector<int> lDiagsTaken;
+        vector<int> rDiagsTaken;
+    };
 public:
-    vector<vector<int>> combinationSum(vector<int>& candidates, int target) {
-        vector<vector<int>> result;
-        vector<int> v;
+    int totalNQueens(int n) {
+        CellsTaken cellsTaken(n);
 
-        calc(candidates, 0, target, v, result);
-
+        int counter = 0;
+        int result = 0;
+        calcPos(cellsTaken, 0, n, counter, result);
         return result;
     }
 private:
-    void calc(vector<int>& candidates, int index, int target, vector<int>& v, vector<vector<int>>& result) {
-        if (target == 0) {
-            result.push_back(v);
+    void calcPos(CellsTaken& cellsTaken, int row, int n, int& counter, int& result) {
+        if (counter == n) {
+            ++result;
             return;
         }
 
-        if (target < 0)
-            return;
-
-        for (; index < candidates.size(); ++index) {
-            target -= candidates[index];
-            v.push_back(candidates[index]);
-            calc(candidates, index, target, v, result);
-            v.pop_back();
-            target += candidates[index];
+        for (int c = 0; c < n; ++c) {
+            if (cellsTaken.setCellTaken(row, c)) {
+                ++counter;
+                calcPos(cellsTaken, row + 1, n, counter, result);
+                --counter;
+                cellsTaken.setCellFree(row, c);
+            }
         }
     }
 };
