@@ -5,42 +5,45 @@
 
 using namespace std;
 
+struct TreeNode {
+    int val;
+    TreeNode* left;
+    TreeNode* right;
+    TreeNode() : val(0), left(nullptr), right(nullptr) {}
+    TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}
+    TreeNode(int x, TreeNode* left, TreeNode* right) : val(x), left(left), right(right) {}
+
+};
+
 class Solution {
 public:
-    bool exist(vector<vector<char>>& board, string word) {
-        for (int r = 0; r < board.size(); ++r) {
-            for (int c = 0; c < board.front().size(); ++c) {
-                if (exist(board, r, c, word, 0)) {
-                    return true;
-                }
-            }
-        }
+    TreeNode* sortedArrayToBST(vector<int>& nums) {
+        TreeNode* preParent = new TreeNode(0);
+        parseRightSubTree(preParent, nums, 0, nums.size() - 1);
 
-        return false;
+        TreeNode* node = preParent->right;
+        delete preParent;
+
+        return node;
     }
-
 private:
-    bool exist(vector<vector<char>>& board, int r, int c, const string& word, int index) {
-        if (index == word.size()) {
-            return true;
-        }
+    void parseLeftSubTree(TreeNode* parent, vector<int>& nums, int l, int r) {
+        int mid = (l + r) / 2;
+        TreeNode* node = new TreeNode(nums[mid]);
 
-        if (r < 0 || r >= board.size() || c < 0 || c >= board.front().size() || word[index] != board[r][c]) {
-            return false;
-        }
+        parent->left = node;
 
-        char ch = board[r][c];
-        board[r][c] = 0;
-        ++index;
+        if (mid != l) parseLeftSubTree(node, nums, l, mid - 1);
+        if (mid != r) parseRightSubTree(node, nums, mid + 1, r);
+    }
+    void parseRightSubTree(TreeNode* parent, vector<int>& nums, int l, int r) {
+        int mid = (l + r) / 2;
+        TreeNode* node = new TreeNode(nums[mid]);
 
-        bool result = exist(board, r + 1, c, word, index)
-            || exist(board, r - 1, c, word, index)
-            || exist(board, r, c + 1, word, index)
-            || exist(board, r, c - 1, word, index);
+        parent->right = node;
 
-        board[r][c] = ch;
-
-        return result;
+        if (mid != l) parseLeftSubTree(node, nums, l, mid - 1);
+        if (mid != r) parseRightSubTree(node, nums, mid + 1, r);
     }
 };
 
