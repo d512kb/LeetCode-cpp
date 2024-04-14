@@ -5,50 +5,83 @@
 
 using namespace std;
 
-struct TreeNode {
+struct ListNode {
     int val;
-    TreeNode* left;
-    TreeNode* right;
-    TreeNode() : val(0), left(nullptr), right(nullptr) {}
-    TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}
-    TreeNode(int x, TreeNode* left, TreeNode* right) : val(x), left(left), right(right) {}
-
+    ListNode* next;
+    ListNode() : val(0), next(nullptr) {}
+    ListNode(int x) : val(x), next(nullptr) {}
+    ListNode(int x, ListNode* next) : val(x), next(next) {}
 };
 
 class Solution {
 public:
-    TreeNode* sortedArrayToBST(vector<int>& nums) {
-        TreeNode* preParent = new TreeNode(0);
-        parseRightSubTree(preParent, nums, 0, nums.size() - 1);
+    ListNode* sortList(ListNode* head) {
+        if (!head)
+            return nullptr;
 
-        TreeNode* node = preParent->right;
-        delete preParent;
+        ListNode* node = head;
+        ListNode preHead;
+        int nodesCount = 0;
 
-        return node;
+        while (node) {
+            ++nodesCount;
+            node = node->next;
+        }
+
+        return sortList(head, &preHead, nodesCount);
     }
 private:
-    void parseLeftSubTree(TreeNode* parent, vector<int>& nums, int l, int r) {
-        int mid = (l + r) / 2;
-        TreeNode* node = new TreeNode(nums[mid]);
+    ListNode* sortList(ListNode* node, ListNode* preHead, int nodesCount) {
+        if (nodesCount == 1) {
+            node->next = nullptr;
+            return node;
+        }
 
-        parent->left = node;
+        int mid = nodesCount / 2;
+        auto half = node;
 
-        if (mid != l) parseLeftSubTree(node, nums, l, mid - 1);
-        if (mid != r) parseRightSubTree(node, nums, mid + 1, r);
-    }
-    void parseRightSubTree(TreeNode* parent, vector<int>& nums, int l, int r) {
-        int mid = (l + r) / 2;
-        TreeNode* node = new TreeNode(nums[mid]);
+        for (int i = 0; i < mid; ++i) {
+            half = half->next;
+        }
 
-        parent->right = node;
+        ListNode* left = sortList(node, preHead, mid);
+        ListNode* right = sortList(half, preHead, nodesCount - mid);
 
-        if (mid != l) parseLeftSubTree(node, nums, l, mid - 1);
-        if (mid != r) parseRightSubTree(node, nums, mid + 1, r);
+        ListNode* newHead = preHead;
+
+        while (left && right) {
+            if (left->val < right->val) {
+                preHead->next = left;
+                left = left->next;
+            } else {
+                preHead->next = right;
+                right = right->next;
+            }
+
+            preHead = preHead->next;
+        }
+
+        if (left) {
+            preHead->next = left;
+        } else {
+            preHead->next = right;
+        }
+
+        return newHead->next;
     }
 };
 
 int main() {
     INIT_TIME(timer);
+
+    vector<ListNode> v{ 4,2,1,3 };
+
+    for (int i = 0; i < v.size() - 1; ++i) {
+        v[i].next = &v[i+1];
+    }   
+
+    Solution sol;
+    auto sorted = sol.sortList(&v[0]);
 
     PRINT_ELAPSED(timer);
     return 0;
