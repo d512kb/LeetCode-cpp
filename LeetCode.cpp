@@ -5,83 +5,77 @@
 
 using namespace std;
 
-struct ListNode {
-    int val;
-    ListNode* next;
-    ListNode() : val(0), next(nullptr) {}
-    ListNode(int x) : val(x), next(nullptr) {}
-    ListNode(int x, ListNode* next) : val(x), next(next) {}
+// Definition for a QuadTree node.
+class Node {
+public:
+    bool val;
+    bool isLeaf;
+    Node* topLeft;
+    Node* topRight;
+    Node* bottomLeft;
+    Node* bottomRight;
+
+    Node() {
+        val = false;
+        isLeaf = false;
+        topLeft = NULL;
+        topRight = NULL;
+        bottomLeft = NULL;
+        bottomRight = NULL;
+    }
+
+    Node(bool _val, bool _isLeaf) {
+        val = _val;
+        isLeaf = _isLeaf;
+        topLeft = NULL;
+        topRight = NULL;
+        bottomLeft = NULL;
+        bottomRight = NULL;
+    }
+
+    Node(bool _val, bool _isLeaf, Node* _topLeft, Node* _topRight, Node* _bottomLeft, Node* _bottomRight) {
+        val = _val;
+        isLeaf = _isLeaf;
+        topLeft = _topLeft;
+        topRight = _topRight;
+        bottomLeft = _bottomLeft;
+        bottomRight = _bottomRight;
+    }
 };
 
 class Solution {
 public:
-    ListNode* sortList(ListNode* head) {
-        if (!head)
-            return nullptr;
-
-        ListNode* node = head;
-        ListNode preHead;
-        int nodesCount = 0;
-
-        while (node) {
-            ++nodesCount;
-            node = node->next;
-        }
-
-        return sortList(head, &preHead, nodesCount);
+    Node* construct(vector<vector<int>>& grid) {
+        return construct(grid, 0, 0, grid.size());
     }
+
 private:
-    ListNode* sortList(ListNode* node, ListNode* preHead, int nodesCount) {
-        if (nodesCount == 1) {
-            node->next = nullptr;
-            return node;
-        }
+    Node* construct(vector<vector<int>>& grid, int row, int col, int regionSize) {
+        int val = grid[row][col];
+        Node* node = new Node(val, true);
 
-        int mid = nodesCount / 2;
-        auto half = node;
+        for (int i = 0; i < regionSize; ++i) {
+            for (int j = 0; j < regionSize; ++j) {
+                if (grid[i + row][j + col] != val) {
+                    node->isLeaf = false;
+                    regionSize /= 2;
 
-        for (int i = 0; i < mid; ++i) {
-            half = half->next;
-        }
+                    node->topLeft = construct(grid, row, col, regionSize);
+                    node->topRight = construct(grid, row, col + regionSize, regionSize);
+                    node->bottomLeft = construct(grid, row + regionSize, col, regionSize);
+                    node->bottomRight = construct(grid, row + regionSize, col + regionSize, regionSize);
 
-        ListNode* left = sortList(node, preHead, mid);
-        ListNode* right = sortList(half, preHead, nodesCount - mid);
-
-        ListNode* newHead = preHead;
-
-        while (left && right) {
-            if (left->val < right->val) {
-                preHead->next = left;
-                left = left->next;
-            } else {
-                preHead->next = right;
-                right = right->next;
+                    return node;
+                }
             }
-
-            preHead = preHead->next;
         }
 
-        if (left) {
-            preHead->next = left;
-        } else {
-            preHead->next = right;
-        }
-
-        return newHead->next;
+        return node;
     }
 };
 
 int main() {
     INIT_TIME(timer);
-
-    vector<ListNode> v{ 4,2,1,3 };
-
-    for (int i = 0; i < v.size() - 1; ++i) {
-        v[i].next = &v[i+1];
-    }   
-
-    Solution sol;
-    auto sorted = sol.sortList(&v[0]);
 
     PRINT_ELAPSED(timer);
     return 0;
