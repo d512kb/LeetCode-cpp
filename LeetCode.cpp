@@ -7,23 +7,51 @@ using namespace std;
 
 class Solution {
 public:
-    int maxSubarraySumCircular(vector<int>& nums) {
-        int sumPlus = 0;
-        int sumMinus = 0;
-        int maxSum = nums[0];
-        int minSum = nums[0];
-        int totalSum = 0;
+    int searchInsert(vector<int>& nums, int target) {
+        return binarySearchRecur(nums, target, 0, nums.size() - 1);
+    }
 
-        for (int num : nums) {
-            totalSum += num;
-            sumPlus = max(sumPlus, 0) + num;
-            sumMinus = min(sumMinus, 0) + num;
+    int searchInsertIter(vector<int>& nums, int target) {
+        if (target < nums.front())
+            return 0;
+        else if (target > nums.back())
+            return nums.size();
 
-            maxSum = max(maxSum, sumPlus);
-            minSum = min(minSum, sumMinus);
+        int left = 0;
+        int right = nums.size() - 1;
+        int mid = 0;
+        int val = 0;
+
+        while (left <= right) {
+            mid = (left + right) / 2;
+            val = nums[mid];
+
+            if (val < target) {
+                left = mid + 1;
+            } else if (target < val) {
+                right = mid - 1;
+            } else {
+                return mid;
+            }
         }
 
-        return maxSum < 0 ? maxSum : max(maxSum, totalSum - minSum);
+        return left;
+    }
+private:
+    int binarySearchRecur(vector<int>& nums, int target, int a, int b) {
+        if (a > b)
+            return a;
+
+        int mid = (a + b) / 2;
+        int val = nums[mid];
+
+        if (val < target) {
+            return binarySearchRecur(nums, target, mid + 1, b);
+        } else if (target < val) {
+            return binarySearchRecur(nums, target, a, mid - 1);
+        }
+
+        return mid;
     }
 };
 
