@@ -7,51 +7,47 @@ using namespace std;
 
 class Solution {
 public:
-    int searchInsert(vector<int>& nums, int target) {
-        return binarySearchRecur(nums, target, 0, nums.size() - 1);
-    }
+    bool searchMatrix(vector<vector<int>>& matrix, int target) {
+        if (target < matrix.front().front() || target > matrix.back().back())
+            return false;
 
-    int searchInsertIter(vector<int>& nums, int target) {
-        if (target < nums.front())
-            return 0;
-        else if (target > nums.back())
-            return nums.size();
-
-        int left = 0;
-        int right = nums.size() - 1;
+        int a = 0;
+        int b = matrix.size() - 1;
         int mid = 0;
-        int val = 0;
 
-        while (left <= right) {
-            mid = (left + right) / 2;
-            val = nums[mid];
+        while (a <= b) {
+            mid = (a + b) / 2;
+            int lval = matrix[mid].front();
+            int rval = matrix[mid].back();
 
-            if (val < target) {
-                left = mid + 1;
-            } else if (target < val) {
-                right = mid - 1;
+            if (target < lval) {
+                b = mid - 1;
+            } else if (rval < target) {
+                a = mid + 1;
             } else {
-                return mid;
+                break;
             }
         }
 
-        return left;
-    }
-private:
-    int binarySearchRecur(vector<int>& nums, int target, int a, int b) {
-        if (a > b)
-            return a;
+        vector<int>& row = matrix[mid];
 
-        int mid = (a + b) / 2;
-        int val = nums[mid];
+        a = 0;
+        b = row.size() - 1;
 
-        if (val < target) {
-            return binarySearchRecur(nums, target, mid + 1, b);
-        } else if (target < val) {
-            return binarySearchRecur(nums, target, a, mid - 1);
+        while (a <= b) {
+            mid = (a + b) / 2;
+            int val = row[mid];
+
+            if (target < val) {
+                b = mid - 1;
+            } else if (val < target) {
+                a = mid + 1;
+            } else {
+                return true;
+            }
         }
 
-        return mid;
+        return false;
     }
 };
 
