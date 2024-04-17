@@ -7,22 +7,32 @@ using namespace std;
 
 class Solution {
 public:
-    int findPeakElement(vector<int>& nums) {
+    int search(vector<int>& nums, int target) {
         int a = 0;
         int b = nums.size() - 1;
-        int mid = 0;
 
-        while (a < b) {
-            mid = (a + b) / 2;
+        while (a <= b) {
+            int mid = (a + b) / 2;
 
-            if (nums[mid + 1] > nums[mid]) {
-                a = mid + 1;
+            if (nums[mid] == target)
+                return mid;
+
+            if (nums[a] <= nums[mid]) {
+                if (nums[a] <= target && target <= nums[mid]) {
+                    b = mid - 1;
+                } else {
+                    a = mid + 1;
+                }
             } else {
-                b = mid;
+                if (nums[mid] <= target && target <= nums[b]) {
+                    a = mid + 1;
+                } else {
+                    b = mid - 1;
+                }
             }
         }
 
-        return a;
+        return -1;
     }
 };
 
