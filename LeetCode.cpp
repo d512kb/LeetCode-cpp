@@ -7,22 +7,40 @@ using namespace std;
 
 class Solution {
 public:
-    int findMin(vector<int>& nums) {
-        int a = 0;
-        int b = nums.size() - 1;
-        int mid = 0;
+    int findKthLargest(vector<int>& nums, int k) {
+        int left = 0;
+        int right = nums.size() - 1;
+        k = right - k + 1;
+        mt19937 engine{ random_device()() };
 
-        while (a < b) {
-            mid = (a + b) / 2;
+        while (left < right) {
+            int pivotPoint = uniform_int_distribution(left, right)(engine);
+            swap(nums[pivotPoint], nums[right]);
+            int pivot = nums[right];
+            int i = left;
+            int r = right;
 
-            if (nums[mid] < nums[b]) {
-                b = mid;
+            for (int j = left; j <= r; ++j) {
+                if (nums[j] < pivot) {
+                    swap(nums[i], nums[j]);
+                    ++i;
+                } else if (nums[j] > pivot) {
+                    swap(nums[r], nums[j]);
+                    --r;
+                    --j; // for for
+                }
+            }
+
+            if (k >= i && k <= r) {
+                return nums[k];
+            } else if (k > r) {
+                left = r + 1;
             } else {
-                a = mid + 1;
+                right = i - 1;
             }
         }
 
-        return nums[a];
+        return nums[left];
     }
 };
 
