@@ -7,32 +7,34 @@ using namespace std;
 
 class Solution {
 public:
-    int findMaximizedCapital(int k, int w, vector<int>& profits, vector<int>& capital) {
-        vector<pair<int, int>> gainData;
+    vector<vector<int>> kSmallestPairs(vector<int>& nums1, vector<int>& nums2, int k) {
+        int sz1 = nums1.size();
+        int sz2 = nums2.size();
 
-        int sz = profits.size();
-        for (int i = 0; i < sz; ++i) {
-            gainData.emplace_back(capital[i], profits[i]);
+        priority_queue<pair<int, pair<int, int>>, vector<pair<int, pair<int, int>>>, greater<pair<int, pair<int, int>>>> pq;
+
+        for (int i = 0; i < sz1; ++i) {
+            pq.push({ nums1[i] + nums2[0], {i, 0} });
         }
 
-        sort(gainData.begin(), gainData.end());
+        vector<vector<int>> result;
 
-        priority_queue<int> gains;
-        int i = 0;
+        while (!pq.empty()) {
+            const auto& vals = pq.top();
+            int i = vals.second.first;
+            int j = vals.second.second;
+            pq.pop();
 
-        while (k--) {
-            for (; i < sz && gainData[i].first <= w; ++i) {
-                gains.push(gainData[i].second);
+            result.push_back({ nums1[i], nums2[j] });
+            if (--k == 0)
+                return result;
+
+            if (++j < sz2) {
+                pq.push({ nums1[i] + nums2[j], {i, j} });
             }
-
-            if (gains.empty())
-                return w;
-
-            w += gains.top();
-            gains.pop();
         }
 
-        return w;
+        return result;
     }
 };
 
