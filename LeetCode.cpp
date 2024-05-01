@@ -7,12 +7,11 @@ using namespace std;
 
 class Solution {
 public:
-    int hammingWeight(int n) {
+    int singleNumber(vector<int>& nums) {
         int result = 0;
 
-        while (n) {
-            result += (n % 2);
-            n >>= 1;
+        for (int n : nums) {
+            result ^= n;
         }
 
         return result;
