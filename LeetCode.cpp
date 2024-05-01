@@ -5,37 +5,39 @@
 
 using namespace std;
 
-class Solution {
+class MedianFinder {
 public:
-    vector<vector<int>> kSmallestPairs(vector<int>& nums1, vector<int>& nums2, int k) {
-        int sz1 = nums1.size();
-        int sz2 = nums2.size();
-
-        priority_queue<pair<int, pair<int, int>>, vector<pair<int, pair<int, int>>>, greater<pair<int, pair<int, int>>>> pq;
-
-        for (int i = 0; i < sz1; ++i) {
-            pq.push({ nums1[i] + nums2[0], {i, 0} });
-        }
-
-        vector<vector<int>> result;
-
-        while (!pq.empty()) {
-            const auto& vals = pq.top();
-            int i = vals.second.first;
-            int j = vals.second.second;
-            pq.pop();
-
-            result.push_back({ nums1[i], nums2[j] });
-            if (--k == 0)
-                return result;
-
-            if (++j < sz2) {
-                pq.push({ nums1[i] + nums2[j], {i, j} });
-            }
-        }
-
-        return result;
+    MedianFinder() {
+        m_maxHeap.push(numeric_limits<int>::min());
+        m_minHeap.push(numeric_limits<int>::max());
     }
+
+    void addNum(int num) {
+        if (num > m_minHeap.top()) {
+            m_minHeap.push(num);
+        } else {
+            m_maxHeap.push(num);
+        }
+
+        if (m_minHeap.size() > m_maxHeap.size()) {
+            m_maxHeap.push(m_minHeap.top());
+            m_minHeap.pop();
+        } else if (m_maxHeap.size() - m_minHeap.size() == 2) {
+            m_minHeap.push(m_maxHeap.top());
+            m_maxHeap.pop();
+        }
+    }
+
+    double findMedian() {
+        if (m_minHeap.size() == m_maxHeap.size()) {
+            return (m_maxHeap.top() + m_minHeap.top()) / 2.0;
+        } else {
+            return m_maxHeap.top();
+        }
+    }
+private:
+    priority_queue<int> m_maxHeap;
+    priority_queue<int, vector<int>, greater<int>> m_minHeap;
 };
 
 int main() {
