@@ -5,39 +5,25 @@
 
 using namespace std;
 
-class MedianFinder {
+class Solution {
 public:
-    MedianFinder() {
-        m_maxHeap.push(numeric_limits<int>::min());
-        m_minHeap.push(numeric_limits<int>::max());
-    }
+    string addBinary(string a, string b) {
+        string result(max(a.size(), b.size()), 0);
+        int r = result.size() - 1;
+        char c = 0;
+        int ai = a.size() - 1;
+        int bi = b.size() - 1;
 
-    void addNum(int num) {
-        if (num > m_minHeap.top()) {
-            m_minHeap.push(num);
-        } else {
-            m_maxHeap.push(num);
+        while (ai >= 0 || bi >= 0) {
+            char sum = c;
+            if (ai >= 0) sum += a[ai--] - '0';
+            if (bi >= 0) sum += b[bi--] - '0';
+            result[r--] = '0' + (sum & 1);
+            c = sum >> 1;
         }
 
-        if (m_minHeap.size() > m_maxHeap.size()) {
-            m_maxHeap.push(m_minHeap.top());
-            m_minHeap.pop();
-        } else if (m_maxHeap.size() - m_minHeap.size() == 2) {
-            m_minHeap.push(m_maxHeap.top());
-            m_maxHeap.pop();
-        }
+        return c ? "1" + result : result;
     }
-
-    double findMedian() {
-        if (m_minHeap.size() == m_maxHeap.size()) {
-            return (m_maxHeap.top() + m_minHeap.top()) / 2.0;
-        } else {
-            return m_maxHeap.top();
-        }
-    }
-private:
-    priority_queue<int> m_maxHeap;
-    priority_queue<int, vector<int>, greater<int>> m_minHeap;
 };
 
 int main() {
