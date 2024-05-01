@@ -7,22 +7,16 @@ using namespace std;
 
 class Solution {
 public:
-    string addBinary(string a, string b) {
-        string result(max(a.size(), b.size()), 0);
-        int r = result.size() - 1;
-        char c = 0;
-        int ai = a.size() - 1;
-        int bi = b.size() - 1;
+    uint32_t reverseBits(uint32_t n) {
+        uint32_t result{ 0 };
 
-        while (ai >= 0 || bi >= 0) {
-            char sum = c;
-            if (ai >= 0) sum += a[ai--] - '0';
-            if (bi >= 0) sum += b[bi--] - '0';
-            result[r--] = '0' + (sum & 1);
-            c = sum >> 1;
+        for (int i = 0; i < 32; ++i) {
+            result <<= 1;
+            result |= n & 1;
+            n >>= 1;
         }
 
-        return c ? "1" + result : result;
+        return result;
     }
 };
 
