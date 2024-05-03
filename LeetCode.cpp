@@ -7,21 +7,8 @@ using namespace std;
 
 class Solution {
 public:
-    vector<int> plusOne(vector<int>& digits) {
-        for (int i = digits.size() - 1; i >= 0; --i) {
-            if (digits[i] == 9) {
-                digits[i] = 0;
-            } else {
-                ++digits[i];
-                break;
-            }
-        }
-
-        if (!digits[0]) {
-            digits.insert(digits.begin(), 1);
-        }
-
-        return digits;
+    int trailingZeroes(int n) {
+        return n / 3125 + n / 625 + n / 125 + n / 25 + n / 5;
     }
 };
 
