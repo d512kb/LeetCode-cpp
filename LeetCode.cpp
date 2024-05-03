@@ -7,16 +7,16 @@ using namespace std;
 
 class Solution {
 public:
-    int rangeBitwiseAnd(int left, int right) {
-        int shift = 0;
+    bool isPalindrome(int x) {
+        int a = x;
+        long b = 0;
 
-        while (left != right) {
-            left >>= 2;
-            right >>= 2;
-            ++shift;
+        while (a) {
+            b = b * 10 + a % 10;
+            a /= 10;
         }
 
-        return left << shift;
+        return x >= 0 && b == x;
     }
 };
 
