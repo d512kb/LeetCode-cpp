@@ -7,16 +7,21 @@ using namespace std;
 
 class Solution {
 public:
-    bool isPalindrome(int x) {
-        int a = x;
-        long b = 0;
-
-        while (a) {
-            b = b * 10 + a % 10;
-            a /= 10;
+    vector<int> plusOne(vector<int>& digits) {
+        for (int i = digits.size() - 1; i >= 0; --i) {
+            if (digits[i] == 9) {
+                digits[i] = 0;
+            } else {
+                ++digits[i];
+                break;
+            }
         }
 
-        return x >= 0 && b == x;
+        if (!digits[0]) {
+            digits.insert(digits.begin(), 1);
+        }
+
+        return digits;
     }
 };
 
