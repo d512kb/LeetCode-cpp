@@ -7,8 +7,24 @@ using namespace std;
 
 class Solution {
 public:
-    int trailingZeroes(int n) {
-        return n / 3125 + n / 625 + n / 125 + n / 25 + n / 5;
+    int mySqrt(int x) {
+        uint64_t low = 0;
+        uint64_t high = x;
+
+        while (low <= high) {
+            uint64_t mid = low + (high - low) / 2;
+            auto sqrMid = mid * mid;
+
+            if (sqrMid < x) {
+                low = mid + 1;
+            } else if (sqrMid > x) {
+                high = mid - 1;
+            } else {
+                return mid;
+            }
+        }
+
+        return high;
     }
 };
 
