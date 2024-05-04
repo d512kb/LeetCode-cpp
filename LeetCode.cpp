@@ -7,24 +7,23 @@ using namespace std;
 
 class Solution {
 public:
-    int mySqrt(int x) {
-        uint64_t low = 0;
-        uint64_t high = x;
+    double myPow(double x, int n) {
+        if (n < 0)
+            x = 1 / x;
 
-        while (low <= high) {
-            uint64_t mid = low + (high - low) / 2;
-            auto sqrMid = mid * mid;
+        double result = 1;
+        n = abs(n);
 
-            if (sqrMid < x) {
-                low = mid + 1;
-            } else if (sqrMid > x) {
-                high = mid - 1;
-            } else {
-                return mid;
+        while (n) {
+            if (n % 2) {
+                result *= x;
             }
+
+            x *= x;
+            n /= 2;
         }
 
-        return high;
+        return result;
     }
 };
 
