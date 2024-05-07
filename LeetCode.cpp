@@ -7,23 +7,18 @@ using namespace std;
 
 class Solution {
 public:
-    double myPow(double x, int n) {
-        if (n < 0)
-            x = 1 / x;
+    int climbStairs(int n) {
+        int a = 1;
+        int b = 2;
+        int c = n;
 
-        double result = 1;
-        n = abs(n);
-
-        while (n) {
-            if (n % 2) {
-                result *= x;
-            }
-
-            x *= x;
-            n /= 2;
+        for (int i = 2; i < n; ++i) {
+            c = a + b;
+            a = b;
+            b = c;
         }
 
-        return result;
+        return c;
     }
 };
 
