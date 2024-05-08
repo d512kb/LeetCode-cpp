@@ -7,18 +7,17 @@ using namespace std;
 
 class Solution {
 public:
-    int climbStairs(int n) {
-        int a = 1;
-        int b = 2;
-        int c = n;
+    int rob(vector<int>& nums) {
+        int preLoot = 0;
+        int loot = nums[0];
 
-        for (int i = 2; i < n; ++i) {
-            c = a + b;
-            a = b;
-            b = c;
+        for (int i = 1; i < nums.size(); ++i) {
+            int tmp = loot;
+            loot = max(nums[i] + preLoot, loot);
+            preLoot = tmp;
         }
 
-        return c;
+        return loot;
     }
 };
 
