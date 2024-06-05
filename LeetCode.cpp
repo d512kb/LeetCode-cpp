@@ -6,74 +6,18 @@
 using namespace std;
 
 class Solution {
-    struct Node {
-        Node() : w(false), nodes{ nullptr } {}
-        bool w;
-        Node* nodes[26];
-    };
-
 public:
-    bool wordBreak(string s, vector<string>& wordDict) {
-        for (string& s : wordDict) {
-            addWord(s);
-        }
+    int coinChange(vector<int>& coins, int amount) {
+        vector<short> dp(amount + 1, amount + 1);
+        dp[0] = 0;
 
-        m_indexes.assign(s.size(), 0);
-
-        return checkString(s);
-    }
-
-private:
-    Node root;
-    vector<char> m_indexes;
-
-    void addWord(const string& word) {
-        Node* node = &root;
-
-        for (char c : word) {
-            int idx = c - 'a';
-            if (!node->nodes[idx]) {
-                node->nodes[idx] = new Node();
-            }
-            node = node->nodes[idx];
-        }
-
-        node->w = true;
-    }
-
-    bool checkString(const string& s) {
-        int sz = s.size();
-        queue<int> q;
-        q.push(0);
-
-        while (!q.empty()) {
-            int qz = q.size();
-
-            while (qz--) {
-                int index = q.front();
-                q.pop();
-
-                if (index == sz)
-                    return true;
-
-                if (m_indexes[index]) { continue; }
-                m_indexes[index] = 1;
-                Node* node = &root;
-
-                for (; index < sz; ++index) {
-                    node = node->nodes[s[index] - 'a'];
-
-                    if (!node)
-                        break;
-
-                    if (node->w) {
-                        q.push(index + 1);
-                    }
-                }
+        for (int coin : coins) {
+            for (int i = coin; i <= amount; ++i) {
+                dp[i] = min(dp[i], static_cast<short>(1 + dp[i - coin]));
             }
         }
 
-        return false;
+        return dp[amount] == amount + 1 ? -1 : dp[amount];
     }
 };
 
@@ -81,8 +25,8 @@ int main() {
     INIT_TIME(timer);
 
     Solution sol;
-    vector<string> dict{ "cats","dog","sand","and","cat","an" };
-    bool r = sol.wordBreak("catsandogcat", dict);
+    vector<int> coins{ 186,419,83,408 };
+    int r = sol.coinChange(coins, 6249);
 
     PRINT_ELAPSED(timer);
     return 0;
