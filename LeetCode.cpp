@@ -7,24 +7,34 @@ using namespace std;
 
 class Solution {
 public:
-    int minPathSum(vector<vector<int>>& grid) {
-        int m = grid.size();
-        int n = grid[0].size();
+    int uniquePathsWithObstacles(vector<vector<int>>& obstacleGrid) {
+        int m = obstacleGrid.size();
+        int n = obstacleGrid.front().size();
 
-        for (int i = 1; i < m; ++i) {
-            grid[i][0] += grid[i - 1][0];
+        vector<int> dpRow(n, 0);
+        vector<vector<int>> dp(m, dpRow);
+
+        for (int i = 0, ob = 0; i < m; ++i) {
+            if (!ob && obstacleGrid[i][0]) { ob = 1; }
+            dp[i][0] = !ob;
         }
-        for (int j = 1; j < n; ++j) {
-            grid[0][j] += grid[0][j - 1];
+
+        for (int j = 0, ob = 0; j < n; ++j) {
+            if (!ob && obstacleGrid[0][j]) { ob = 1; }
+            dp[0][j] = !ob;
         }
 
         for (int i = 1; i < m; ++i) {
             for (int j = 1; j < n; ++j) {
-                grid[i][j] += min(grid[i - 1][j], grid[i][j - 1]);
+                if (obstacleGrid[i][j]) {
+                    dp[i][j] = 0;
+                } else {
+                    dp[i][j] = dp[i][j - 1] + dp[i - 1][j];
+                }
             }
         }
 
-        return grid.back().back();
+        return dp.back().back();
     }
 };
 
