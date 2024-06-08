@@ -7,20 +7,15 @@ using namespace std;
 
 class Solution {
 public:
-    int lengthOfLIS(vector<int>& nums) {
-        vector<int> data;
-
-        for (int n : nums) {
-            auto iter = lower_bound(data.begin(), data.end(), n);
-
-            if (iter == data.end()) {
-                data.push_back(n);
-            } else {
-                *iter = n;
+    int minimumTotal(vector<vector<int>>& triangle) {
+        for (auto iter = triangle.rbegin(), preEndIter = prev(triangle.rend()); iter != preEndIter; ++iter) {
+            auto rowIter = iter->begin();
+            for (auto& i : *next(iter)) {
+                i += min(*rowIter, *next(rowIter));
+                ++rowIter;
             }
         }
-
-        return data.size();
+        return triangle[0][0];
     }
 };
 
