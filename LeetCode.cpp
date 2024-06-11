@@ -7,34 +7,33 @@ using namespace std;
 
 class Solution {
 public:
-    int uniquePathsWithObstacles(vector<vector<int>>& obstacleGrid) {
-        int m = obstacleGrid.size();
-        int n = obstacleGrid.front().size();
+    int maximalSquare(vector<vector<char>>& matrix) {
+        int m = matrix.size();
+        int n = matrix[0].size();
 
-        vector<int> dpRow(n, 0);
-        vector<vector<int>> dp(m, dpRow);
+        vector<vector<int16_t>> data(m, vector<int16_t>(n, 0));
+        int square = 0;
 
-        for (int i = 0, ob = 0; i < m; ++i) {
-            if (!ob && obstacleGrid[i][0]) { ob = 1; }
-            dp[i][0] = !ob;
+        for (int j = 0; j < n; ++j) {
+            data[0][j] = matrix[0][j] - '0';
+            square += data[0][j];
+        }
+        for (int i = 0; i < m; ++i) {
+            data[i][0] = matrix[i][0] - '0';
+            square += data[i][0];
         }
 
-        for (int j = 0, ob = 0; j < n; ++j) {
-            if (!ob && obstacleGrid[0][j]) { ob = 1; }
-            dp[0][j] = !ob;
-        }
-
+        square = square > 0;
         for (int i = 1; i < m; ++i) {
             for (int j = 1; j < n; ++j) {
-                if (obstacleGrid[i][j]) {
-                    dp[i][j] = 0;
-                } else {
-                    dp[i][j] = dp[i][j - 1] + dp[i - 1][j];
-                }
+                int v = matrix[i][j] - '0';
+                int d = v * (v + min({ data[i - 1][j], data[i][j - 1], data[i - 1][j - 1] }));
+                square = max(square, d);
+                data[i][j] = d;
             }
         }
 
-        return dp.back().back();
+        return square * square;
     }
 };
 
