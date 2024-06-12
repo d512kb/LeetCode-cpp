@@ -7,34 +7,39 @@ using namespace std;
 
 class Solution {
 public:
-    string longestPalindrome(string s) {
-        int len = 1;
-        int left = 0, right = 0;
+    bool isInterleave(string s1, string s2, string s3) {
+        m_cache.assign(s1.size() * 100 + s2.size() + 1, 0);
 
-        for (int i = 1, sz = s.size(); i < sz; ++i) {
-            for (int l = i - 1, r = i; l >= 0 && r < sz && s[l] == s[r]; --l, ++r) {
-                if (r - l + 1 > len) {
-                    len = r - l + 1;
-                    left = l;
-                    right = r;
-                }
-            }
-
-            for (int l = i - 1, r = i + 1; l >= 0 && r < sz && s[l] == s[r]; --l, ++r) {
-                if (r - l + 1 > len) {
-                    len = r - l + 1;
-                    left = l;
-                    right = r;
-                }
-            }
-        }
-
-        return s.substr(left, right - left + 1);
+        return checkStrings(s1, s2, s3, 0, 0, 0);
     }
+private:
+    bool checkStrings(const string& s1, const string& s2, const string& s3, int index1, int index2, int index3) {
+        if (index3 == s3.size())
+            return index1 == s1.size() && index2 == s2.size();
+
+        if (m_cache[index1 * 100 + index2])
+            return false;
+
+        m_cache[index1 * 100 + index2] = 1;
+        bool check = false;
+
+        if (index1 < s1.size() && s1[index1] == s3[index3])
+            check = checkStrings(s1, s2, s3, index1 + 1, index2, index3 + 1);
+
+        if (index2 < s2.size() && s2[index2] == s3[index3])
+            check = check || checkStrings(s1, s2, s3, index1, index2 + 1, index3 + 1);
+
+        return check;
+    }
+
+    vector<char> m_cache;
 };
 
 int main() {
     INIT_TIME(timer);
+
+    Solution sol;
+    bool b = sol.isInterleave("aa", "ab", "abaa");
 
     PRINT_ELAPSED(timer);
     return 0;
