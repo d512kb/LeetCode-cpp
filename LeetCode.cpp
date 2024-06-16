@@ -7,26 +7,34 @@ using namespace std;
 
 class Solution {
 public:
-    void sortColors(vector<int>& nums) {
-        int left = 0;
-        int mid = 0;
-        int right = nums.size() - 1;
+    int minDistance(string word1, string word2) {
+        int len1 = word1.size() + 1;
+        int len2 = word2.size() + 1;
 
-        while (mid <= right) {
-            switch (nums[mid]) {
-            case 0:
-                swap(nums[left++], nums[mid++]);
-                break;
-            case 1:
-                ++mid;
-                break;
-            case 2:
-                swap(nums[mid], nums[right--]);
-                break;
+        vector<vector<uint16_t>> dp(len1, vector<uint16_t>(len2, 0));
+
+        for (int i = 0; i < len1; ++i) {
+            dp[i][0] = i;
+        }
+
+        for (int i = 0; i < len2; ++i) {
+            dp[0][i] = i;
+        }
+
+        for (int i = 1; i < len1; ++i) {
+            for (int j = 1; j < len2; ++j) {
+                if (word1[i - 1] == word2[j - 1]) {
+                    dp[i][j] = dp[i - 1][j - 1];
+                } else {
+                    dp[i][j] = 1 + min(dp[i - 1][j - 1], min(dp[i - 1][j], dp[i][j - 1]));
+                }
             }
         }
+
+        return dp.back().back();
     }
 };
+
 
 int main() {
     INIT_TIME(timer);
