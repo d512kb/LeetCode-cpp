@@ -7,31 +7,42 @@ using namespace std;
 
 class Solution {
 public:
-    int minDistance(string word1, string word2) {
-        int len1 = word1.size() + 1;
-        int len2 = word2.size() + 1;
+    int maxProfit(vector<int>& prices) {
+        vector<pair<int, int>> bestBuys(prices.size() + 1, { 0, 0 });
 
-        vector<vector<uint16_t>> dp(len1, vector<uint16_t>(len2, 0));
+        int maxSum = 0;
+        int sum = 0;
 
-        for (int i = 0; i < len1; ++i) {
-            dp[i][0] = i;
-        }
+        for (int i = 1, sz = prices.size(); i < sz; ++i) {
+            sum += prices[i] - prices[i - 1];
 
-        for (int i = 0; i < len2; ++i) {
-            dp[0][i] = i;
-        }
-
-        for (int i = 1; i < len1; ++i) {
-            for (int j = 1; j < len2; ++j) {
-                if (word1[i - 1] == word2[j - 1]) {
-                    dp[i][j] = dp[i - 1][j - 1];
-                } else {
-                    dp[i][j] = 1 + min(dp[i - 1][j - 1], min(dp[i - 1][j], dp[i][j - 1]));
-                }
+            if (sum < 0) {
+                sum = 0;
+            } else if (sum > maxSum) {
+                maxSum = sum;
             }
+
+            bestBuys[i + 1].first = maxSum;
         }
 
-        return dp.back().back();
+        maxSum = 0;
+        sum = 0;
+
+        for (int i = prices.size() - 2; i >= 0; --i) {
+            sum += prices[i + 1] - prices[i];
+
+            if (sum < 0) {
+                sum = 0;
+            } else if (sum > maxSum) {
+                maxSum = sum;
+            }
+
+            bestBuys[i].second = maxSum;
+        }
+
+        auto maxPair = max_element(bestBuys.begin(), bestBuys.end(), [](const auto& p1, const auto& p2) { return p1.first + p1.second < p2.first + p2.second; });
+
+        return maxPair->first + maxPair->second;
     }
 };
 
