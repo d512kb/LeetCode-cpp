@@ -7,42 +7,31 @@ using namespace std;
 
 class Solution {
 public:
-    int maxProfit(vector<int>& prices) {
-        vector<pair<int, int>> bestBuys(prices.size() + 1, { 0, 0 });
+    long long maximumTotalDamage(vector<int>& power) {
+        map<int, int64_t> powerToDamage{ {-5,0},{-4,0},{-3,0},{-2,0},{-1,0} };
 
-        int maxSum = 0;
-        int sum = 0;
-
-        for (int i = 1, sz = prices.size(); i < sz; ++i) {
-            sum += prices[i] - prices[i - 1];
-
-            if (sum < 0) {
-                sum = 0;
-            } else if (sum > maxSum) {
-                maxSum = sum;
-            }
-
-            bestBuys[i + 1].first = maxSum;
+        for (int p : power) {
+            powerToDamage[p] += p;
         }
 
-        maxSum = 0;
-        sum = 0;
+        auto mapLookbackIter = powerToDamage.begin();
+        auto mapEndIter = powerToDamage.end();
 
-        for (int i = prices.size() - 2; i >= 0; --i) {
-            sum += prices[i + 1] - prices[i];
+        for (auto mapIter = next(mapLookbackIter, 6); mapIter != mapEndIter; ++mapIter, ++mapLookbackIter) {
+            int64_t newDamage = 0;
 
-            if (sum < 0) {
-                sum = 0;
-            } else if (sum > maxSum) {
-                maxSum = sum;
+            for (auto iter = mapLookbackIter; iter != mapIter; ++iter) {
+                if (mapIter->first - iter->first < 3) {
+                    break;
+                }
+
+                newDamage = max(newDamage, iter->second);
             }
 
-            bestBuys[i].second = maxSum;
+            mapIter->second += newDamage;
         }
 
-        auto maxPair = max_element(bestBuys.begin(), bestBuys.end(), [](const auto& p1, const auto& p2) { return p1.first + p1.second < p2.first + p2.second; });
-
-        return maxPair->first + maxPair->second;
+        return max_element(powerToDamage.rbegin(), next(powerToDamage.rbegin(), 3), [](auto& p1, auto& p2) { return p1.second < p2.second; })->second;
     }
 };
 
