@@ -7,31 +7,17 @@ using namespace std;
 
 class Solution {
 public:
-    long long maximumTotalDamage(vector<int>& power) {
-        map<int, int64_t> powerToDamage{ {-5,0},{-4,0},{-3,0},{-2,0},{-1,0} };
+    long long maximumTotalCost(vector<int>& nums) {
+        int64_t dp0 = nums[0];
+        int64_t dp1 = dp0;
 
-        for (int p : power) {
-            powerToDamage[p] += p;
+        for (int i = 1, sz = nums.size(); i < sz; ++i) {
+            int64_t oldDp = dp0;
+            dp0 = max(dp0, dp1) + nums[i];
+            dp1 = oldDp - nums[i];
         }
 
-        auto mapLookbackIter = powerToDamage.begin();
-        auto mapEndIter = powerToDamage.end();
-
-        for (auto mapIter = next(mapLookbackIter, 6); mapIter != mapEndIter; ++mapIter, ++mapLookbackIter) {
-            int64_t newDamage = 0;
-
-            for (auto iter = mapLookbackIter; iter != mapIter; ++iter) {
-                if (mapIter->first - iter->first < 3) {
-                    break;
-                }
-
-                newDamage = max(newDamage, iter->second);
-            }
-
-            mapIter->second += newDamage;
-        }
-
-        return max_element(powerToDamage.rbegin(), next(powerToDamage.rbegin(), 3), [](auto& p1, auto& p2) { return p1.second < p2.second; })->second;
+        return max(dp0, dp1);
     }
 };
 
