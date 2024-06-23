@@ -7,17 +7,26 @@ using namespace std;
 
 class Solution {
 public:
-    long long maximumTotalCost(vector<int>& nums) {
-        int64_t dp0 = nums[0];
-        int64_t dp1 = dp0;
+    int minimumArea(vector<vector<int>>& grid) {
+        int rows = grid.size();
+        int cols = grid[0].size();
+        int left = cols;
+        int right = 0;
+        int up = rows;
+        int down = 0;
 
-        for (int i = 1, sz = nums.size(); i < sz; ++i) {
-            int64_t oldDp = dp0;
-            dp0 = max(dp0, dp1) + nums[i];
-            dp1 = oldDp - nums[i];
+        for (int i = 0; i < rows; ++i) {
+            for (int j = 0; j < cols; ++j) {
+                if (grid[i][j]) {
+                    left = min(left, j);
+                    right = max(right, j);
+                    up = min(up, i);
+                    down = max(down, i);
+                }
+            }
         }
 
-        return max(dp0, dp1);
+        return (right - left + 1) * (down - up + 1);
     }
 };
 
