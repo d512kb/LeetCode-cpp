@@ -7,19 +7,12 @@ using namespace std;
 
 class Solution {
 public:
-    vector<vector<int>> generate(int numRows) {
-        vector<vector<int>> result(numRows, vector<int>(1, 1));
-
-        for (int i = 1; i < numRows; ++i) {
-            result[i].assign(i + 1, 1);
-            vector<int>& prevRow = result[i - 1];
-            vector<int>& row = result[i];
-            for (int j = 1; j < i; ++j) {
-                row[j] = prevRow[j - 1] + prevRow[j];
+    void moveZeroes(vector<int>& nums) {
+        for (int i = 0, z = 0, sz = nums.size(); i < sz; ++i) {
+            if (nums[i]) {
+                swap(nums[z++], nums[i]);
             }
         }
-
-        return result;
     }
 };
 
