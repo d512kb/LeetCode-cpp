@@ -5,20 +5,27 @@
 
 using namespace std;
 
+struct ListNode {
+    int val;
+    ListNode* next;
+    ListNode() : val(0), next(nullptr) {}
+    ListNode(int x) : val(x), next(nullptr) {}
+    ListNode(int x, ListNode* next) : val(x), next(next) {}
+};
+
 class Solution {
 public:
-    int findDuplicate(vector<int>& nums) {
-        for (int i = 0, sz = nums.size(); i < sz; ++i) {
-            int& v = nums[i];
-            int index = v > 0 ? v : -v;
+    ListNode* reverseList(ListNode* head) {
+        ListNode* preHead = nullptr;
 
-            if (nums[index] < 0)
-                return index;
-
-            nums[index] = -nums[index];
+        while (head) {
+            ListNode* headNext = head->next;
+            head->next = preHead;
+            preHead = head;
+            head = headNext;
         }
 
-        return 0;
+        return preHead;
     }
 };
 
