@@ -7,26 +7,19 @@ using namespace std;
 
 class Solution {
 public:
-    int minimumArea(vector<vector<int>>& grid) {
-        int rows = grid.size();
-        int cols = grid[0].size();
-        int left = cols;
-        int right = 0;
-        int up = rows;
-        int down = 0;
+    vector<vector<int>> generate(int numRows) {
+        vector<vector<int>> result(numRows, vector<int>(1, 1));
 
-        for (int i = 0; i < rows; ++i) {
-            for (int j = 0; j < cols; ++j) {
-                if (grid[i][j]) {
-                    left = min(left, j);
-                    right = max(right, j);
-                    up = min(up, i);
-                    down = max(down, i);
-                }
+        for (int i = 1; i < numRows; ++i) {
+            result[i].assign(i + 1, 1);
+            vector<int>& prevRow = result[i - 1];
+            vector<int>& row = result[i];
+            for (int j = 1; j < i; ++j) {
+                row[j] = prevRow[j - 1] + prevRow[j];
             }
         }
 
-        return (right - left + 1) * (down - up + 1);
+        return result;
     }
 };
 
