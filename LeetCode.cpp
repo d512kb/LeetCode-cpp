@@ -15,49 +15,30 @@ struct ListNode {
 
 class Solution {
 public:
-    bool isPalindrome(ListNode* head) {
-        ListNode* preHead = new ListNode(0, head);
-        ListNode* node = preHead;
-        ListNode* fastNode = head;
+    ListNode* swapPairs(ListNode* head) {
+        if (!head || !head->next)
+            return head;
 
-        // find mid point        
-        while (fastNode && fastNode->next) {
-            node = node->next;
-            fastNode = fastNode->next->next;
+        ListNode* dummy;
+        ListNode* prevFirst = &dummy;
+        ListNode* first = head;
+        ListNode* second = head->next;
+        ListNode* result = second;
+
+        while (first && second) {
+            ListNode* secondNext = second->next;
+
+            second->next = first;
+            prevFirst->next = second;
+            prevFirst = first;
+
+            first = secondNext;
+            second = secondNext ? secondNext->next : nullptr;
         }
 
-        ListNode* secondHalf = node->next;
+        prevFirst->next = first;
 
-        // reverse first half
-        ListNode* prev = nullptr;
-        node = head;
-        while (node != secondHalf) {
-            ListNode* preNext = node->next;
-            node->next = prev;
-            prev = node;
-            node = preNext;
-        }
-
-        node = prev;
-        prev = secondHalf;
-        bool isPalindrome = true;
-
-        if (fastNode) { // odd number of items
-            secondHalf = secondHalf->next;
-        }
-
-        while (node) {
-            isPalindrome = isPalindrome && node->val == secondHalf->val;
-            secondHalf = secondHalf->next;
-
-            ListNode* preNext = node->next;
-            node->next = prev;
-            prev = node;
-            node = preNext;
-        }
-
-        delete preHead;
-        return isPalindrome;
+        return result;
     }
 };
 
