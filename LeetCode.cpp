@@ -15,17 +15,49 @@ struct ListNode {
 
 class Solution {
 public:
-    ListNode* reverseList(ListNode* head) {
-        ListNode* preHead = nullptr;
+    bool isPalindrome(ListNode* head) {
+        ListNode* preHead = new ListNode(0, head);
+        ListNode* node = preHead;
+        ListNode* fastNode = head;
 
-        while (head) {
-            ListNode* headNext = head->next;
-            head->next = preHead;
-            preHead = head;
-            head = headNext;
+        // find mid point        
+        while (fastNode && fastNode->next) {
+            node = node->next;
+            fastNode = fastNode->next->next;
         }
 
-        return preHead;
+        ListNode* secondHalf = node->next;
+
+        // reverse first half
+        ListNode* prev = nullptr;
+        node = head;
+        while (node != secondHalf) {
+            ListNode* preNext = node->next;
+            node->next = prev;
+            prev = node;
+            node = preNext;
+        }
+
+        node = prev;
+        prev = secondHalf;
+        bool isPalindrome = true;
+
+        if (fastNode) { // odd number of items
+            secondHalf = secondHalf->next;
+        }
+
+        while (node) {
+            isPalindrome = isPalindrome && node->val == secondHalf->val;
+            secondHalf = secondHalf->next;
+
+            ListNode* preNext = node->next;
+            node->next = prev;
+            prev = node;
+            node = preNext;
+        }
+
+        delete preHead;
+        return isPalindrome;
     }
 };
 
