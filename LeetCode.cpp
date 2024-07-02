@@ -5,40 +5,21 @@
 
 using namespace std;
 
-struct ListNode {
-    int val;
-    ListNode* next;
-    ListNode() : val(0), next(nullptr) {}
-    ListNode(int x) : val(x), next(nullptr) {}
-    ListNode(int x, ListNode* next) : val(x), next(next) {}
-};
-
 class Solution {
 public:
-    ListNode* swapPairs(ListNode* head) {
-        if (!head || !head->next)
-            return head;
+    int maxProfit(int k, vector<int>& prices) {
+        k = min(k, static_cast<int>(prices.size() / 2));
+        vector<vector<int>> dp(k + 1, vector<int>(prices.size(), 0));
 
-        ListNode* dummy;
-        ListNode* prevFirst = &dummy;
-        ListNode* first = head;
-        ListNode* second = head->next;
-        ListNode* result = second;
-
-        while (first && second) {
-            ListNode* secondNext = second->next;
-
-            second->next = first;
-            prevFirst->next = second;
-            prevFirst = first;
-
-            first = secondNext;
-            second = secondNext ? secondNext->next : nullptr;
+        for (int i = 1; i <= k; ++i) {
+            int bestSell = -prices[0];
+            for (int j = 1, sz = prices.size(); j < sz; ++j) {
+                dp[i][j] = max(dp[i][j - 1], bestSell + prices[j]);
+                bestSell = max(bestSell, dp[i - 1][j] - prices[j]);
+            }
         }
 
-        prevFirst->next = first;
-
-        return result;
+        return dp.back().back();
     }
 };
 
