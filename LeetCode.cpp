@@ -7,31 +7,15 @@ using namespace std;
 
 class Solution {
 public:
-    int maxPoints(vector<vector<int>>& points) {
-        if (points.size() == 1)
-            return 1;
+    int fib(int n) {
+        int a = 0;
+        int b = 1;
 
-        unordered_map<double, int> slopes;
-        int vertSlope = 0;
-        int result = 0;
-
-        for (int i = 0, sz = points.size(); i < sz; ++i) {
-            slopes.clear();
-            vertSlope = 0;
-
-            for (int j = i + 1; j < sz; ++j) {
-                double yDiff = points[j][1] - points[i][1];
-                int xDiff = points[j][0] - points[i][0];
-
-                if (xDiff) {
-                    result = max(result, ++slopes[yDiff / xDiff] + 1);
-                } else {
-                    result = max(result, ++vertSlope + 1);
-                }
-            }
+        while (--n >= 0) {
+            a = exchange(b, a + b);
         }
 
-        return result;
+        return a;
     }
 };
 
