@@ -7,22 +7,17 @@ using namespace std;
 
 class Solution {
 public:
-    int tribonacci(int n) {
-        if (n == 0)
-            return 0;
+    int minCostClimbingStairs(vector<int>& cost) {
+        int a = cost[0];
+        int b = cost[1];
 
-        int a = 0;
-        int b = 1;
-        int c = 1;
-
-        for (int i = 3; i <= n; ++i) {
-            int newC = a + b + c;
+        for (int i = 2, sz = cost.size(); i < sz; ++i) {
+            int c = min(a, b) + cost[i];
             a = b;
             b = c;
-            c = newC;
         }
 
-        return c;
+        return min(a, b);
     }
 };
 
