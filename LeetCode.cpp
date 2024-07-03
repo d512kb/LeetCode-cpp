@@ -7,19 +7,31 @@ using namespace std;
 
 class Solution {
 public:
-    int maxProfit(int k, vector<int>& prices) {
-        k = min(k, static_cast<int>(prices.size() / 2));
-        vector<vector<int>> dp(k + 1, vector<int>(prices.size(), 0));
+    int maxPoints(vector<vector<int>>& points) {
+        if (points.size() == 1)
+            return 1;
 
-        for (int i = 1; i <= k; ++i) {
-            int bestSell = -prices[0];
-            for (int j = 1, sz = prices.size(); j < sz; ++j) {
-                dp[i][j] = max(dp[i][j - 1], bestSell + prices[j]);
-                bestSell = max(bestSell, dp[i - 1][j] - prices[j]);
+        unordered_map<double, int> slopes;
+        int vertSlope = 0;
+        int result = 0;
+
+        for (int i = 0, sz = points.size(); i < sz; ++i) {
+            slopes.clear();
+            vertSlope = 0;
+
+            for (int j = i + 1; j < sz; ++j) {
+                double yDiff = points[j][1] - points[i][1];
+                int xDiff = points[j][0] - points[i][0];
+
+                if (xDiff) {
+                    result = max(result, ++slopes[yDiff / xDiff] + 1);
+                } else {
+                    result = max(result, ++vertSlope + 1);
+                }
             }
         }
 
-        return dp.back().back();
+        return result;
     }
 };
 
