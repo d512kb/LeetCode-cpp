@@ -7,15 +7,22 @@ using namespace std;
 
 class Solution {
 public:
-    int fib(int n) {
+    int tribonacci(int n) {
+        if (n == 0)
+            return 0;
+
         int a = 0;
         int b = 1;
+        int c = 1;
 
-        while (--n >= 0) {
-            a = exchange(b, a + b);
+        for (int i = 3; i <= n; ++i) {
+            int newC = a + b + c;
+            a = b;
+            b = c;
+            c = newC;
         }
 
-        return a;
+        return c;
     }
 };
 
