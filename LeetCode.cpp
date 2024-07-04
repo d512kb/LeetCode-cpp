@@ -7,33 +7,33 @@ using namespace std;
 
 class Solution {
 public:
-    int minFallingPathSum(vector<vector<int>>& matrix) {
-        int rowSz = matrix.front().size();
-        vector<vector<int>> dp(2, vector<int>(rowSz, 0));
-        auto readRowIter = dp.begin();
-        auto writeRowIter = next(dp.begin());
+    long long mostPoints(vector<vector<int>>& questions) {
+        vector<int64_t> dp(questions.size());
+        auto dpIter = dp.rbegin();
+        int64_t result = 0;
 
-        for (auto& row : matrix) {
-            for (int i = 0; i < rowSz; ++i) {
-                auto& readRow = *readRowIter;
-                auto& writeRow = *writeRowIter;
+        for (auto iter = questions.rbegin(), iterEnd = questions.rend(); iter < iterEnd; ++iter, ++dpIter) {
+            int64_t val = (*iter)[0];
+            int steps = (*iter)[1];
 
-                int a = readRow[max(0, i - 1)];
-                int b = readRow[i];
-                int c = readRow[min(rowSz - 1, i + 1)];
-
-                writeRow[i] = row[i] + min({ a, b, c });
+            if (distance(dp.rbegin(), dpIter) > steps) {
+                val += *prev(dpIter, steps + 1);
             }
 
-            swap(readRowIter, writeRowIter);
+            result = max(result, val);
+            *dpIter = result;
         }
 
-        return *min_element(readRowIter->begin(), readRowIter->end());
+        return result;
     }
 };
 
 int main() {
     INIT_TIME(timer);
+
+    Solution sol;
+    vector<vector<int>> v {{3,2 }, { 4,3 }, { 4,4 }, { 2,5 }};
+    sol.mostPoints(v);
 
     PRINT_ELAPSED(timer);
     return 0;
