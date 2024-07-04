@@ -7,17 +7,18 @@ using namespace std;
 
 class Solution {
 public:
-    int deleteAndEarn(vector<int>& nums) {
-        sort(nums.begin(), nums.end());
-        vector<int> dp(nums.begin(), nums.end());
+    long long maximumTotalDamage(vector<int>& power) {
+        sort(power.begin(), power.end());
+        vector<uint64_t> dp(power.begin(), power.end());
+        uint64_t mx = 0;
 
-        for (int i = 1, j = 0, mx = 0, sz = nums.size(); i < sz; ++i) {
-            int& currVal = nums[i];
+        for (int i = 1, j = 0, sz = power.size(); i < sz; ++i) {
+            int& currVal = power[i];
 
-            if (nums[i - 1] == currVal) {
+            if (power[i - 1] == currVal) {
                 dp[i] = currVal + dp[i - 1];
             } else {
-                for (; nums[j] + 1 < currVal; ++j) {
+                for (; power[j] + 2 < currVal; ++j) {
                     mx = max(mx, dp[j]);
                 }
                 dp[i] = currVal + mx;
