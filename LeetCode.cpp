@@ -7,20 +7,26 @@ using namespace std;
 
 class Solution {
 public:
-    int minCostClimbingStairs(vector<int>& cost) {
-        int a = cost[0];
-        int b = cost[1];
+    int deleteAndEarn(vector<int>& nums) {
+        sort(nums.begin(), nums.end());
+        vector<int> dp(nums.begin(), nums.end());
 
-        for (int i = 2, sz = cost.size(); i < sz; ++i) {
-            int c = min(a, b) + cost[i];
-            a = b;
-            b = c;
+        for (int i = 1, j = 0, mx = 0, sz = nums.size(); i < sz; ++i) {
+            int& currVal = nums[i];
+
+            if (nums[i - 1] == currVal) {
+                dp[i] = currVal + dp[i - 1];
+            } else {
+                for (; nums[j] + 1 < currVal; ++j) {
+                    mx = max(mx, dp[j]);
+                }
+                dp[i] = currVal + mx;
+            }
         }
 
-        return min(a, b);
+        return *max_element(dp.begin(), dp.end());
     }
 };
-
 
 int main() {
     INIT_TIME(timer);
