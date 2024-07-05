@@ -7,19 +7,20 @@ using namespace std;
 
 class Solution {
 public:
-    bool threeConsecutiveOdds(vector<int>& arr) {
-        int oddsCount = 0;
+    int findLongestChain(vector<vector<int>>& pairs) {
+        sort(pairs.begin(), pairs.end(), [](const auto& v1, const auto& v2) { return v1[1] < v2[1]; });
 
-        for (int n : arr) {
-            if (n % 2) {
-                if (++oddsCount == 3)
-                    return true;
-            } else {
-                oddsCount = 0;
+        int chainLen = 0;
+        int lastNexus = numeric_limits<int>::min();
+
+        for (auto iter = pairs.begin(), iterEnd = pairs.end(); iter != iterEnd; ++iter) {
+            if ((*iter)[0] > lastNexus) {
+                ++chainLen;
+                lastNexus = (*iter)[1];
             }
         }
 
-        return false;
+        return chainLen;
     }
 };
 
