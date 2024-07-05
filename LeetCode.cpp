@@ -7,20 +7,17 @@ using namespace std;
 
 class Solution {
 public:
-    int findLongestChain(vector<vector<int>>& pairs) {
-        sort(pairs.begin(), pairs.end(), [](const auto& v1, const auto& v2) { return v1[1] < v2[1]; });
+    int longestSubsequence(vector<int>& arr, int difference) {
+        unordered_map<int, int> dp;
+        int result = 0;
 
-        int chainLen = 0;
-        int lastNexus = numeric_limits<int>::min();
-
-        for (auto iter = pairs.begin(), iterEnd = pairs.end(); iter != iterEnd; ++iter) {
-            if ((*iter)[0] > lastNexus) {
-                ++chainLen;
-                lastNexus = (*iter)[1];
-            }
+        for (int n : arr) {
+            int val = 1 + dp[n - difference];
+            dp[n] = val;
+            result = max(result, val);
         }
 
-        return chainLen;
+        return result;
     }
 };
 
