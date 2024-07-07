@@ -7,9 +7,9 @@ using namespace std;
 
 class Solution {
 public:
-    int longestCommonSubsequence(string text1, string text2) {
-        int sz1 = text1.size();
-        int sz2 = text2.size();
+    int maxUncrossedLines(vector<int>& nums1, vector<int>& nums2) {
+        int sz1 = nums1.size();
+        int sz2 = nums2.size();
 
         vector<int> dpCurr(sz2 + 1);
         vector<int> dpPrev(sz2 + 1);
@@ -18,7 +18,7 @@ public:
             swap(dpCurr, dpPrev);
 
             for (int j = 0; j < sz2; ++j) {
-                if (text1[i] == text2[j]) {
+                if (nums1[i] == nums2[j]) {
                     dpCurr[j + 1] = 1 + dpPrev[j];
                 } else {
                     dpCurr[j + 1] = max(dpCurr[j], dpPrev[j + 1]);
