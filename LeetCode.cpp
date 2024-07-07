@@ -7,35 +7,32 @@ using namespace std;
 
 class Solution {
 public:
-    vector<string> validStrings(int n) {
-        vector<string> result;
-        string s1("0");
-        string s2("1");
+    int numberOfSubmatrices(vector<vector<char>>& grid) {
+        int rows = grid.size();
+        int cols = grid[0].size();
+        int result = 0;
 
-        buildString(n, s1, result);
-        buildString(n, s2, result);
+        vector<pair<int, int>> dp(cols + 1);
+
+        for (auto& row : grid) {
+            auto prevRow = dp;
+
+            for (int j = 0; j < cols; ++j) {
+                char c = row[j];
+                auto& currCell = dp[j + 1];
+                auto& leftCell = dp[j];
+                auto& diagCell = prevRow[j];
+
+                currCell.first += leftCell.first - diagCell.first + (c == 'X');
+                currCell.second += leftCell.second - diagCell.second + (c == 'Y');
+
+                if (currCell.first > 0 && currCell.first == currCell.second) {
+                    ++result;
+                }
+            }
+        }
 
         return result;
-    }
-private:
-    void buildString(int n, string& s, vector<string>& result) {
-        if (s.size() == n) {
-            result.push_back(s);
-            return;
-        }
-
-        if (s.back() == '0') {
-            s.push_back('1');
-            buildString(n, s, result);
-            s.pop_back();
-        } else {
-            s.push_back('0');
-            buildString(n, s, result);
-            s.pop_back();
-            s.push_back('1');
-            buildString(n, s, result);
-            s.pop_back();
-        }
     }
 };
 
