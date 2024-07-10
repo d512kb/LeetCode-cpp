@@ -7,27 +7,36 @@ using namespace std;
 
 class Solution {
 public:
-    int maxUncrossedLines(vector<int>& nums1, vector<int>& nums2) {
-        int sz1 = nums1.size();
-        int sz2 = nums2.size();
+    int maxProfit(vector<int>& prices) {
+        m_cache.assign(prices.size(), vector<int>(2, -1));
 
-        vector<int> dpCurr(sz2 + 1);
-        vector<int> dpPrev(sz2 + 1);
-
-        for (int i = 0; i < sz1; ++i) {
-            swap(dpCurr, dpPrev);
-
-            for (int j = 0; j < sz2; ++j) {
-                if (nums1[i] == nums2[j]) {
-                    dpCurr[j + 1] = 1 + dpPrev[j];
-                } else {
-                    dpCurr[j + 1] = max(dpCurr[j], dpPrev[j + 1]);
-                }
-            }
+        return calcPrices(prices, 0, true);
+    }
+private:
+    int calcPrices(vector<int>& prices, int index, bool canBuy) {
+        if (index >= prices.size()) {
+            return 0;
         }
 
-        return dpCurr.back();
+        int& result = m_cache[index][canBuy];
+
+        if (result >= 0) {
+            return result;
+        }
+
+        if (canBuy) {
+            result = max(-prices[index] + calcPrices(prices, index + 1, false),
+                         calcPrices(prices, index + 1, true));
+        } else {
+            result = max(prices[index] + calcPrices(prices, index + 2, true),
+                         calcPrices(prices, index + 1, false));
+        }
+
+        return result;
     }
+
+    vector<vector<int>> m_cache;
+    int m_maxProfit;
 };
 
 int main() {
