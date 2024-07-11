@@ -7,25 +7,30 @@ using namespace std;
 
 class Solution {
 public:
-    int countGoodStrings(int low, int high, int zero, int one) {
-        const int upperCut = 1000000007;
-        vector<int> dp(high + 1);
-        dp[0] = 1;
-        uint64_t result = 0;
+    int numDecodings(string s) {
+        if (s[0] == '0')
+            return 0;
 
-        for (int i = 1; i < low; ++i) {
-            int tr = (i >= zero) ? dp[i - zero] : 0;
-            tr += (i >= one) ? dp[i - one] : 0;
-            dp[i] = tr % upperCut;
+        int sz = s.size();
+        vector<int> dp(sz + 1, 1);
+
+        for (int i = 1; i < sz; ++i) {
+            char num = (s[i - 1] - '0') * 10 + (s[i] - '0');
+
+            if (num == 0 || (num > 26 && num % 10 == 0)) {
+                return 0;
+            }
+
+            if (num < 10 || num > 26) {
+                dp[i + 1] = dp[i];
+            } else if (num == 10 || num == 20) {
+                dp[i + 1] = dp[i - 1];
+            } else {
+                dp[i + 1] = dp[i] + dp[i - 1];
+            }
         }
 
-        for (int i = low; i <= high; ++i) {
-            int val = (dp[i - zero] + dp[i - one]) % upperCut;
-            dp[i] = val;
-            result += val;
-        }
-
-        return result % upperCut;
+        return dp.back();
     }
 };
 
