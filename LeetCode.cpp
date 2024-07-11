@@ -7,30 +7,29 @@ using namespace std;
 
 class Solution {
 public:
-    int numDecodings(string s) {
-        if (s[0] == '0')
-            return 0;
+    string mergeAlternately(string word1, string word2) {
+        string result(word1.size() + word2.size(), 0);
 
-        int sz = s.size();
-        vector<int> dp(sz + 1, 1);
+        auto word1Iter = word1.begin();
+        auto word2Iter = word2.begin();
+        auto resultIter = result.begin();
 
-        for (int i = 1; i < sz; ++i) {
-            char num = (s[i - 1] - '0') * 10 + (s[i] - '0');
+        int n = min(word1.size(), word2.size());
 
-            if (num == 0 || (num > 26 && num % 10 == 0)) {
-                return 0;
-            }
-
-            if (num < 10 || num > 26) {
-                dp[i + 1] = dp[i];
-            } else if (num == 10 || num == 20) {
-                dp[i + 1] = dp[i - 1];
-            } else {
-                dp[i + 1] = dp[i] + dp[i - 1];
-            }
+        while (n--) {
+            *resultIter++ = *word1Iter++;
+            *resultIter++ = *word2Iter++;
         }
 
-        return dp.back();
+        while (word1Iter != word1.end()) {
+            *resultIter++ = *word1Iter++;
+        }
+
+        while (word2Iter != word2.end()) {
+            *resultIter++ = *word2Iter++;
+        }
+
+        return result;
     }
 };
 
