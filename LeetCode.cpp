@@ -7,16 +7,18 @@ using namespace std;
 
 class Solution {
 public:
-    int largestAltitude(vector<int>& gain) {
-        int currentHeight = 0;
-        int result = 0;
+    int pivotIndex(vector<int>& nums) {
+        int rightSum = accumulate(nums.begin(), nums.end(), 0);
 
-        for (int& i : gain) {
-            currentHeight += i;
-            result = max(result, currentHeight);
+        for (int i = 0, sz = nums.size(), sum = 0; i < sz; ++i) {
+            rightSum -= nums[i];
+            if (sum == rightSum) {
+                return i;
+            }
+            sum += nums[i];
         }
 
-        return result;
+        return -1;
     }
 };
 
