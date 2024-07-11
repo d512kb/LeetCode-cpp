@@ -7,26 +7,13 @@ using namespace std;
 
 class Solution {
 public:
-    string mergeAlternately(string word1, string word2) {
-        string result(word1.size() + word2.size(), 0);
+    int largestAltitude(vector<int>& gain) {
+        int currentHeight = 0;
+        int result = 0;
 
-        auto word1Iter = word1.begin();
-        auto word2Iter = word2.begin();
-        auto resultIter = result.begin();
-
-        int n = min(word1.size(), word2.size());
-
-        while (n--) {
-            *resultIter++ = *word1Iter++;
-            *resultIter++ = *word2Iter++;
-        }
-
-        while (word1Iter != word1.end()) {
-            *resultIter++ = *word1Iter++;
-        }
-
-        while (word2Iter != word2.end()) {
-            *resultIter++ = *word2Iter++;
+        for (int& i : gain) {
+            currentHeight += i;
+            result = max(result, currentHeight);
         }
 
         return result;
