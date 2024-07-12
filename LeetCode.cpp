@@ -7,20 +7,19 @@ using namespace std;
 
 class Solution {
 public:
-    int numSquares(int n) {
-        vector<int> dp(n + 1);
+    bool canPlaceFlowers(vector<int>& flowerbed, int n) {
+        if (!n)
+            return true;
 
-        for (int i = 1; i <= n; ++i) {
-            int minVal = n;
-
-            for (int s = 1, m = 1; s <= i; ++m, s = m * m) {
-                minVal = min(minVal, 1 + dp[i - s]);
+        for (int i = 0, sz = flowerbed.size() - 1; i <= sz; ++i) {
+            if (flowerbed[max(0, i - 1)] + flowerbed[i] + flowerbed[min(sz, i + 1)] == 0) {
+                flowerbed[i] = 1;
+                if (--n == 0)
+                    return true;
             }
-
-            dp[i] = minVal;
         }
 
-        return dp.back();
+        return false;
     }
 };
 
