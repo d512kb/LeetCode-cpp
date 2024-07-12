@@ -7,17 +7,16 @@ using namespace std;
 
 class Solution {
 public:
-    double findMaxAverage(vector<int>& nums, int k) {
-        int sum = accumulate(nums.begin(), nums.begin() + k, 0);
-        int maxSum = sum;
+    vector<vector<int>> findDifference(vector<int>& nums1, vector<int>& nums2) {
+        set<int> nums1Set(nums1.begin(), nums1.end());
+        set<int> nums2Set(nums2.begin(), nums2.end());
 
-        for (int i = k; i < nums.size(); ++i) {
-            sum -= nums[i - k];
-            sum += nums[i];
-            maxSum = max(maxSum, sum);
-        }
+        vector<vector<int>> result(2);
 
-        return static_cast<double>(maxSum) / k;
+        set_difference(nums1Set.begin(), nums1Set.end(), nums2Set.begin(), nums2Set.end(), back_inserter(result[0]));
+        set_difference(nums2Set.begin(), nums2Set.end(), nums1Set.begin(), nums1Set.end(), back_inserter(result[1]));
+
+        return result;
     }
 };
 
