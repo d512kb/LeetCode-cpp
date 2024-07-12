@@ -7,19 +7,20 @@ using namespace std;
 
 class Solution {
 public:
-    bool canPlaceFlowers(vector<int>& flowerbed, int n) {
-        if (!n)
-            return true;
+    string reverseVowels(string s) {
+        vector<char> vowels{ 'a','A','e','E','i','I','o','O','u','U' };
 
-        for (int i = 0, sz = flowerbed.size() - 1; i <= sz; ++i) {
-            if (flowerbed[max(0, i - 1)] + flowerbed[i] + flowerbed[min(sz, i + 1)] == 0) {
-                flowerbed[i] = 1;
-                if (--n == 0)
-                    return true;
-            }
+        auto leftIndex = find_first_of(s.begin(), s.end(), vowels.begin(), vowels.end());
+        auto rightIndex = find_first_of(s.rbegin(), s.rend(), vowels.begin(), vowels.end());
+
+        while (leftIndex < rightIndex.base()) {
+            iter_swap(leftIndex, rightIndex);
+
+            leftIndex = find_first_of(leftIndex + 1, s.end(), vowels.begin(), vowels.end());
+            rightIndex = find_first_of(rightIndex + 1, s.rend(), vowels.begin(), vowels.end());
         }
 
-        return false;
+        return s;
     }
 };
 
