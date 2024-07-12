@@ -5,26 +5,24 @@
 
 using namespace std;
 
-class Solution {
+class RecentCounter {
 public:
-    bool uniqueOccurrences(vector<int>& arr) {
-        vector<short> occurrences(2001);
-        unordered_set<int> usedOccurrences;
+    RecentCounter() {
 
-        for (int i : arr) {
-            ++occurrences[i + 1000];
-        }
-
-        for (int oc : occurrences) {
-            if (oc) {
-                if (!usedOccurrences.insert(oc).second) {
-                    return false;
-                }
-            }
-        }
-
-        return true;
     }
+
+    int ping(int t) {
+        m_pings.push(t);
+        t -= 3000;
+
+        while (t > m_pings.front()) {
+            m_pings.pop();
+        }
+
+        return m_pings.size();
+    }
+private:
+    queue<int> m_pings;
 };
 
 int main() {
