@@ -7,16 +7,23 @@ using namespace std;
 
 class Solution {
 public:
-    vector<vector<int>> findDifference(vector<int>& nums1, vector<int>& nums2) {
-        set<int> nums1Set(nums1.begin(), nums1.end());
-        set<int> nums2Set(nums2.begin(), nums2.end());
+    bool uniqueOccurrences(vector<int>& arr) {
+        vector<short> occurrences(2001);
+        unordered_set<int> usedOccurrences;
 
-        vector<vector<int>> result(2);
+        for (int i : arr) {
+            ++occurrences[i + 1000];
+        }
 
-        set_difference(nums1Set.begin(), nums1Set.end(), nums2Set.begin(), nums2Set.end(), back_inserter(result[0]));
-        set_difference(nums2Set.begin(), nums2Set.end(), nums1Set.begin(), nums1Set.end(), back_inserter(result[1]));
+        for (int oc : occurrences) {
+            if (oc) {
+                if (!usedOccurrences.insert(oc).second) {
+                    return false;
+                }
+            }
+        }
 
-        return result;
+        return true;
     }
 };
 
