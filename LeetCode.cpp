@@ -7,18 +7,28 @@ using namespace std;
 
 class Solution {
 public:
-    int pivotIndex(vector<int>& nums) {
-        int rightSum = accumulate(nums.begin(), nums.end(), 0);
+    int mincostTickets(vector<int>& days, vector<int>& costs) {
+        int offset = 30;
+        vector<int> dp(365 + offset);
 
-        for (int i = 0, sz = nums.size(), sum = 0; i < sz; ++i) {
-            rightSum -= nums[i];
-            if (sum == rightSum) {
-                return i;
+        auto daysIter = days.begin();
+        int dayCost = costs[0];
+        int weekCost = costs[1];
+        int monthCost = costs[2];
+
+        for (int i = 1, dpIndex = offset, day = *daysIter; i <= 365; ++i, ++dpIndex) {
+            if (i == day) {
+                dp[dpIndex] = min(min(dayCost + dp[dpIndex - 1], weekCost + dp[dpIndex - 7]), monthCost + dp[dpIndex - 30]);
+                if (++daysIter == days.end()) {
+                    return dp[dpIndex];
+                }
+                day = *daysIter;
+            } else {
+                dp[dpIndex] = dp[dpIndex - 1];
             }
-            sum += nums[i];
         }
 
-        return -1;
+        return 0;
     }
 };
 
