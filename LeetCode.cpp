@@ -7,20 +7,17 @@ using namespace std;
 
 class Solution {
 public:
-    string reverseVowels(string s) {
-        vector<char> vowels{ 'a','A','e','E','i','I','o','O','u','U' };
+    double findMaxAverage(vector<int>& nums, int k) {
+        int sum = accumulate(nums.begin(), nums.begin() + k, 0);
+        int maxSum = sum;
 
-        auto leftIndex = find_first_of(s.begin(), s.end(), vowels.begin(), vowels.end());
-        auto rightIndex = find_first_of(s.rbegin(), s.rend(), vowels.begin(), vowels.end());
-
-        while (leftIndex < rightIndex.base()) {
-            iter_swap(leftIndex, rightIndex);
-
-            leftIndex = find_first_of(leftIndex + 1, s.end(), vowels.begin(), vowels.end());
-            rightIndex = find_first_of(rightIndex + 1, s.rend(), vowels.begin(), vowels.end());
+        for (int i = k; i < nums.size(); ++i) {
+            sum -= nums[i - k];
+            sum += nums[i];
+            maxSum = max(maxSum, sum);
         }
 
-        return s;
+        return static_cast<double>(maxSum) / k;
     }
 };
 
