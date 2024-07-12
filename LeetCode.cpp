@@ -7,28 +7,20 @@ using namespace std;
 
 class Solution {
 public:
-    int mincostTickets(vector<int>& days, vector<int>& costs) {
-        int offset = 30;
-        vector<int> dp(365 + offset);
+    int numSquares(int n) {
+        vector<int> dp(n + 1);
 
-        auto daysIter = days.begin();
-        int dayCost = costs[0];
-        int weekCost = costs[1];
-        int monthCost = costs[2];
+        for (int i = 1; i <= n; ++i) {
+            int minVal = n;
 
-        for (int i = 1, dpIndex = offset, day = *daysIter; i <= 365; ++i, ++dpIndex) {
-            if (i == day) {
-                dp[dpIndex] = min(min(dayCost + dp[dpIndex - 1], weekCost + dp[dpIndex - 7]), monthCost + dp[dpIndex - 30]);
-                if (++daysIter == days.end()) {
-                    return dp[dpIndex];
-                }
-                day = *daysIter;
-            } else {
-                dp[dpIndex] = dp[dpIndex - 1];
+            for (int s = 1, m = 1; s <= i; ++m, s = m * m) {
+                minVal = min(minVal, 1 + dp[i - s]);
             }
+
+            dp[i] = minVal;
         }
 
-        return 0;
+        return dp.back();
     }
 };
 
