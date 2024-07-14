@@ -7,24 +7,35 @@ using namespace std;
 
 class Solution {
 public:
-    int maxEnvelopes(vector<vector<int>>& envelopes) {
-        sort(envelopes.begin(), envelopes.end(), [](const auto& e1, const auto& e2) {
-            return e1[0] == e2[0] ? e1[1] > e2[1] : e1[0] < e2[0];
-        });
-        vector<int> lis;
+    int minimumCost(int m, int n, vector<int>& horizontalCut, vector<int>& verticalCut) {
+        auto hBegin = horizontalCut.begin();
+        auto hEnd = horizontalCut.end();
+        auto vBegin = verticalCut.begin();
+        auto vEnd = verticalCut.end();
 
-        for (auto& e : envelopes) {
-            int height = e[1];
-            auto iter = lower_bound(lis.begin(), lis.end(), height);
+        sort(hBegin, hEnd, greater<int>());
+        sort(vBegin, vEnd, greater<int>());
 
-            if (iter == lis.end()) {
-                lis.push_back(height);
+        int horizontalCost = accumulate(hBegin, hEnd, 0);
+        int verticalCost = accumulate(vBegin, vEnd, 0);
+
+        int totalCost = 0;
+
+        while (hBegin < hEnd && vBegin < vEnd) {
+            if (*hBegin > *vBegin) {
+                totalCost += *hBegin + verticalCost;
+                horizontalCost -= *hBegin;
+                ++hBegin;
             } else {
-                *iter = height;
+                totalCost += *vBegin + horizontalCost;
+                verticalCost -= *vBegin;
+                ++vBegin;
             }
         }
 
-        return lis.size();
+        totalCost += horizontalCost + verticalCost;
+
+        return totalCost;
     }
 };
 
