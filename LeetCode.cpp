@@ -7,35 +7,23 @@ using namespace std;
 
 class Solution {
 public:
-    int minimumCost(int m, int n, vector<int>& horizontalCut, vector<int>& verticalCut) {
-        auto hBegin = horizontalCut.begin();
-        auto hEnd = horizontalCut.end();
-        auto vBegin = verticalCut.begin();
-        auto vEnd = verticalCut.end();
+    vector<int> longestObstacleCourseAtEachPosition(vector<int>& obstacles) {
+        vector<int> lis(1, obstacles[0]);
+        vector<int> result(1, 1);
+        result.reserve(obstacles.size());
 
-        sort(hBegin, hEnd, greater<int>());
-        sort(vBegin, vEnd, greater<int>());
-
-        int horizontalCost = accumulate(hBegin, hEnd, 0);
-        int verticalCost = accumulate(vBegin, vEnd, 0);
-
-        int totalCost = 0;
-
-        while (hBegin < hEnd && vBegin < vEnd) {
-            if (*hBegin > *vBegin) {
-                totalCost += *hBegin + verticalCost;
-                horizontalCost -= *hBegin;
-                ++hBegin;
+        for (int i = 1; i < obstacles.size(); ++i) {
+            if (obstacles[i] >= lis.back()) {
+                lis.push_back(obstacles[i]);
+                result.push_back(lis.size());
             } else {
-                totalCost += *vBegin + horizontalCost;
-                verticalCost -= *vBegin;
-                ++vBegin;
+                auto iter = upper_bound(lis.begin(), lis.end(), obstacles[i]);
+                *iter = obstacles[i];
+                result.push_back(1 + distance(lis.begin(), iter));
             }
         }
 
-        totalCost += horizontalCost + verticalCost;
-
-        return totalCost;
+        return result;
     }
 };
 
