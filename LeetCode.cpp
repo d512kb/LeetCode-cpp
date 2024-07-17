@@ -5,47 +5,49 @@
 
 using namespace std;
 
+// Definition for a binary tree node.
+struct TreeNode {
+    int val;
+    TreeNode *left;
+    TreeNode *right;
+    TreeNode() : val(0), left(nullptr), right(nullptr) {}
+    TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}
+    TreeNode(int x, TreeNode *left, TreeNode *right) : val(x), left(left), right(right) {}
+};
+
 class Solution {
 public:
-    int findNumberOfLIS(vector<int>& nums) {
-        int sz = nums.size();
-        vector<int> dpLis(sz);
-        vector<int> dpLisCount(sz);
+    vector<TreeNode*> delNodes(TreeNode* root, vector<int>& to_delete) {
+        vector<char> toDelete(1000 + 1);
 
-        dpLis[0] = 1;
-        dpLisCount[0] = 1;
-        int maxLis = 1;
-        int result = 1;
+        for (int val : to_delete) {
+            toDelete[val] = 1;
+        }
 
-        for (int i = 1; i < sz; ++i) {
-            int lis = 1;
-            int lisCount = 1;
-
-            for (int j = 0; j < i; ++j) {
-                if (nums[j] < nums[i]) {
-                    int currLis = 1 + dpLis[j];
-
-                    if (currLis > lis) {
-                        lis = currLis;
-                        lisCount = dpLisCount[j];
-                    } else if (currLis == lis) {
-                        lisCount += dpLisCount[j];
-                    }
-                }
-            }
-
-            dpLis[i] = lis;
-            dpLisCount[i] = lisCount;
-
-            if (lis > maxLis) {
-                maxLis = lis;
-                result = lisCount;
-            } else if (lis == maxLis) {
-                result += lisCount;
-            }
+        vector<TreeNode*> result;
+        if (delNodes(root, toDelete, result)) {
+            result.push_back(root);
         }
 
         return result;
+    }
+private:
+    TreeNode* delNodes(TreeNode* node, vector<char>& toDelete, vector<TreeNode*>& result) {
+        if (!node)
+            return nullptr;
+
+        node->left = delNodes(node->left, toDelete, result);
+        node->right = delNodes(node->right, toDelete, result);
+
+        if (toDelete[node->val]) {
+            if (node->left) result.push_back(node->left);
+            if (node->right) result.push_back(node->right);
+
+            delete node;
+            return nullptr;
+        }
+
+        return node;
     }
 };
 
