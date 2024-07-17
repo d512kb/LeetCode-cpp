@@ -7,19 +7,41 @@ using namespace std;
 
 class Solution {
 public:
-    vector<int> longestObstacleCourseAtEachPosition(vector<int>& obstacles) {
-        vector<int> lis(1, obstacles[0]);
-        vector<int> result(1, 1);
-        result.reserve(obstacles.size());
+    int findNumberOfLIS(vector<int>& nums) {
+        int sz = nums.size();
+        vector<int> dpLis(sz);
+        vector<int> dpLisCount(sz);
 
-        for (int i = 1; i < obstacles.size(); ++i) {
-            if (obstacles[i] >= lis.back()) {
-                lis.push_back(obstacles[i]);
-                result.push_back(lis.size());
-            } else {
-                auto iter = upper_bound(lis.begin(), lis.end(), obstacles[i]);
-                *iter = obstacles[i];
-                result.push_back(1 + distance(lis.begin(), iter));
+        dpLis[0] = 1;
+        dpLisCount[0] = 1;
+        int maxLis = 1;
+        int result = 1;
+
+        for (int i = 1; i < sz; ++i) {
+            int lis = 1;
+            int lisCount = 1;
+
+            for (int j = 0; j < i; ++j) {
+                if (nums[j] < nums[i]) {
+                    int currLis = 1 + dpLis[j];
+
+                    if (currLis > lis) {
+                        lis = currLis;
+                        lisCount = dpLisCount[j];
+                    } else if (currLis == lis) {
+                        lisCount += dpLisCount[j];
+                    }
+                }
+            }
+
+            dpLis[i] = lis;
+            dpLisCount[i] = lisCount;
+
+            if (lis > maxLis) {
+                maxLis = lis;
+                result = lisCount;
+            } else if (lis == maxLis) {
+                result += lisCount;
             }
         }
 
