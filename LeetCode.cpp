@@ -7,16 +7,22 @@ using namespace std;
 
 class Solution {
 public:
-    bool doesAliceWin(string s) {
-        string wovels{ "aeiou" };
+    int maxOperations(string s) {
+        int dp = 0;
+        int result = 0;
 
-        for (char c : s) {
-            if (wovels.find(c) != string::npos) {
-                return true;
+        for (int i = s.size() - 2; i >= 0; --i) {
+            if (s[i] == '1') {
+                result += dp;
+
+                if (s[i + 1] == '0') {
+                    dp += 1;
+                    ++result;
+                }
             }
         }
 
-        return false;
+        return result;
     }
 };
 
