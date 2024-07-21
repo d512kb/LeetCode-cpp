@@ -7,33 +7,16 @@ using namespace std;
 
 class Solution {
 public:
-    int minChanges(int n, int k) {
-        int result = 0;
+    bool doesAliceWin(string s) {
+        string wovels{ "aeiou" };
 
-        while (k) {
-            if (k % 2) {
-                if (!(n % 2)) {
-                    return -1;
-                }
-
-            } else {
-                if (n % 2) {
-                    ++result;
-                }
+        for (char c : s) {
+            if (wovels.find(c) != string::npos) {
+                return true;
             }
-
-            k /= 2;
-            n /= 2;
         }
 
-        while (n) {
-            if (n % 2)
-                ++result;
-
-            n /= 2;
-        }
-
-        return result;
+        return false;
     }
 };
 
