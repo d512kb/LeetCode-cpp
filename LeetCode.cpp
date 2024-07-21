@@ -6,65 +6,35 @@
 using namespace std;
 
 class Solution {
-    struct Node {
-        Node() : w(false), nodes{ nullptr } {};
-        bool w;
-        Node* nodes[26];
-    };
 public:
-    vector<vector<string>> suggestedProducts(vector<string>& products, string searchWord) {
-        for (auto& product : products) {
-            addWord(product);
+    int minChanges(int n, int k) {
+        int result = 0;
+
+        while (k) {
+            if (k % 2) {
+                if (!(n % 2)) {
+                    return -1;
+                }
+
+            } else {
+                if (n % 2) {
+                    ++result;
+                }
+            }
+
+            k /= 2;
+            n /= 2;
         }
 
-        vector<vector<string>> result;
-        vector<string> foundWords;
-        Node* node = &root;
-        string word;
+        while (n) {
+            if (n % 2)
+                ++result;
 
-        for (char c : searchWord) {
-            word.push_back(c);
-            int idx = c - 'a';
-
-            if (node) { node = node->nodes[idx]; }
-            if (node) { findThreeProducts(node, word, foundWords); }
-
-            result.push_back(move(foundWords));
+            n /= 2;
         }
 
         return result;
     }
-private:
-    void addWord(const string& word) {
-        Node* node = &root;
-
-        for (char c : word) {
-            int idx = c - 'a';
-
-            if (!node->nodes[idx]) {
-                node->nodes[idx] = new Node();
-            }
-
-            node = node->nodes[idx];
-        }
-
-        node->w = true;
-    }
-
-    void findThreeProducts(Node* node, string& word, vector<string>& result) {
-        if (result.size() == 3) { return; }
-        if (node->w) { result.push_back(word); }
-
-        for (int i = 0; i < 26; ++i) {
-            if (node->nodes[i]) {
-                word.push_back(i + 'a');
-                findThreeProducts(node->nodes[i], word, result);
-                word.pop_back();
-            }
-        }
-    }
-
-    Node root;
 };
 
 int main() {
