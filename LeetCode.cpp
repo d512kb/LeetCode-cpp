@@ -7,22 +7,25 @@ using namespace std;
 
 class Solution {
 public:
-    int maxOperations(string s) {
-        int dp = 0;
-        int result = 0;
+    vector<int> frequencySort(vector<int>& nums) {
+        vector<int> freq(201);
 
-        for (int i = s.size() - 2; i >= 0; --i) {
-            if (s[i] == '1') {
-                result += dp;
-
-                if (s[i + 1] == '0') {
-                    dp += 1;
-                    ++result;
-                }
-            }
+        for (int n : nums) {
+            ++freq[n + 100];
         }
 
-        return result;
+        sort(nums.begin(), nums.end(), [&freq](int a, int b) {
+            int freqA = freq[a + 100];
+            int freqB = freq[b + 100];
+
+            if (freqA == freqB) {
+                return b < a;
+            } else {
+                return freqA < freqB;
+            }
+        });
+
+        return nums;
     }
 };
 
