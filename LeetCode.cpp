@@ -7,17 +7,27 @@ using namespace std;
 
 class Solution {
 public:
-    int change(int amount, vector<int>& coins) {
-        vector<int> dp(amount + 1);
-        dp[0] = 1;
+    int findMaxForm(vector<string>& strs, int m, int n) {
+        vector<vector<int>> dp(m + 1, vector<int>(n + 1));
 
-        for (int c : coins) {
-            for (int i = c; i <= amount; ++i) {
-                dp[i] += dp[i - c];
+        for (int i = 0; i < strs.size(); ++i) {
+            int bits[2]{ 0 };
+
+            for (char c : strs[i]) {
+                ++bits[c - '0'];
+            }
+
+            int zeroes = bits[0];
+            int ones = bits[1];
+
+            for (int i = m; i >= zeroes; --i) {
+                for (int j = n; j >= ones; --j) {
+                    dp[i][j] = max(dp[i][j], 1 + dp[i - zeroes][j - ones]);
+                }
             }
         }
 
-        return dp.back();
+        return dp.back().back();
     }
 };
 
