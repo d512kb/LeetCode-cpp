@@ -7,23 +7,26 @@ using namespace std;
 
 class Solution {
 public:
-    int combinationSum4(vector<int>& nums, int target) {
-        vector<int> dp(target + 1);
-        dp[0] = 1;
+    int longestPalindromeSubseq(string s) {
+        int sz = s.size();
+        vector<int> dp(sz);
+        vector<int> dpPrev(sz);
 
-        for (int i = 1; i <= target; ++i) {
-            int64_t sum = 0;
+        for (int start = sz - 1; start >= 0; --start) {
+            swap(dp, dpPrev);
+            dpPrev[start] = 0; // for 'xx' case, so we don't append extra item for empty dpPrev
+            dp[start] = 1;
 
-            for (int n : nums) {
-                if (n <= i) {
-                    sum += dp[i - n];
+            for (int fin = start + 1; fin < sz; ++fin) {
+                if (s[start] != s[fin]) {
+                    dp[fin] = max(dp[fin - 1], dpPrev[fin]);
+                } else {
+                    dp[fin] = 2 + dpPrev[fin - 1]; // 'xx' case
                 }
             }
-
-            dp[i] = sum;
         }
 
-        return dp[target];
+        return dp.back();
     }
 };
 
