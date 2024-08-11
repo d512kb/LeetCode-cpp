@@ -7,22 +7,27 @@ using namespace std;
 
 class Solution {
 public:
-    int longestPalindromeSubseq(string s) {
-        int sz = s.size();
-        vector<int> dp(sz);
-        vector<int> dpPrev(sz);
+    int minimumDeleteSum(string s1, string s2) {
+        int sz1 = s1.size();
+        int sz2 = s2.size();
+        vector<int> dp(sz2 + 1);
+        vector<int> dpPrev(sz2 + 1);
 
-        for (int start = sz - 1; start >= 0; --start) {
+        for (int i = 1; i <= sz2; ++i) {
+            dp[i] = dp[i - 1] + s2[i - 1];
+        }
+
+        for (int i = 1; i <= sz1; ++i) {
             swap(dp, dpPrev);
-            dpPrev[start] = 0; // for 'xx' case, so we don't append extra item for empty dpPrev
-            dp[start] = 1;
+            dp[0] = dpPrev[0] + s1[i - 1];
 
-            for (int fin = start + 1; fin < sz; ++fin) {
-                if (s[start] != s[fin]) {
-                    dp[fin] = max(dp[fin - 1], dpPrev[fin]);
+            for (int j = 1; j <= sz2; ++j) {
+                if (s1[i - 1] == s2[j - 1]) {
+                    dp[j] = dpPrev[j - 1];
                 } else {
-                    dp[fin] = 2 + dpPrev[fin - 1]; // 'xx' case
+                    dp[j] = min(s2[j - 1] + dp[j - 1], s1[i - 1] + dpPrev[j]);
                 }
+
             }
         }
 
