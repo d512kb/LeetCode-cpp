@@ -7,28 +7,26 @@ using namespace std;
 
 class Solution {
 public:
-    int numDistinct(string s, string t) {
+    int minInsertions(string s) {
         int sz = s.size();
-        int tz = t.size();
-        vector<int64_t> dp(tz + 1);
+        vector<int> dp(sz);
+        vector<int> dpPrev(sz);
 
-        for (int i = 1; i <= sz; ++i) {
-            dp[0] = 1;
-            int prev = 1;
-            int curr = 1;
+        for (int start = sz - 1; start >= 0; --start) {
+            swap(dp, dpPrev);
+            dpPrev[start] = 0;
+            dp[start] = 1;
 
-            for (int j = 1; j <= tz; ++j) {
-                curr = dp[j];
-
-                if (s[i - 1] == t[j - 1]) {
-                    dp[j] += prev;
+            for (int fin = start + 1; fin < sz; ++fin) {
+                if (s[start] == s[fin]) {
+                    dp[fin] = 2 + dpPrev[fin - 1];
+                } else {
+                    dp[fin] = max(dp[fin - 1], dpPrev[fin]);
                 }
-
-                prev = curr;
             }
         }
 
-        return dp[tz];
+        return sz - dp.back();
     }
 };
 
