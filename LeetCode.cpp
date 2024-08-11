@@ -7,31 +7,28 @@ using namespace std;
 
 class Solution {
 public:
-    int minimumDeleteSum(string s1, string s2) {
-        int sz1 = s1.size();
-        int sz2 = s2.size();
-        vector<int> dp(sz2 + 1);
-        vector<int> dpPrev(sz2 + 1);
+    int numDistinct(string s, string t) {
+        int sz = s.size();
+        int tz = t.size();
+        vector<int64_t> dp(tz + 1);
 
-        for (int i = 1; i <= sz2; ++i) {
-            dp[i] = dp[i - 1] + s2[i - 1];
-        }
+        for (int i = 1; i <= sz; ++i) {
+            dp[0] = 1;
+            int prev = 1;
+            int curr = 1;
 
-        for (int i = 1; i <= sz1; ++i) {
-            swap(dp, dpPrev);
-            dp[0] = dpPrev[0] + s1[i - 1];
+            for (int j = 1; j <= tz; ++j) {
+                curr = dp[j];
 
-            for (int j = 1; j <= sz2; ++j) {
-                if (s1[i - 1] == s2[j - 1]) {
-                    dp[j] = dpPrev[j - 1];
-                } else {
-                    dp[j] = min(s2[j - 1] + dp[j - 1], s1[i - 1] + dpPrev[j]);
+                if (s[i - 1] == t[j - 1]) {
+                    dp[j] += prev;
                 }
 
+                prev = curr;
             }
         }
 
-        return dp.back();
+        return dp[tz];
     }
 };
 
