@@ -7,31 +7,13 @@ using namespace std;
 
 class Solution {
 public:
-    string gcdOfStrings(string str1, string str2) {
-        return getGcd(str1, str2, 0, 0);
-    }
-private:
-    string getGcd(string& str1, string& str2, int p1, int p2) {
-        int p1orig = p1;
-        int p2orig = p2;
+    vector<bool> kidsWithCandies(vector<int>& candies, int extraCandies) {
+        int val = *max_element(candies.begin(), candies.end()) - extraCandies;
 
-        for (; p1 < str1.size() && p2 < str2.size(); ++p1, ++p2) {
-            if (str1[p1] != str2[p2]) {
-                return "";
-            }
-        }
+        vector<bool> result(candies.size());
+        transform(candies.begin(), candies.end(), result.begin(), [val](int c) { return c >= val; });
 
-        if (p1 == str1.size() && p2 == str2.size()) {
-            return str1.substr(p1orig);
-        }
-
-        if (p1 == str1.size()) {
-            p1 = p1orig;
-        } else {
-            p2 = p2orig;
-        }
-
-        return getGcd(str1, str2, p1, p2);
+        return result;
     }
 };
 
