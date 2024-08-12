@@ -7,13 +7,21 @@ using namespace std;
 
 class Solution {
 public:
-    vector<bool> kidsWithCandies(vector<int>& candies, int extraCandies) {
-        int val = *max_element(candies.begin(), candies.end()) - extraCandies;
+    bool increasingTriplet(vector<int>& nums) {
+        int a = numeric_limits<int>::max();
+        int b = a;
 
-        vector<bool> result(candies.size());
-        transform(candies.begin(), candies.end(), result.begin(), [val](int c) { return c >= val; });
+        for (int n : nums) {
+            if (n <= a) {
+                a = n;
+            } else if (n <= b) {
+                b = n;
+            } else {
+                return true;
+            }
+        }
 
-        return result;
+        return false;
     }
 };
 
