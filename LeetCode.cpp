@@ -7,21 +7,30 @@ using namespace std;
 
 class Solution {
 public:
-    bool increasingTriplet(vector<int>& nums) {
-        int a = numeric_limits<int>::max();
-        int b = a;
+    int compress(vector<char>& chars) {
+        int sz = chars.size();
+        int insPos = 0;
+        int readPos = 0;
 
-        for (int n : nums) {
-            if (n <= a) {
-                a = n;
-            } else if (n <= b) {
-                b = n;
-            } else {
-                return true;
+        while (readPos < sz) {
+            char currCh = chars[readPos];
+            int startReadPos = readPos++;
+
+            while (readPos < sz && chars[readPos] == currCh) {
+                ++readPos;
+            }
+
+            int len = readPos - startReadPos;
+            chars[insPos++] = currCh;
+
+            if (len > 1) {
+                for (char c : to_string(len)) {
+                    chars[insPos++] = c;
+                }
             }
         }
 
-        return false;
+        return insPos;
     }
 };
 
