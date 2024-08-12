@@ -7,30 +7,27 @@ using namespace std;
 
 class Solution {
 public:
-    int compress(vector<char>& chars) {
-        int sz = chars.size();
-        int insPos = 0;
-        int readPos = 0;
+    int maxOperations(vector<int>& nums, int k) {
+        sort(nums.begin(), nums.end());
+        int left = 0;
+        int right = nums.size() - 1;
+        int result = 0;
 
-        while (readPos < sz) {
-            char currCh = chars[readPos];
-            int startReadPos = readPos++;
+        while (left < right) {
+            int sum = nums[left] + nums[right];
 
-            while (readPos < sz && chars[readPos] == currCh) {
-                ++readPos;
-            }
-
-            int len = readPos - startReadPos;
-            chars[insPos++] = currCh;
-
-            if (len > 1) {
-                for (char c : to_string(len)) {
-                    chars[insPos++] = c;
-                }
+            if (sum < k) {
+                ++left;
+            } else if (sum > k) {
+                --right;
+            } else {
+                ++result;
+                ++left;
+                --right;
             }
         }
 
-        return insPos;
+        return result;
     }
 };
 
