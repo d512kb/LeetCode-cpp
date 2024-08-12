@@ -7,27 +7,35 @@ using namespace std;
 
 class Solution {
 public:
-    int maxOperations(vector<int>& nums, int k) {
-        sort(nums.begin(), nums.end());
-        int left = 0;
-        int right = nums.size() - 1;
+    int maxVowels(string s, int k) {
         int result = 0;
+        int vowelsCount = 0;
 
-        while (left < right) {
-            int sum = nums[left] + nums[right];
-
-            if (sum < k) {
-                ++left;
-            } else if (sum > k) {
-                --right;
-            } else {
-                ++result;
-                ++left;
-                --right;
+        for (int i = 0; i < k; ++i) {
+            if (isVowel(s[i])) {
+                ++vowelsCount;
             }
         }
 
+        result = vowelsCount;
+
+        for (int i = 0, sz = s.size(); k < sz; ++i, ++k) {
+            if (isVowel(s[i])) {
+                --vowelsCount;
+            }
+
+            if (isVowel(s[k])) {
+                ++vowelsCount;
+            }
+
+            result = max(result, vowelsCount);
+        }
+
         return result;
+    }
+private:
+    inline bool isVowel(char c) {
+        return c == 'a' || c == 'e' || c == 'i' || c == 'o' || c == 'u';
     }
 };
 
