@@ -7,26 +7,31 @@ using namespace std;
 
 class Solution {
 public:
-    int minInsertions(string s) {
-        int sz = s.size();
-        vector<int> dp(sz);
-        vector<int> dpPrev(sz);
+    string gcdOfStrings(string str1, string str2) {
+        return getGcd(str1, str2, 0, 0);
+    }
+private:
+    string getGcd(string& str1, string& str2, int p1, int p2) {
+        int p1orig = p1;
+        int p2orig = p2;
 
-        for (int start = sz - 1; start >= 0; --start) {
-            swap(dp, dpPrev);
-            dpPrev[start] = 0;
-            dp[start] = 1;
-
-            for (int fin = start + 1; fin < sz; ++fin) {
-                if (s[start] == s[fin]) {
-                    dp[fin] = 2 + dpPrev[fin - 1];
-                } else {
-                    dp[fin] = max(dp[fin - 1], dpPrev[fin]);
-                }
+        for (; p1 < str1.size() && p2 < str2.size(); ++p1, ++p2) {
+            if (str1[p1] != str2[p2]) {
+                return "";
             }
         }
 
-        return sz - dp.back();
+        if (p1 == str1.size() && p2 == str2.size()) {
+            return str1.substr(p1orig);
+        }
+
+        if (p1 == str1.size()) {
+            p1 = p1orig;
+        } else {
+            p2 = p2orig;
+        }
+
+        return getGcd(str1, str2, p1, p2);
     }
 };
 
