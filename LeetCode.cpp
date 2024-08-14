@@ -7,35 +7,24 @@ using namespace std;
 
 class Solution {
 public:
-    int maxVowels(string s, int k) {
-        int result = 0;
-        int vowelsCount = 0;
+    int longestOnes(vector<int>& nums, int k) {
+        int len = 0;
 
-        for (int i = 0; i < k; ++i) {
-            if (isVowel(s[i])) {
-                ++vowelsCount;
+        for (int left = 0, right = 0, c = 0, sz = nums.size(); right < sz; ++right) {
+            if (!nums[right]) {
+                while (c == k) {
+                    if (!nums[left++]) {
+                        --c;
+                    }
+                }
+
+                ++c;
             }
+
+            len = max(len, right - left + 1);
         }
 
-        result = vowelsCount;
-
-        for (int i = 0, sz = s.size(); k < sz; ++i, ++k) {
-            if (isVowel(s[i])) {
-                --vowelsCount;
-            }
-
-            if (isVowel(s[k])) {
-                ++vowelsCount;
-            }
-
-            result = max(result, vowelsCount);
-        }
-
-        return result;
-    }
-private:
-    inline bool isVowel(char c) {
-        return c == 'a' || c == 'e' || c == 'i' || c == 'o' || c == 'u';
+        return len;
     }
 };
 
