@@ -7,24 +7,27 @@ using namespace std;
 
 class Solution {
 public:
-    int longestOnes(vector<int>& nums, int k) {
+    int longestSubarray(vector<int>& nums) {
         int len = 0;
+        int left = 0;
+        int right = 0;
+        bool c = false;
 
-        for (int left = 0, right = 0, c = 0, sz = nums.size(); right < sz; ++right) {
-            if (!nums[right]) {
-                while (c == k) {
-                    if (!nums[left++]) {
-                        --c;
+        for (int sz = nums.size(); right < sz; ++right) {
+            if (nums[right] == 0) {
+                while (c) {
+                    if (nums[left++] == 0) {
+                        c = false;
                     }
                 }
 
-                ++c;
+                c = true;
             }
 
             len = max(len, right - left + 1);
         }
 
-        return len;
+        return len - 1;
     }
 };
 
