@@ -7,19 +7,34 @@ using namespace std;
 
 class Solution {
 public:
-    string removeStars(string s) {
-        vector<char> stack;
-        stack.reserve(s.size());
+    vector<int> asteroidCollision(vector<int>& asteroids) {
+        vector<int> stack;
+        stack.reserve(asteroids.size());
 
-        for (char c : s) {
-            if (c == '*') {
+        for (int a : asteroids) {
+            if (a > 0) {
+                stack.push_back(a);
+                continue;
+            }
+
+            int aMass = -a;
+
+            while (!stack.empty() && stack.back() > 0 && stack.back() < aMass) {
                 stack.pop_back();
+            }
+
+            if (stack.empty()) {
+                stack.push_back(a);
             } else {
-                stack.push_back(c);
+                if (stack.back() < 0) {
+                    stack.push_back(a);
+                } else if (stack.back() == aMass) {
+                    stack.pop_back();
+                }
             }
         }
 
-        return string(stack.begin(), stack.end());
+        return stack;
     }
 };
 
