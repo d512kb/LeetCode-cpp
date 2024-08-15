@@ -7,27 +7,30 @@ using namespace std;
 
 class Solution {
 public:
-    int longestSubarray(vector<int>& nums) {
-        int len = 0;
-        int left = 0;
-        int right = 0;
-        bool c = false;
+    int equalPairs(vector<vector<int>>& grid) {
+        int n = grid.size();
+        int result = 0;
 
-        for (int sz = nums.size(); right < sz; ++right) {
-            if (nums[right] == 0) {
-                while (c) {
-                    if (nums[left++] == 0) {
-                        c = false;
-                    }
-                }
+        map<vector<int>, int> mp;
 
-                c = true;
-            }
-
-            len = max(len, right - left + 1);
+        for (auto& row : grid) {
+            ++mp[row];
         }
 
-        return len - 1;
+        for (int i = 0; i < n; ++i) {
+            vector<int> col(n);
+
+            for (int j = 0; j < n; ++j) {
+                col[j] = grid[j][i];
+            }
+
+            auto iter = mp.find(col);
+            if (iter != mp.end()) {
+                result += iter->second;
+            }
+        }
+
+        return result;
     }
 };
 
