@@ -17,31 +17,34 @@ struct ListNode {
 
 class Solution {
 public:
-    ListNode* oddEvenList(ListNode* head) {
-        if (!head || !head->next) {
-            return head;
+    int pairSum(ListNode* head) {
+        ListNode* slow = head;
+        ListNode* fast = head;
+        ListNode* prev = nullptr;
+
+        while (fast) {
+            fast = fast->next->next;
+            ListNode* preNext = slow->next;
+            slow->next = prev;
+            prev = slow;
+            slow = preNext;
         }
 
-        ListNode* lastOdd = head;
-        ListNode* headEven = head->next;
-        ListNode* lastEven = headEven;
-        ListNode* node = head->next->next;
+        int result = 0;
+        ListNode* backward = prev;
+        prev = slow;
 
-        while (node) {
-            lastOdd->next = node;
-            lastOdd = node;
-            lastEven->next = node->next;
-            lastEven = node->next;
+        while (slow) {
+            result = max(result, slow->val + backward->val);
 
-            if (lastEven) {
-                node = lastEven->next;
-            } else {
-                node = nullptr;
-            }
+            ListNode* preNext = backward->next;
+            backward->next = prev;
+            prev = backward;
+            backward = preNext;
+            slow = slow->next;
         }
 
-        lastOdd->next = headEven;
-        return head;
+        return result;
     }
 };
 
