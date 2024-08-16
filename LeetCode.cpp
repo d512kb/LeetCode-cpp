@@ -5,46 +5,30 @@
 
 using namespace std;
 
-
-// Definition for singly-linked list.
-struct ListNode {
+//Definition for a binary tree node.
+struct TreeNode {
     int val;
-    ListNode *next;
-    ListNode() : val(0), next(nullptr) {}
-    ListNode(int x) : val(x), next(nullptr) {}
-    ListNode(int x, ListNode *next) : val(x), next(next) {}
+    TreeNode *left;
+    TreeNode *right;
+    TreeNode() : val(0), left(nullptr), right(nullptr) {}
+    TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}
+    TreeNode(int x, TreeNode *left, TreeNode *right) : val(x), left(left), right(right) {}
 };
 
 class Solution {
 public:
-    int pairSum(ListNode* head) {
-        ListNode* slow = head;
-        ListNode* fast = head;
-        ListNode* prev = nullptr;
-
-        while (fast) {
-            fast = fast->next->next;
-            ListNode* preNext = slow->next;
-            slow->next = prev;
-            prev = slow;
-            slow = preNext;
+    int goodNodes(TreeNode* root) {
+        return dfs(root, root->val);
+    }
+private:
+    int dfs(TreeNode* root, int val) {
+        if (!root) {
+            return 0;
         }
 
-        int result = 0;
-        ListNode* backward = prev;
-        prev = slow;
+        int maxVal = max(val, root->val);
 
-        while (slow) {
-            result = max(result, slow->val + backward->val);
-
-            ListNode* preNext = backward->next;
-            backward->next = prev;
-            prev = backward;
-            backward = preNext;
-            slow = slow->next;
-        }
-
-        return result;
+        return (root->val >= val) + dfs(root->left, maxVal) + dfs(root->right, maxVal);
     }
 };
 
