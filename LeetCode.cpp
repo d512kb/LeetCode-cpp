@@ -5,41 +5,37 @@
 
 using namespace std;
 
+
+// Definition for singly-linked list.
+struct ListNode {
+    int val;
+    ListNode *next;
+    ListNode() : val(0), next(nullptr) {}
+    ListNode(int x) : val(x), next(nullptr) {}
+    ListNode(int x, ListNode *next) : val(x), next(next) {}
+};
+
 class Solution {
 public:
-    string predictPartyVictory(string senate) {
-        int removeRadiant = 0;
-        int removeDire = 0;
-        bool voted = true;
-        char lastVoter = 0;
-
-        while (voted) {
-            voted = false;
-
-            for (char& c : senate) {
-                if (c == 'R') {
-                    if (removeRadiant > 0) {
-                        c = 'r';
-                        --removeRadiant;
-                        voted = true;
-                    } else {
-                        lastVoter = c;
-                        ++removeDire;
-                    }
-                } else if (c == 'D') {
-                    if (removeDire > 0) {
-                        c = 'd';
-                        --removeDire;
-                        voted = true;
-                    } else {
-                        lastVoter = c;
-                        ++removeRadiant;
-                    }
-                }
-            }
+    ListNode* deleteMiddle(ListNode* head) {
+        if (head == nullptr || head->next == nullptr) {
+            delete head;
+            return nullptr;
         }
 
-        return lastVoter == 'R' ? "Radiant" : "Dire";
+        ListNode* slow = head;
+        ListNode* fast = head->next->next;
+
+        while (fast && fast->next) {
+            slow = slow->next;
+            fast = fast->next->next;
+        }
+
+        ListNode* toDelete = slow->next;
+        slow->next = slow->next->next;
+        delete toDelete;
+
+        return head;
     }
 };
 
