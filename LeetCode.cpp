@@ -7,46 +7,39 @@ using namespace std;
 
 class Solution {
 public:
-    string decodeString(string s) {
-        int from = 0;
+    string predictPartyVictory(string senate) {
+        int removeRadiant = 0;
+        int removeDire = 0;
+        bool voted = true;
+        char lastVoter = 0;
 
-        return parse(s, from);
-    }
-private:
-    string parse(const string& s, int& from) {
-        string result;
-        string strCount = "0";
-        int count = 0;
+        while (voted) {
+            voted = false;
 
-        for (; from < s.size(); ++from) {
-            char c = s[from];
-
-            if (isdigit(c)) {
-                strCount += c;
-                continue;
-            }
-
-            if (c == '[') {
-                count = std::stoi(strCount);
-                strCount = "0";
-
-                string innerString = parse(s, ++from);
-
-                for (; count > 0; --count) {
-                    result += innerString;
+            for (char& c : senate) {
+                if (c == 'R') {
+                    if (removeRadiant > 0) {
+                        c = 'r';
+                        --removeRadiant;
+                        voted = true;
+                    } else {
+                        lastVoter = c;
+                        ++removeDire;
+                    }
+                } else if (c == 'D') {
+                    if (removeDire > 0) {
+                        c = 'd';
+                        --removeDire;
+                        voted = true;
+                    } else {
+                        lastVoter = c;
+                        ++removeRadiant;
+                    }
                 }
-
-                continue;
             }
-
-            if (s[from] == ']') {
-                return result;
-            }
-
-            result += c;
         }
 
-        return result;
+        return lastVoter == 'R' ? "Radiant" : "Dire";
     }
 };
 
