@@ -17,24 +17,30 @@ struct ListNode {
 
 class Solution {
 public:
-    ListNode* deleteMiddle(ListNode* head) {
-        if (head == nullptr || head->next == nullptr) {
-            delete head;
-            return nullptr;
+    ListNode* oddEvenList(ListNode* head) {
+        if (!head || !head->next) {
+            return head;
         }
 
-        ListNode* slow = head;
-        ListNode* fast = head->next->next;
+        ListNode* lastOdd = head;
+        ListNode* headEven = head->next;
+        ListNode* lastEven = headEven;
+        ListNode* node = head->next->next;
 
-        while (fast && fast->next) {
-            slow = slow->next;
-            fast = fast->next->next;
+        while (node) {
+            lastOdd->next = node;
+            lastOdd = node;
+            lastEven->next = node->next;
+            lastEven = node->next;
+
+            if (lastEven) {
+                node = lastEven->next;
+            } else {
+                node = nullptr;
+            }
         }
 
-        ListNode* toDelete = slow->next;
-        slow->next = slow->next->next;
-        delete toDelete;
-
+        lastOdd->next = headEven;
         return head;
     }
 };
