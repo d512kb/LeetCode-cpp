@@ -7,34 +7,46 @@ using namespace std;
 
 class Solution {
 public:
-    vector<int> asteroidCollision(vector<int>& asteroids) {
-        vector<int> stack;
-        stack.reserve(asteroids.size());
+    string decodeString(string s) {
+        int from = 0;
 
-        for (int a : asteroids) {
-            if (a > 0) {
-                stack.push_back(a);
+        return parse(s, from);
+    }
+private:
+    string parse(const string& s, int& from) {
+        string result;
+        string strCount = "0";
+        int count = 0;
+
+        for (; from < s.size(); ++from) {
+            char c = s[from];
+
+            if (isdigit(c)) {
+                strCount += c;
                 continue;
             }
 
-            int aMass = -a;
+            if (c == '[') {
+                count = std::stoi(strCount);
+                strCount = "0";
 
-            while (!stack.empty() && stack.back() > 0 && stack.back() < aMass) {
-                stack.pop_back();
-            }
+                string innerString = parse(s, ++from);
 
-            if (stack.empty()) {
-                stack.push_back(a);
-            } else {
-                if (stack.back() < 0) {
-                    stack.push_back(a);
-                } else if (stack.back() == aMass) {
-                    stack.pop_back();
+                for (; count > 0; --count) {
+                    result += innerString;
                 }
+
+                continue;
             }
+
+            if (s[from] == ']') {
+                return result;
+            }
+
+            result += c;
         }
 
-        return stack;
+        return result;
     }
 };
 
