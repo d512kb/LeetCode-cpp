@@ -17,36 +17,40 @@ struct TreeNode {
 
 class Solution {
 public:
-    int maxLevelSum(TreeNode* root) {
-        int maxSum = root->val;
-        int level = 0;
-        int minLevel = 1;
-
-        queue<TreeNode*> q;
-        q.push(root);
-
-        while (!q.empty()) {
-            int sz = q.size();
-            int sum = 0;
-            ++level;
-
-            while (sz--) {
-                TreeNode* node = q.front();
-                q.pop();
-
-                if (node->left) q.push(node->left);
-                if (node->right) q.push(node->right);
-
-                sum += node->val;
-            }
-
-            if (sum > maxSum) {
-                maxSum = sum;
-                minLevel = level;
-            }
+    TreeNode* deleteNode(TreeNode* root, int key) {
+        return deleteNodeHelper(root, key);
+    }
+private:
+    TreeNode* deleteNodeHelper(TreeNode* node, int key) {
+        if (!node) {
+            return nullptr;
         }
 
-        return minLevel;
+        if (key > node->val) {
+            node->right = deleteNodeHelper(node->right, key);
+        } else if (key < node->val) {
+            node->left = deleteNodeHelper(node->left, key);
+        } else {
+            TreeNode* merged = merge(node->left, node->right);
+            delete node;
+            return merged;
+        }
+
+        return node;
+    }
+
+    TreeNode* merge(TreeNode* left, TreeNode* right) {
+        if (!left || !right) {
+            return left ? left : right;
+        }
+
+        TreeNode* insert = right;
+        while (insert->left) {
+            insert = insert->left;
+        }
+
+        insert->left = left;
+        return right;
     }
 };
 
