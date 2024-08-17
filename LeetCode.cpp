@@ -17,16 +17,36 @@ struct TreeNode {
 
 class Solution {
 public:
-    int longestZigZag(TreeNode* root) {
-        return dfs(root, 0, 0) - 1;
-    }
-private:
-    int dfs(TreeNode* node, int left, int right) {
-        if (!node) {
-            return max(left, right);
+    int maxLevelSum(TreeNode* root) {
+        int maxSum = root->val;
+        int level = 0;
+        int minLevel = 1;
+
+        queue<TreeNode*> q;
+        q.push(root);
+
+        while (!q.empty()) {
+            int sz = q.size();
+            int sum = 0;
+            ++level;
+
+            while (sz--) {
+                TreeNode* node = q.front();
+                q.pop();
+
+                if (node->left) q.push(node->left);
+                if (node->right) q.push(node->right);
+
+                sum += node->val;
+            }
+
+            if (sum > maxSum) {
+                maxSum = sum;
+                minLevel = level;
+            }
         }
 
-        return max(dfs(node->left, right + 1, 0), dfs(node->right, 0, left + 1));
+        return minLevel;
     }
 };
 
