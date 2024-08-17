@@ -16,25 +16,17 @@ struct TreeNode {
 };
 
 class Solution {
-    unordered_map<int64_t, int> m_sums{ {0,1} };
 public:
-    int pathSum(TreeNode* root, int targetSum) {
-        return dfs(root, 0, targetSum);
+    int longestZigZag(TreeNode* root) {
+        return dfs(root, 0, 0) - 1;
     }
 private:
-    int dfs(TreeNode* node, int64_t sum, int targetSum) {
+    int dfs(TreeNode* node, int left, int right) {
         if (!node) {
-            return 0;
+            return max(left, right);
         }
 
-        sum += node->val;
-
-        ++m_sums[sum];
-        int leftSum = dfs(node->left, sum, targetSum);
-        int rightSum = dfs(node->right, sum, targetSum);
-        --m_sums[sum];
-
-        return m_sums[sum - targetSum] + leftSum + rightSum;
+        return max(dfs(node->left, right + 1, 0), dfs(node->right, 0, left + 1));
     }
 };
 
