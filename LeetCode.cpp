@@ -7,26 +7,33 @@ using namespace std;
 
 class Solution {
 public:
-    bool canVisitAllRooms(vector<vector<int>>& rooms) {
-        int sz = rooms.size();
-        vector<int> visited(sz);
+    vector<vector<int>> combinationSum3(int k, int n) {
+        vector<vector<int>> result;
+        vector<int> build;
 
-        return dfs(rooms, visited, 0) == sz;
+        generateCombinations(1, k, n, build, result);
+
+        return result;
     }
 private:
-    int dfs(vector<vector<int>>& rooms, vector<int>& visited, int room) {
-        if (visited[room]) {
-            return 0;
+    void generateCombinations(int from, int k, int n, vector<int>& build, vector<vector<int>>& result) {
+        if (n < 0) {
+            return;
         }
 
-        visited[room] = 1;
-        int roomCount = 1;
+        if (k == 0) {
+            if (n == 0) {
+                result.push_back(build);
+            }
 
-        for (int key : rooms[room]) {
-            roomCount += dfs(rooms, visited, key);
+            return;
         }
 
-        return roomCount;
+        for (int i = from; i <= 9; ++i) {
+            build.push_back(i);
+            generateCombinations(i + 1, k - 1, n - i, build, result);
+            build.pop_back();
+        }
     }
 };
 
