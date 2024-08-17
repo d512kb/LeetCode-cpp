@@ -7,33 +7,34 @@ using namespace std;
 
 class Solution {
 public:
-    vector<vector<int>> combinationSum3(int k, int n) {
-        vector<vector<int>> result;
-        vector<int> build;
+    int findCircleNum(vector<vector<int>>& isConnected) {
+        int sz = isConnected.size();
+        vector<char> visited(sz);
+        int result = 0;
 
-        generateCombinations(1, k, n, build, result);
+        for (int i = 0; i < sz; ++i) {
+            if (!visited[i]) {
+                vector<int> stack;
+                stack.push_back(i);
+
+                while (!stack.empty()) {
+                    int city = stack.back();
+                    visited[city] = 1;
+                    stack.pop_back();
+
+                    for (int c = 0; c < sz; ++c) {
+                        if (!visited[c] && isConnected[city][c]) {
+                            visited[c] = 1;
+                            stack.push_back(c);
+                        }
+                    }
+                }
+
+                ++result;
+            }
+        }
 
         return result;
-    }
-private:
-    void generateCombinations(int from, int k, int n, vector<int>& build, vector<vector<int>>& result) {
-        if (n < 0) {
-            return;
-        }
-
-        if (k == 0) {
-            if (n == 0) {
-                result.push_back(build);
-            }
-
-            return;
-        }
-
-        for (int i = from; i <= 9; ++i) {
-            build.push_back(i);
-            generateCombinations(i + 1, k - 1, n - i, build, result);
-            build.pop_back();
-        }
     }
 };
 
