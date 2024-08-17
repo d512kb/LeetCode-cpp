@@ -16,19 +16,25 @@ struct TreeNode {
 };
 
 class Solution {
+    unordered_map<int64_t, int> m_sums{ {0,1} };
 public:
-    int goodNodes(TreeNode* root) {
-        return dfs(root, root->val);
+    int pathSum(TreeNode* root, int targetSum) {
+        return dfs(root, 0, targetSum);
     }
 private:
-    int dfs(TreeNode* root, int val) {
-        if (!root) {
+    int dfs(TreeNode* node, int64_t sum, int targetSum) {
+        if (!node) {
             return 0;
         }
 
-        int maxVal = max(val, root->val);
+        sum += node->val;
 
-        return (root->val >= val) + dfs(root->left, maxVal) + dfs(root->right, maxVal);
+        ++m_sums[sum];
+        int leftSum = dfs(node->left, sum, targetSum);
+        int rightSum = dfs(node->right, sum, targetSum);
+        --m_sums[sum];
+
+        return m_sums[sum - targetSum] + leftSum + rightSum;
     }
 };
 
