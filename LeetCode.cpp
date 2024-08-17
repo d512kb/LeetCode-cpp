@@ -5,52 +5,28 @@
 
 using namespace std;
 
-//Definition for a binary tree node.
-struct TreeNode {
-    int val;
-    TreeNode *left;
-    TreeNode *right;
-    TreeNode() : val(0), left(nullptr), right(nullptr) {}
-    TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}
-    TreeNode(int x, TreeNode *left, TreeNode *right) : val(x), left(left), right(right) {}
-};
-
 class Solution {
 public:
-    TreeNode* deleteNode(TreeNode* root, int key) {
-        return deleteNodeHelper(root, key);
+    bool canVisitAllRooms(vector<vector<int>>& rooms) {
+        int sz = rooms.size();
+        vector<int> visited(sz);
+
+        return dfs(rooms, visited, 0) == sz;
     }
 private:
-    TreeNode* deleteNodeHelper(TreeNode* node, int key) {
-        if (!node) {
-            return nullptr;
+    int dfs(vector<vector<int>>& rooms, vector<int>& visited, int room) {
+        if (visited[room]) {
+            return 0;
         }
 
-        if (key > node->val) {
-            node->right = deleteNodeHelper(node->right, key);
-        } else if (key < node->val) {
-            node->left = deleteNodeHelper(node->left, key);
-        } else {
-            TreeNode* merged = merge(node->left, node->right);
-            delete node;
-            return merged;
+        visited[room] = 1;
+        int roomCount = 1;
+
+        for (int key : rooms[room]) {
+            roomCount += dfs(rooms, visited, key);
         }
 
-        return node;
-    }
-
-    TreeNode* merge(TreeNode* left, TreeNode* right) {
-        if (!left || !right) {
-            return left ? left : right;
-        }
-
-        TreeNode* insert = right;
-        while (insert->left) {
-            insert = insert->left;
-        }
-
-        insert->left = left;
-        return right;
+        return roomCount;
     }
 };
 
