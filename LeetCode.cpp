@@ -7,30 +7,24 @@ using namespace std;
 
 class Solution {
 public:
-    int findCircleNum(vector<vector<int>>& isConnected) {
-        int sz = isConnected.size();
-        vector<char> visited(sz);
+    int countKConstraintSubstrings(string s, int k) {
         int result = 0;
+        int sz = s.size();
 
         for (int i = 0; i < sz; ++i) {
-            if (!visited[i]) {
-                vector<int> stack;
-                stack.push_back(i);
+            int ones = 0;
+            int zeroes = 0;
 
-                while (!stack.empty()) {
-                    int city = stack.back();
-                    visited[city] = 1;
-                    stack.pop_back();
-
-                    for (int c = 0; c < sz; ++c) {
-                        if (!visited[c] && isConnected[city][c]) {
-                            visited[c] = 1;
-                            stack.push_back(c);
-                        }
-                    }
+            for (int j = i; j < sz; ++j) {
+                if (s[j] == '1') {
+                    ++ones;
+                } else {
+                    ++zeroes;
                 }
 
-                ++result;
+                if (ones <= k || zeroes <= k) {
+                    ++result;
+                }
             }
         }
 
