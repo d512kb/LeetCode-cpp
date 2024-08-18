@@ -7,28 +7,21 @@ using namespace std;
 
 class Solution {
 public:
-    int countKConstraintSubstrings(string s, int k) {
-        int result = 0;
-        int sz = s.size();
+    long long maxEnergyBoost(vector<int>& energyDrinkA, vector<int>& energyDrinkB) {
+        int sz = energyDrinkA.size();
+
+        int64_t dpA[3]{ 0 };
+        int64_t dpB[3]{ 0 };
 
         for (int i = 0; i < sz; ++i) {
-            int ones = 0;
-            int zeroes = 0;
+            dpA[2] = energyDrinkA[i] + max(dpA[1], dpB[0]);
+            dpB[2] = energyDrinkB[i] + max(dpB[1], dpA[0]);
 
-            for (int j = i; j < sz; ++j) {
-                if (s[j] == '1') {
-                    ++ones;
-                } else {
-                    ++zeroes;
-                }
-
-                if (ones <= k || zeroes <= k) {
-                    ++result;
-                }
-            }
+            dpA[0] = dpA[1]; dpA[1] = dpA[2];
+            dpB[0] = dpB[1]; dpB[1] = dpB[2];
         }
 
-        return result;
+        return max(dpA[2], dpB[2]);
     }
 };
 
