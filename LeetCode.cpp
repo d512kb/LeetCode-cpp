@@ -7,37 +7,45 @@ using namespace std;
 
 class Solution {
 public:
-    int minReorder(int n, vector<vector<int>>& connections) {
-        vector<vector<pair<int, char>>> adj(n);
-        vector<char> visited(n);
+    int nearestExit(vector<vector<char>>& maze, vector<int>& entrance) {
+        int m = maze.size();
+        int n = maze[0].size();
 
-        for (auto& v : connections) {
-            int from = v[0];
-            int to = v[1];
+        char visited[m][n];
+        memset(&visited, 0, sizeof(visited));
+        visited[entrance[0]][entrance[1]] = 1;
 
-            adj[from].push_back({ to, 1 });
-            adj[to].push_back({ from, 0 });
-        }
-
-        queue<int> q({ 0 });
-        int result = 0;
+        queue<pair<int, int>> q;
+        q.emplace(entrance[0], entrance[1]);
+        char dirs[]{ -1, 0, 1, 0, -1 };
+        int result = 1;
 
         while (!q.empty()) {
-            int i = q.front();
-            q.pop();
-            visited[i] = 1;
+            int sz = q.size();
 
-            for (auto& n : adj[i]) {
-                if (visited[n.first]) {
-                    continue;
+            while (sz--) {
+                auto [row, col] = q.front();
+                q.pop();
+
+                for (int i = 0; i < 4; ++i) {
+                    int newRow = row + dirs[i];
+                    int newCol = col + dirs[i + 1];
+
+                    if (newRow >= 0 && newRow < m && newCol >= 0 && newCol < n && !visited[newRow][newCol] && maze[newRow][newCol] == '.') {
+                        if (newRow == 0 || newRow == m - 1 || newCol == 0 || newCol == n - 1) {
+                            return result;
+                        }
+
+                        visited[newRow][newCol] = 1;
+                        q.emplace(newRow, newCol);
+                    }
                 }
-
-                result += n.second;
-                q.push(n.first);
             }
+
+            ++result;
         }
 
-        return result;
+        return -1;
     }
 };
 
