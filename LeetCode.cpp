@@ -7,18 +7,27 @@ using namespace std;
 
 class Solution {
 public:
-    int nearestExit(vector<vector<char>>& maze, vector<int>& entrance) {
-        int m = maze.size();
-        int n = maze[0].size();
-
-        char visited[m][n];
-        memset(&visited, 0, sizeof(visited));
-        visited[entrance[0]][entrance[1]] = 1;
+    int orangesRotting(vector<vector<int>>& grid) {
+        int m = grid.size();
+        int n = grid[0].size();
 
         queue<pair<int, int>> q;
-        q.emplace(entrance[0], entrance[1]);
+        int fresh = 0;
+
+        for (int i = 0; i < m; ++i) {
+            for (int j = 0; j < n; ++j) {
+                int g = grid[i][j];
+
+                if (g == 2) {
+                    q.emplace(i, j);
+                } else if (g == 1) {
+                    ++fresh;
+                }
+            }
+        }
+
         char dirs[]{ -1, 0, 1, 0, -1 };
-        int result = 1;
+        int result = 0;
 
         while (!q.empty()) {
             int sz = q.size();
@@ -31,21 +40,22 @@ public:
                     int newRow = row + dirs[i];
                     int newCol = col + dirs[i + 1];
 
-                    if (newRow >= 0 && newRow < m && newCol >= 0 && newCol < n && !visited[newRow][newCol] && maze[newRow][newCol] == '.') {
-                        if (newRow == 0 || newRow == m - 1 || newCol == 0 || newCol == n - 1) {
-                            return result;
-                        }
+                    if (newRow < 0 || newRow >= m || newCol < 0 || newCol >= n) {
+                        continue;
+                    }
 
-                        visited[newRow][newCol] = 1;
+                    if (grid[newRow][newCol] == 1) {
+                        grid[newRow][newCol] = 2;
                         q.emplace(newRow, newCol);
+                        --fresh;
                     }
                 }
             }
 
-            ++result;
+            result += !q.empty();
         }
 
-        return -1;
+        return fresh > 0 ? -1 : result;
     }
 };
 
