@@ -5,57 +5,28 @@
 
 using namespace std;
 
+int guess(int) { return 0; };
+
 class Solution {
 public:
-    long long totalCost(vector<int>& costs, int k, int candidates) {
-        int sz = costs.size();
-        uint64_t cost = 0;
+    int guessNumber(int n) {
+        int left = 1;
+        int right = n;
 
-        if (candidates < sz / 2.) {
-            priority_queue<int, vector<int>, greater<int>> pqLeft(costs.begin(), next(costs.begin(), candidates));
-            priority_queue<int, vector<int>, greater<int>> pqRight(costs.rbegin(), next(costs.rbegin(), candidates));
+        while (left < right) {
+            int mid = left + (right - left) / 2;
+            int ans = guess(mid);
 
-            int left = candidates;
-            int right = sz - left - 1;
-
-            while (k--) {
-                if (!pqLeft.empty() && !pqRight.empty()) {
-                    if (pqLeft.top() <= pqRight.top()) {
-                        cost += pqLeft.top();
-                        pqLeft.pop();
-
-                        if (left <= right) { pqLeft.push(costs[left++]); }
-                    } else {
-                        cost += pqRight.top();
-                        pqRight.pop();
-
-                        if (left <= right) { pqRight.push(costs[right--]); }
-                    }
-                } else {
-                    if (!pqLeft.empty()) {
-                        cost += pqLeft.top();
-                        pqLeft.pop();
-                    } else {
-                        cost += pqRight.top();
-                        pqRight.pop();
-                    }
-                }
+            if (ans < 0) {
+                right = mid - 1;
+            } else if (ans > 0) {
+                left = mid + 1;
+            } else {
+                return mid;
             }
-
-            return cost;
-        } else {
-            make_heap(costs.begin(), costs.end(), greater<>());
-
-            while (k--) {
-                cost += costs.front();
-                pop_heap(costs.begin(), costs.end(), greater<>());
-                costs.pop_back();
-            }
-
-            return cost;
         }
 
-        return cost;
+        return left;
     }
 };
 
