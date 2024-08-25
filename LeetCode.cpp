@@ -7,41 +7,55 @@ using namespace std;
 
 class Solution {
 public:
-    long long maxScore(vector<int>& nums1, vector<int>& nums2, int k) {
-        int sz = nums1.size();
-        vector<pair<int, int>> v;
-        v.reserve(sz);
+    long long totalCost(vector<int>& costs, int k, int candidates) {
+        int sz = costs.size();
+        uint64_t cost = 0;
 
-        for (int i = 0; i < sz; ++i) {
-            v.emplace_back(nums1[i], nums2[i]);
-        }
+        if (candidates < sz / 2.) {
+            priority_queue<int, vector<int>, greater<int>> pqLeft(costs.begin(), next(costs.begin(), candidates));
+            priority_queue<int, vector<int>, greater<int>> pqRight(costs.rbegin(), next(costs.rbegin(), candidates));
 
-        sort(v.begin(), v.end(), [](auto& p1, auto& p2) { return p1.second > p2.second; });
+            int left = candidates;
+            int right = sz - left - 1;
 
-        priority_queue<int, vector<int>, greater<int>> pq;
-        int64_t sum = 0;
-        int64_t result = 0;
+            while (k--) {
+                if (!pqLeft.empty() && !pqRight.empty()) {
+                    if (pqLeft.top() <= pqRight.top()) {
+                        cost += pqLeft.top();
+                        pqLeft.pop();
 
-        for (int i = 0; i < k; ++i) {
-            pq.push(v[i].first);
-            sum += v[i].first;
-        }
+                        if (left <= right) { pqLeft.push(costs[left++]); }
+                    } else {
+                        cost += pqRight.top();
+                        pqRight.pop();
 
-        result = sum * v[k - 1].second;
-
-        for (int i = k; i < sz; ++i) {
-            auto& p = v[i];
-
-            if (p.first > pq.top()) {
-                sum += p.first - pq.top();
-                pq.pop();
-                pq.push(p.first);
+                        if (left <= right) { pqRight.push(costs[right--]); }
+                    }
+                } else {
+                    if (!pqLeft.empty()) {
+                        cost += pqLeft.top();
+                        pqLeft.pop();
+                    } else {
+                        cost += pqRight.top();
+                        pqRight.pop();
+                    }
+                }
             }
 
-            result = max(result, sum * p.second);
+            return cost;
+        } else {
+            make_heap(costs.begin(), costs.end(), greater<>());
+
+            while (k--) {
+                cost += costs.front();
+                pop_heap(costs.begin(), costs.end(), greater<>());
+                costs.pop_back();
+            }
+
+            return cost;
         }
 
-        return result;
+        return cost;
     }
 };
 
