@@ -5,29 +5,44 @@
 
 using namespace std;
 
-class SmallestInfiniteSet {
+class Solution {
 public:
-    SmallestInfiniteSet() : m_first(1) {
-    }
+    long long maxScore(vector<int>& nums1, vector<int>& nums2, int k) {
+        int sz = nums1.size();
+        vector<pair<int, int>> v;
+        v.reserve(sz);
 
-    int popSmallest() {
-        if (m_usedNums.empty()) {
-            return m_first++;
+        for (int i = 0; i < sz; ++i) {
+            v.emplace_back(nums1[i], nums2[i]);
         }
 
-        int s = *m_usedNums.begin();
-        m_usedNums.erase(m_usedNums.begin());
-        return s;
-    }
+        sort(v.begin(), v.end(), [](auto& p1, auto& p2) { return p1.second > p2.second; });
 
-    void addBack(int num) {
-        if (num < m_first) {
-            m_usedNums.insert(num);
+        priority_queue<int, vector<int>, greater<int>> pq;
+        int64_t sum = 0;
+        int64_t result = 0;
+
+        for (int i = 0; i < k; ++i) {
+            pq.push(v[i].first);
+            sum += v[i].first;
         }
+
+        result = sum * v[k - 1].second;
+
+        for (int i = k; i < sz; ++i) {
+            auto& p = v[i];
+
+            if (p.first > pq.top()) {
+                sum += p.first - pq.top();
+                pq.pop();
+                pq.push(p.first);
+            }
+
+            result = max(result, sum * p.second);
+        }
+
+        return result;
     }
-private:
-    set<int> m_usedNums;
-    int m_first;
 };
 
 int main() {
