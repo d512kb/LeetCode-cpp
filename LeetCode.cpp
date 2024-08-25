@@ -5,28 +5,21 @@
 
 using namespace std;
 
-int guess(int) { return 0; };
-
 class Solution {
 public:
-    int guessNumber(int n) {
-        int left = 1;
-        int right = n;
+    vector<int> successfulPairs(vector<int>& spells, vector<int>& potions, long long success) {
+        sort(potions.begin(), potions.end());
 
-        while (left < right) {
-            int mid = left + (right - left) / 2;
-            int ans = guess(mid);
+        vector<int> result;
+        result.reserve(spells.size());
 
-            if (ans < 0) {
-                right = mid - 1;
-            } else if (ans > 0) {
-                left = mid + 1;
-            } else {
-                return mid;
-            }
+        for (int64_t spell : spells) {
+            int64_t reqPotion = ceil(static_cast<double>(success) / spell);
+
+            result.push_back(distance(lower_bound(potions.begin(), potions.end(), reqPotion), potions.end()));
         }
 
-        return left;
+        return result;
     }
 };
 
