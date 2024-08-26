@@ -7,19 +7,29 @@ using namespace std;
 
 class Solution {
 public:
-    vector<int> successfulPairs(vector<int>& spells, vector<int>& potions, long long success) {
-        sort(potions.begin(), potions.end());
+    int minEatingSpeed(vector<int>& piles, int h) {
+        int minK = max(1l, accumulate(piles.begin(), piles.end(), 0l) / h);
+        int maxK = *max_element(piles.begin(), piles.end());
 
-        vector<int> result;
-        result.reserve(spells.size());
+        while (minK <= maxK) {
+            int k = (minK + maxK) / 2;
+            int hours = 0;
 
-        for (int64_t spell : spells) {
-            int64_t reqPotion = ceil(static_cast<double>(success) / spell);
+            for (int p : piles) {
+                hours += (p - 1) / k + 1;
 
-            result.push_back(distance(lower_bound(potions.begin(), potions.end(), reqPotion), potions.end()));
+                if (hours > h) {
+                    minK = k + 1;
+                    break;
+                }
+            }
+
+            if (hours <= h) {
+                maxK = k - 1;
+            }
         }
 
-        return result;
+        return minK;
     }
 };
 
