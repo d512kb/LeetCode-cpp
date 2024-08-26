@@ -5,23 +5,25 @@
 
 using namespace std;
 
-class Solution {
+class StockSpanner {
 public:
-    int eraseOverlapIntervals(vector<vector<int>>& intervals) {
-        sort(intervals.begin(), intervals.end());
+    StockSpanner() {
+        m_stocks.reserve(10000);
+    }
 
-        int ans = 0;
-        int lastStart = numeric_limits<int>::max();
-        for (auto iter = intervals.rbegin(); iter != intervals.rend(); ++iter) {
-            if ((*iter)[1] > lastStart) {
-                ++ans;
-            } else {
-                lastStart = (*iter)[0];
-            }
+    int next(int price) {
+        int span = 1;
+
+        while (!m_stocks.empty() && m_stocks.back().first <= price) {
+            span += m_stocks.back().second;
+            m_stocks.pop_back();
         }
 
-        return ans;
+        m_stocks.emplace_back(price, span);
+        return span;
     }
+private:
+    vector<pair<int, int>> m_stocks;
 };
 
 int main() {
