@@ -7,24 +7,20 @@ using namespace std;
 
 class Solution {
 public:
-    int minFlips(int a, int b, int c) {
-        int result = 0;
+    int eraseOverlapIntervals(vector<vector<int>>& intervals) {
+        sort(intervals.begin(), intervals.end());
 
-        while (a || b || c) {
-            char v = (a & 1) + (b & 1);
-
-            if (c & 1) {
-                result += !v;
+        int ans = 0;
+        int lastStart = numeric_limits<int>::max();
+        for (auto iter = intervals.rbegin(); iter != intervals.rend(); ++iter) {
+            if ((*iter)[1] > lastStart) {
+                ++ans;
             } else {
-                result += v;
+                lastStart = (*iter)[0];
             }
-
-            a >>= 1;
-            b >>= 1;
-            c >>= 1;
         }
 
-        return result;
+        return ans;
     }
 };
 
