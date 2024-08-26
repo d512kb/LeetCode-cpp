@@ -7,39 +7,24 @@ using namespace std;
 
 class Solution {
 public:
-    vector<vector<string>> partition(string s) {
-        vector<vector<string>> result;
-        vector<string> part;
+    int maxProduct(vector<int>& nums) {
+        int negPrev = 1;
+        int posPrev = 1;
+        int neg = 1;
+        int pos = 1;
+        int ans = nums.front();
 
-        buildPartitions(result, part, s, 0, s.size() - 1);
+        for (int n : nums) {
+            neg = min(n, min(n * negPrev, n * posPrev));
+            pos = max(n, max(n * negPrev, n * posPrev));
 
-        return result;
-    }
+            ans = max(ans, max(neg, pos));
 
-private:
-    void buildPartitions(vector<vector<string>>& result, vector<string>& part, const string& s, int from, int to) {
-        if (from > to) {
-            result.push_back(part);
-            return;
+            negPrev = neg;
+            posPrev = pos;
         }
 
-        for (int i = from; i <= to; ++i) {
-            if (isPalindrome(s, from, i)) {
-                part.push_back(s.substr(from, i - from + 1));
-                buildPartitions(result, part, s, i + 1, to);
-                part.pop_back();
-            }
-        }
-    }
-
-    bool isPalindrome(const string& s, int from, int to) {
-        while (from < to) {
-            if (s[from++] != s[to--]) {
-                return false;
-            }
-        }
-
-        return true;
+        return ans;
     }
 };
 
