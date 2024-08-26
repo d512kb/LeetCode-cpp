@@ -7,22 +7,39 @@ using namespace std;
 
 class Solution {
 public:
-    vector<vector<int>> subsets(vector<int>& nums) {
-        vector<vector<int>> subsets;
-        subsets.reserve(2 << nums.size());
+    vector<vector<string>> partition(string s) {
+        vector<vector<string>> result;
+        vector<string> part;
 
-        for (int n : nums) {
-            auto iterEnd = subsets.end();
-            subsets.push_back({ n });
-            for (auto iter = subsets.begin(); iter < iterEnd; ++iter) {
-                subsets.push_back(*iter);
-                subsets.back().push_back(n);
+        buildPartitions(result, part, s, 0, s.size() - 1);
+
+        return result;
+    }
+
+private:
+    void buildPartitions(vector<vector<string>>& result, vector<string>& part, const string& s, int from, int to) {
+        if (from > to) {
+            result.push_back(part);
+            return;
+        }
+
+        for (int i = from; i <= to; ++i) {
+            if (isPalindrome(s, from, i)) {
+                part.push_back(s.substr(from, i - from + 1));
+                buildPartitions(result, part, s, i + 1, to);
+                part.pop_back();
+            }
+        }
+    }
+
+    bool isPalindrome(const string& s, int from, int to) {
+        while (from < to) {
+            if (s[from++] != s[to--]) {
+                return false;
             }
         }
 
-        subsets.emplace_back();
-
-        return subsets;
+        return true;
     }
 };
 
