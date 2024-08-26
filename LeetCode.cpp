@@ -5,25 +5,25 @@
 
 using namespace std;
 
-class StockSpanner {
+class Solution {
 public:
-    StockSpanner() {
-        m_stocks.reserve(10000);
-    }
+    vector<vector<int>> subsets(vector<int>& nums) {
+        vector<vector<int>> subsets;
+        subsets.reserve(2 << nums.size());
 
-    int next(int price) {
-        int span = 1;
-
-        while (!m_stocks.empty() && m_stocks.back().first <= price) {
-            span += m_stocks.back().second;
-            m_stocks.pop_back();
+        for (int n : nums) {
+            auto iterEnd = subsets.end();
+            subsets.push_back({ n });
+            for (auto iter = subsets.begin(); iter < iterEnd; ++iter) {
+                subsets.push_back(*iter);
+                subsets.back().push_back(n);
+            }
         }
 
-        m_stocks.emplace_back(price, span);
-        return span;
+        subsets.emplace_back();
+
+        return subsets;
     }
-private:
-    vector<pair<int, int>> m_stocks;
 };
 
 int main() {
