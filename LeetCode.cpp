@@ -7,21 +7,37 @@ using namespace std;
 
 class Solution {
 public:
-    int maxProduct(vector<int>& nums) {
-        int negPrev = 1;
-        int posPrev = 1;
-        int neg = 1;
-        int pos = 1;
-        int ans = nums.front();
+    int longestValidParentheses(string s) {
+        int ans = 0;
+        vector<int> st;
 
-        for (int n : nums) {
-            neg = min(n, min(n * negPrev, n * posPrev));
-            pos = max(n, max(n * negPrev, n * posPrev));
+        for (char c : s) {
+            if (c == '(') {
+                st.push_back(0);
+            } else {
+                int sum = 0;
+                while (!st.empty() && st.back() > 0) {
+                    sum += st.back();
+                    st.pop_back();
+                }
 
-            ans = max(ans, max(neg, pos));
+                if (!st.empty()) {
+                    sum += 2;
+                    st.back() = sum;
+                }
 
-            negPrev = neg;
-            posPrev = pos;
+                ans = max(ans, sum);
+            }
+        }
+
+        int sum = 0;
+        for (int v : st) {
+            sum += v;
+            ans = max(ans, sum);
+
+            if (v == 0) {
+                sum = 0;
+            }
         }
 
         return ans;
