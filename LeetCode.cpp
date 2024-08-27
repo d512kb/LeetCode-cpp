@@ -7,40 +7,17 @@ using namespace std;
 
 class Solution {
 public:
-    int longestValidParentheses(string s) {
-        int ans = 0;
-        vector<int> st;
+    bool findSubarrays(vector<int>& nums) {
+        int sz = nums.size() - 1;
+        unordered_map<int, int> mp;
 
-        for (char c : s) {
-            if (c == '(') {
-                st.push_back(0);
-            } else {
-                int sum = 0;
-                while (!st.empty() && st.back() > 0) {
-                    sum += st.back();
-                    st.pop_back();
-                }
-
-                if (!st.empty()) {
-                    sum += 2;
-                    st.back() = sum;
-                }
-
-                ans = max(ans, sum);
+        for (int i = 0; i < sz; ++i) {
+            if (++mp[nums[i] + nums[i + 1]] > 1) {
+                return true;
             }
         }
 
-        int sum = 0;
-        for (int v : st) {
-            sum += v;
-            ans = max(ans, sum);
-
-            if (v == 0) {
-                sum = 0;
-            }
-        }
-
-        return ans;
+        return false;
     }
 };
 
