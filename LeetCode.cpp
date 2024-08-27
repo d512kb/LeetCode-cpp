@@ -7,17 +7,21 @@ using namespace std;
 
 class Solution {
 public:
-    bool findSubarrays(vector<int>& nums) {
-        int sz = nums.size() - 1;
-        unordered_map<int, int> mp;
+    bool canPartition(vector<int>& nums) {
+        int target = accumulate(nums.begin(), nums.end(), 0);
 
-        for (int i = 0; i < sz; ++i) {
-            if (++mp[nums[i] + nums[i + 1]] > 1) {
-                return true;
-            }
+        if (target % 2) {
+            return false;
         }
 
-        return false;
+        target /= 2;
+        bitset<20000 + 1> dp(1);
+
+        for (int n : nums) {
+            dp |= dp << n;
+        }
+
+        return dp[target];
     }
 };
 

@@ -15,6 +15,7 @@
 #include <map>
 #include <unordered_set>
 #include <queue>
+#include <bitset>
 
 // TODO: Reference additional headers your program requires here.
 
