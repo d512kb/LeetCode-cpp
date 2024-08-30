@@ -3,19 +3,20 @@
 
 #pragma once
 
+#include <algorithm>
+#include <array>
+#include <bitset>
+#include <chrono>
+#include <functional>
 #include <iostream>
-#include <vector>
+#include <map>
+#include <numeric>
+#include <queue>
+#include <random>
 #include <set>
 #include <stack>
-#include <algorithm>
-#include <chrono>
-#include <random>
-#include <numeric>
-#include <functional>
-#include <map>
 #include <unordered_set>
-#include <queue>
-#include <bitset>
+#include <vector>
 
 // TODO: Reference additional headers your program requires here.
 
