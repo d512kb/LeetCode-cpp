@@ -7,8 +7,29 @@ using namespace std;
 
 class Solution {
 public:
-    bool checkTwoChessboards(string coordinate1, string coordinate2) {
-        return 0 == (coordinate1[0] + coordinate1[1] + coordinate2[0] + coordinate2[1]) % 2;
+    vector<int> partitionLabels(string s) {
+        int sz = s.size();
+        int segments[26];
+        memset(&segments, 0, sizeof(segments));
+
+        for (int i = 0; i < sz; ++i) {
+            segments[s[i] - 'a'] = i;
+        }
+
+        vector<int> result;
+        int start = 0;
+        int end = 0;
+
+        for (int i = 0; i < sz; ++i) {
+            end = max(end, segments[s[i] - 'a']);
+
+            if (i == end) {
+                result.push_back(end - start + 1);
+                start = i + 1;
+            }
+        }
+
+        return result;
     }
 };
 
