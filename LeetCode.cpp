@@ -7,29 +7,34 @@ using namespace std;
 
 class Solution {
 public:
-    vector<int> partitionLabels(string s) {
-        int sz = s.size();
-        int segments[26];
-        memset(&segments, 0, sizeof(segments));
+    bool canPartitionKSubsets(vector<int>& nums, int k) {
+        int target = accumulate(nums.begin(), nums.end(), 0);
 
-        for (int i = 0; i < sz; ++i) {
-            segments[s[i] - 'a'] = i;
-        }
+        if (target % k) { return false; }
 
-        vector<int> result;
-        int start = 0;
-        int end = 0;
+        target /= k;
+        sort(nums.begin(), nums.end());
+        vector<char> cache(1 << nums.size(), -1);
 
-        for (int i = 0; i < sz; ++i) {
-            end = max(end, segments[s[i] - 'a']);
+        return checkPartition(nums, cache, 0, k, 0, target, target);
+    }
+private:
+    int checkPartition(vector<int>& nums, vector<char>& cache, uint16_t used, char bucket, char from, int rest, int target) {
+        if (bucket == 1) { return true; }
+        if (cache[used] != -1) { return cache[used]; }
 
-            if (i == end) {
-                result.push_back(end - start + 1);
-                start = i + 1;
+        for (int i = from; i < nums.size(); ++i) {
+            if (used & 1 << i) { continue; }
+            if (nums[i] > rest) { break; }
+
+            if (rest == nums[i] && checkPartition(nums, cache, used | 1 << i, bucket - 1, 0, target, target)) {
+                return cache[used] = 1;
+            } else if (checkPartition(nums, cache, used | 1 << i, bucket, i + 1, rest - nums[i], target)) {
+                return cache[used] = 1;
             }
         }
 
-        return result;
+        return cache[used] = 0;
     }
 };
 
