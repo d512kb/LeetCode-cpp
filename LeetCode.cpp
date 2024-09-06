@@ -7,24 +7,24 @@ using namespace std;
 
 class Solution {
 public:
-    int subarraySum(vector<int>& nums, int k) {
-        unordered_map<int, int> mpSums;
-        int acc = 0;
-        for (int& n : nums) {
-            n += acc;
-            ++mpSums[n];
-            acc = n;
+    bool searchMatrix(vector<vector<int>>& matrix, int target) {
+        int col = matrix[0].size() - 1;
+        int sz = matrix.size();
+        int row = 0;
+
+        while (row < sz && col >= 0) {
+            int val = matrix[row][col];
+
+            if (val < target) {
+                ++row;
+            } else if (val > target) {
+                --col;
+            } else {
+                return true;
+            }
         }
 
-        int result = 0;
-        int corr = 0;
-        for (int n : nums) {
-            result += mpSums[corr + k];
-            --mpSums[n];
-            corr = n;
-        }
-
-        return result;
+        return false;
     }
 };
 
