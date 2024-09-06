@@ -7,24 +7,29 @@ using namespace std;
 
 class Solution {
 public:
-    bool searchMatrix(vector<vector<int>>& matrix, int target) {
-        int col = matrix[0].size() - 1;
-        int sz = matrix.size();
-        int row = 0;
+    int lengthOfLongestSubstring(string s) {
+        int sz = s.size();
+        int a = 0, b = 0;
+        int lenMax = 0;
+        bitset<256> chars;
 
-        while (row < sz && col >= 0) {
-            int val = matrix[row][col];
+        for (b; b < sz; ++b) {
+            char c = s[b];
 
-            if (val < target) {
-                ++row;
-            } else if (val > target) {
-                --col;
-            } else {
-                return true;
+            if (chars[c]) {
+                lenMax = max(lenMax, b - a);
+
+                for (; s[a] != c; ++a) {
+                    chars[s[a]] = 0;
+                }
+
+                ++a;
             }
+
+            chars[c] = 1;
         }
 
-        return false;
+        return max(lenMax, b - a);
     }
 };
 
