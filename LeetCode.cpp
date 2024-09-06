@@ -7,33 +7,23 @@ using namespace std;
 
 class Solution {
 public:
-    vector<int> topKFrequent(vector<int>& nums, int k) {
-        int numOffset = 10000;
-        int freqSz = numOffset * 2 + 1;
-        int freq[20001];
-        memset(&freq, 0, sizeof(freq));
-
-        for (int i : nums) {
-            ++freq[i + numOffset];
+    int subarraySum(vector<int>& nums, int k) {
+        unordered_map<int, int> mpSums;
+        int acc = 0;
+        for (int& n : nums) {
+            n += acc;
+            ++mpSums[n];
+            acc = n;
         }
 
-        auto cmp = [&freq](int a, int b) { return freq[a] > freq[b]; };
-        vector<int> result(k);
-        iota(result.begin(), result.end(), 0);
-        make_heap(result.begin(), result.end(), cmp);
-
-        int lowestFreq = freq[result.front()];
-
-        for (int i = k; i < freqSz; ++i) {
-            if (freq[i] > lowestFreq) {
-                pop_heap(result.begin(), result.end(), cmp);
-                result.back() = i;
-                push_heap(result.begin(), result.end(), cmp);
-                lowestFreq = freq[result.front()];
-            }
+        int result = 0;
+        int corr = 0;
+        for (int n : nums) {
+            result += mpSums[corr + k];
+            --mpSums[n];
+            corr = n;
         }
 
-        transform(result.begin(), result.end(), result.begin(), [numOffset](int a) { return a - numOffset; });
         return result;
     }
 };
