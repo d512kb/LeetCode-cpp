@@ -7,21 +7,22 @@ using namespace std;
 
 class Solution {
 public:
-    char nextGreatestLetter(vector<char>& letters, char target) {
-        int left = 0;
-        int right = letters.size();
+    int countNegatives(vector<vector<int>>& grid) {
+        int colSz = grid[0].size();
+        int col = 0;
+        int row = grid.size() - 1;
+        int ans = 0;
 
-        while (left < right) {
-            int mid = (left + right) / 2;
-
-            if (letters[mid] <= target) {
-                left = mid + 1;
+        while (row >= 0 && col < colSz) {
+            if (grid[row][col] < 0) {
+                ans += colSz - col;
+                --row;
             } else {
-                right = mid;
+                ++col;
             }
         }
 
-        return left < letters.size() ? letters[left] : letters[0];
+        return ans;
     }
 };
 
