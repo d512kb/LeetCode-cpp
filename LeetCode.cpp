@@ -7,24 +7,22 @@ using namespace std;
 
 class Solution {
 public:
-    int arrangeCoins(int n) {
-        int left = 1;
-        int right = n;
+    int findKthPositive(vector<int>& arr, int k) {
+        int left = 0;
+        int right = arr.size() - 1;
 
         while (left <= right) {
-            uint64_t mid = left + (right - left) / 2;
-            uint64_t sum = mid * (mid + 1) / 2;
+            int mid = (left + right) / 2;
+            int val = arr[mid];
 
-            if (sum < n) {
+            if (val - mid - 1 < k) { // skipped < k
                 left = mid + 1;
-            } else if (sum > n) {
-                right = mid - 1;
             } else {
-                return mid;
+                right = mid - 1;
             }
         }
 
-        return right;
+        return left + k;
     }
 };
 
