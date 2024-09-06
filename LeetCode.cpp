@@ -7,34 +7,34 @@ using namespace std;
 
 class Solution {
 public:
-    bool canPartitionKSubsets(vector<int>& nums, int k) {
-        int target = accumulate(nums.begin(), nums.end(), 0);
+    vector<int> topKFrequent(vector<int>& nums, int k) {
+        int numOffset = 10000;
+        int freqSz = numOffset * 2 + 1;
+        int freq[20001];
+        memset(&freq, 0, sizeof(freq));
 
-        if (target % k) { return false; }
+        for (int i : nums) {
+            ++freq[i + numOffset];
+        }
 
-        target /= k;
-        sort(nums.begin(), nums.end());
-        vector<char> cache(1 << nums.size(), -1);
+        auto cmp = [&freq](int a, int b) { return freq[a] > freq[b]; };
+        vector<int> result(k);
+        iota(result.begin(), result.end(), 0);
+        make_heap(result.begin(), result.end(), cmp);
 
-        return checkPartition(nums, cache, 0, k, 0, target, target);
-    }
-private:
-    int checkPartition(vector<int>& nums, vector<char>& cache, uint16_t used, char bucket, char from, int rest, int target) {
-        if (bucket == 1) { return true; }
-        if (cache[used] != -1) { return cache[used]; }
+        int lowestFreq = freq[result.front()];
 
-        for (int i = from; i < nums.size(); ++i) {
-            if (used & 1 << i) { continue; }
-            if (nums[i] > rest) { break; }
-
-            if (rest == nums[i] && checkPartition(nums, cache, used | 1 << i, bucket - 1, 0, target, target)) {
-                return cache[used] = 1;
-            } else if (checkPartition(nums, cache, used | 1 << i, bucket, i + 1, rest - nums[i], target)) {
-                return cache[used] = 1;
+        for (int i = k; i < freqSz; ++i) {
+            if (freq[i] > lowestFreq) {
+                pop_heap(result.begin(), result.end(), cmp);
+                result.back() = i;
+                push_heap(result.begin(), result.end(), cmp);
+                lowestFreq = freq[result.front()];
             }
         }
 
-        return cache[used] = 0;
+        transform(result.begin(), result.end(), result.begin(), [numOffset](int a) { return a - numOffset; });
+        return result;
     }
 };
 
