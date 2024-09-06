@@ -5,25 +5,26 @@
 
 using namespace std;
 
-// The API isBadVersion is defined for you.
-bool isBadVersion(int version);
-
 class Solution {
 public:
-    int firstBadVersion(int n) {
-        int start = 1;
+    bool isPerfectSquare(int num) {
+        int min = 1;
+        int max = 46340;
 
-        while (start <= n) {
-            int mid = start + (n - start) / 2;
+        while (min <= max) {
+            int mid = min + (max - min) / 2;
+            int val = mid * mid;
 
-            if (isBadVersion(mid)) {
-                n = mid - 1;
+            if (val == num) {
+                return true;
+            } else if (val < num) {
+                min = mid + 1;
             } else {
-                start = mid + 1;
+                max = mid - 1;
             }
         }
 
-        return start;
+        return false;
     }
 };
 
