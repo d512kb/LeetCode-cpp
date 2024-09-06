@@ -7,23 +7,21 @@ using namespace std;
 
 class Solution {
 public:
-    int search(vector<int>& nums, int target) {
+    char nextGreatestLetter(vector<char>& letters, char target) {
         int left = 0;
-        int right = nums.size();
+        int right = letters.size();
 
         while (left < right) {
             int mid = (left + right) / 2;
 
-            if (nums[mid] < target) {
+            if (letters[mid] <= target) {
                 left = mid + 1;
-            } else if (nums[mid] > target) {
-                right = mid;
             } else {
-                return mid;
+                right = mid;
             }
         }
 
-        return -1;
+        return left < letters.size() ? letters[left] : letters[0];
     }
 };
 
