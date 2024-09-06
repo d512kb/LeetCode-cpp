@@ -7,29 +7,29 @@ using namespace std;
 
 class Solution {
 public:
-    int lengthOfLongestSubstring(string s) {
-        int sz = s.size();
-        int a = 0, b = 0;
-        int lenMax = 0;
-        bitset<256> chars;
+    vector<int> findAnagrams(string s, string p) {
+        if (p.size() > s.size()) { return {}; }
+        int psz = p.size();
+        int ssz = s.size();
 
-        for (b; b < sz; ++b) {
-            char c = s[b];
+        int pFreq[26]{ 0 };
+        for (char c : p) { ++pFreq[c - 'a']; }
 
-            if (chars[c]) {
-                lenMax = max(lenMax, b - a);
+        int sFreq[26]{ 0 };
+        for (int i = 0; i < psz - 1; ++i) { ++sFreq[s[i] - 'a']; }
 
-                for (; s[a] != c; ++a) {
-                    chars[s[a]] = 0;
-                }
+        vector<int> result;
+        for (int a = 0, b = psz - 1; b < ssz; ++a, ++b) {
+            ++sFreq[s[b] - 'a'];
 
-                ++a;
+            if (equal(sFreq, sFreq + 26, pFreq)) {
+                result.push_back(a);
             }
 
-            chars[c] = 1;
+            --sFreq[s[a] - 'a'];
         }
 
-        return max(lenMax, b - a);
+        return result;
     }
 };
 
