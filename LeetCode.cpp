@@ -7,12 +7,16 @@ using namespace std;
 
 class Solution {
 public:
-    string convertDateToBinary(string date) {
-        int year = stoi(date.substr(0, 4));
-        int month = stoi(date.substr(5, 2));
-        int day = stoi(date.substr(8, 2));
+    long long findMaximumScore(vector<int>& nums) {
+        int mx = 0;
+        int64_t result = 0;
 
-        return format("{:b}-{:b}-{:b}", year, month, day);
+        for (int n : nums) {
+            result += mx;
+            if (n > mx) { mx = n; }
+        }
+
+        return result;
     }
 };
 
