@@ -7,22 +7,12 @@ using namespace std;
 
 class Solution {
 public:
-    int findKthPositive(vector<int>& arr, int k) {
-        int left = 0;
-        int right = arr.size() - 1;
+    string convertDateToBinary(string date) {
+        int year = stoi(date.substr(0, 4));
+        int month = stoi(date.substr(5, 2));
+        int day = stoi(date.substr(8, 2));
 
-        while (left <= right) {
-            int mid = (left + right) / 2;
-            int val = arr[mid];
-
-            if (val - mid - 1 < k) { // skipped < k
-                left = mid + 1;
-            } else {
-                right = mid - 1;
-            }
-        }
-
-        return left + k;
+        return format("{:b}-{:b}-{:b}", year, month, day);
     }
 };
 
