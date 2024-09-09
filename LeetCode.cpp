@@ -7,30 +7,25 @@ using namespace std;
 
 class Solution {
 public:
-    int findMin(vector<int>& nums) {
+    int hIndex(vector<int>& citations) {
         int a = 0;
-        int b = nums.size() - 1;
-        int minVal = nums[0];
+        int len = citations.size();
+        int b = len;
+        int hIndex = 0;
 
-        while (a <= b) {
+        while (a < b) {
             int mid = (a + b) / 2;
-            int n = nums[mid];
-            minVal = min(minVal, n);
+            int cit = len - mid;
 
-            if (nums[a] == nums[b]) {
-                ++a;
-                --b;
-                continue;
-            }
-
-            if (n <= nums[b]) {
-                b = mid - 1;
-            } else {
+            if (citations[mid] < cit) {
                 a = mid + 1;
+            } else {
+                hIndex = cit;
+                b = mid;
             }
         }
 
-        return minVal;
+        return hIndex;
     }
 };
 
