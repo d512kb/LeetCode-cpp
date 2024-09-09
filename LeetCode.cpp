@@ -7,13 +7,28 @@ using namespace std;
 
 class Solution {
 public:
-    long long findMaximumScore(vector<int>& nums) {
-        int mx = 0;
-        int64_t result = 0;
+    vector<int> findRightInterval(vector<vector<int>>& intervals) {
+        int sz = intervals.size();
+        vector<pair<int, int>> sortedIntervals;
+        sortedIntervals.reserve(sz);
 
-        for (int n : nums) {
-            result += mx;
-            if (n > mx) { mx = n; }
+        for (int i = 0; i < sz; ++i) {
+            auto& interval = intervals[i];
+            sortedIntervals.emplace_back(interval[0], i);
+        }
+
+        sort(sortedIntervals.begin(), sortedIntervals.end());
+        vector<int> result;
+        result.reserve(sz);
+
+        for (auto& interval : intervals) {
+            auto iter = lower_bound(sortedIntervals.begin(), sortedIntervals.end(), interval[1], [](auto& p, int right) { return p.first < right; });
+
+            if (iter != sortedIntervals.end()) {
+                result.push_back(iter->second);
+            } else {
+                result.push_back(-1);
+            }
         }
 
         return result;
