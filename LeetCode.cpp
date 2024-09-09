@@ -7,25 +7,22 @@ using namespace std;
 
 class Solution {
 public:
-    int hIndex(vector<int>& citations) {
+    int singleNonDuplicate(vector<int>& nums) {
         int a = 0;
-        int len = citations.size();
-        int b = len;
-        int hIndex = 0;
+        int b = nums.size() - 1;
 
         while (a < b) {
             int mid = (a + b) / 2;
-            int cit = len - mid;
+            if (mid % 2) { --mid; }
 
-            if (citations[mid] < cit) {
-                a = mid + 1;
+            if (nums[mid] == nums[mid + 1]) {
+                a = mid + 2;
             } else {
-                hIndex = cit;
                 b = mid;
             }
         }
 
-        return hIndex;
+        return nums[a];
     }
 };
 
