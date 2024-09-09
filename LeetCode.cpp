@@ -7,22 +7,21 @@ using namespace std;
 
 class Solution {
 public:
-    int singleNonDuplicate(vector<int>& nums) {
+    int peakIndexInMountainArray(vector<int>& arr) {
         int a = 0;
-        int b = nums.size() - 1;
+        int b = arr.size() - 1;
 
         while (a < b) {
             int mid = (a + b) / 2;
-            if (mid % 2) { --mid; }
 
-            if (nums[mid] == nums[mid + 1]) {
-                a = mid + 2;
+            if (arr[mid] < arr[mid + 1]) {
+                a = mid + 1;
             } else {
                 b = mid;
             }
         }
 
-        return nums[a];
+        return a;
     }
 };
 
