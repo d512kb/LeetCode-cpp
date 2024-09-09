@@ -5,36 +5,33 @@
 
 using namespace std;
 
-class SnapshotArray {
+class Solution {
 public:
-    SnapshotArray(int length) : m_currentSnapshot(0), m_data(length, { {0, 0} }) {
+    int findMin(vector<int>& nums) {
+        int a = 0;
+        int b = nums.size() - 1;
+        int minVal = nums[0];
 
-    }
+        while (a <= b) {
+            int mid = (a + b) / 2;
+            int n = nums[mid];
+            minVal = min(minVal, n);
 
-    void set(int index, int val) {
-        auto& lastVal = m_data[index].back();
+            if (nums[a] == nums[b]) {
+                ++a;
+                --b;
+                continue;
+            }
 
-        if (lastVal.second == m_currentSnapshot) {
-            lastVal.first = val;
-        } else if (lastVal.first != val) {
-            m_data[index].emplace_back(val, m_currentSnapshot);
+            if (n <= nums[b]) {
+                b = mid - 1;
+            } else {
+                a = mid + 1;
+            }
         }
-    }
 
-    int snap() {
-        return m_currentSnapshot++;
+        return minVal;
     }
-
-    int get(int index, int snap_id) {
-        auto& vals = m_data[index];
-
-        return lower_bound(vals.rbegin(), vals.rend(), snap_id, [](auto& v, int snap) {
-            return v.second > snap;
-        })->first;
-    }
-private:
-    int m_currentSnapshot;
-    vector<vector<pair<int, int>>> m_data; // pair<value, snapshot_id>
 };
 
 int main() {
