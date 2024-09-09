@@ -5,34 +5,33 @@
 
 using namespace std;
 
-class Solution {
+class TimeMap {
+    struct TimestampComparer {
+        bool operator()(auto& a, auto& b) const {
+            return a.first > b.first;
+        }
+    };
+
 public:
-    vector<int> findRightInterval(vector<vector<int>>& intervals) {
-        int sz = intervals.size();
-        vector<pair<int, int>> sortedIntervals;
-        sortedIntervals.reserve(sz);
+    TimeMap() {
 
-        for (int i = 0; i < sz; ++i) {
-            auto& interval = intervals[i];
-            sortedIntervals.emplace_back(interval[0], i);
-        }
-
-        sort(sortedIntervals.begin(), sortedIntervals.end());
-        vector<int> result;
-        result.reserve(sz);
-
-        for (auto& interval : intervals) {
-            auto iter = lower_bound(sortedIntervals.begin(), sortedIntervals.end(), interval[1], [](auto& p, int right) { return p.first < right; });
-
-            if (iter != sortedIntervals.end()) {
-                result.push_back(iter->second);
-            } else {
-                result.push_back(-1);
-            }
-        }
-
-        return result;
     }
+
+    void set(string key, string value, int timestamp) {
+        m_map[key].emplace(timestamp, value);
+    }
+
+    string get(string key, int timestamp) {
+        auto iter = m_map.find(key);
+        if (iter == m_map.end()) { return ""; }
+
+        auto valueIter = iter->second.lower_bound({ timestamp, "" });
+
+        if (valueIter == iter->second.end()) { return ""; }
+        return valueIter->second;
+    }
+private:
+    map<string, std::set<pair<int, string>, TimestampComparer>> m_map;
 };
 
 int main() {
