@@ -5,33 +5,36 @@
 
 using namespace std;
 
-class TimeMap {
-    struct TimestampComparer {
-        bool operator()(auto& a, auto& b) const {
-            return a.first > b.first;
-        }
-    };
-
+class SnapshotArray {
 public:
-    TimeMap() {
+    SnapshotArray(int length) : m_currentSnapshot(0), m_data(length, { {0, 0} }) {
 
     }
 
-    void set(string key, string value, int timestamp) {
-        m_map[key].emplace(timestamp, value);
+    void set(int index, int val) {
+        auto& lastVal = m_data[index].back();
+
+        if (lastVal.second == m_currentSnapshot) {
+            lastVal.first = val;
+        } else if (lastVal.first != val) {
+            m_data[index].emplace_back(val, m_currentSnapshot);
+        }
     }
 
-    string get(string key, int timestamp) {
-        auto iter = m_map.find(key);
-        if (iter == m_map.end()) { return ""; }
+    int snap() {
+        return m_currentSnapshot++;
+    }
 
-        auto valueIter = iter->second.lower_bound({ timestamp, "" });
+    int get(int index, int snap_id) {
+        auto& vals = m_data[index];
 
-        if (valueIter == iter->second.end()) { return ""; }
-        return valueIter->second;
+        return lower_bound(vals.rbegin(), vals.rend(), snap_id, [](auto& v, int snap) {
+            return v.second > snap;
+        })->first;
     }
 private:
-    map<string, std::set<pair<int, string>, TimestampComparer>> m_map;
+    int m_currentSnapshot;
+    vector<vector<pair<int, int>>> m_data; // pair<value, snapshot_id>
 };
 
 int main() {
