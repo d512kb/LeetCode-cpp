@@ -7,21 +7,19 @@ using namespace std;
 
 class Solution {
 public:
-    int peakIndexInMountainArray(vector<int>& arr) {
+    vector<int> findClosestElements(vector<int>& arr, int k, int x) {
         int a = 0;
         int b = arr.size() - 1;
 
-        while (a < b) {
-            int mid = (a + b) / 2;
-
-            if (arr[mid] < arr[mid + 1]) {
-                a = mid + 1;
+        while (b - a >= k) {
+            if (abs(arr[a] - x) > abs(arr[b] - x)) {
+                ++a;
             } else {
-                b = mid;
+                --b;
             }
         }
 
-        return a;
+        return vector<int>(arr.begin() + a, arr.begin() + b + 1);
     }
 };
 
