@@ -7,19 +7,26 @@ using namespace std;
 
 class Solution {
 public:
-    vector<int> findClosestElements(vector<int>& arr, int k, int x) {
-        int a = 0;
-        int b = arr.size() - 1;
+    int triangleNumber(vector<int>& nums) {
+        sort(nums.begin(), nums.end());
+        int sz = nums.size();
+        int ans = 0;
 
-        while (b - a >= k) {
-            if (abs(arr[a] - x) > abs(arr[b] - x)) {
-                ++a;
-            } else {
-                --b;
+        for (int c = 2; c < sz; ++c) {
+            int a = 0;
+            int b = c - 1;
+
+            while (a < b) {
+                if (nums[a] + nums[b] > nums[c]) {
+                    ans += b - a;
+                    --b;
+                } else {
+                    ++a;
+                }
             }
         }
 
-        return vector<int>(arr.begin() + a, arr.begin() + b + 1);
+        return ans;
     }
 };
 
