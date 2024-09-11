@@ -7,33 +7,41 @@ using namespace std;
 
 class Solution {
 public:
-    int numSubseq(vector<int>& nums, int target) {
-        sort(nums.begin(), nums.end());
+    Solution(vector<int>& w) : m_weights(w.size()) {
+        transform(w.begin(), w.end(), m_weights.begin(), [acc = 0](int w) mutable {
+            acc += w;
+            return acc;
+        });
 
-        int modNumber = 1000000007;
-        auto start = nums.begin();
-        auto stop = lower_bound(start, nums.end(), 1 + target - *start);
-
-        vector<int> seqs(2 + distance(start, stop));
-        seqs[0] = 0;
-        seqs[1] = 1;
-        int prevTwo = 1;
-
-        for (int i = 2; i < seqs.size(); ++i) {
-            seqs[i] = (seqs[i - 1] + prevTwo) % modNumber;
-            prevTwo = (prevTwo * 2) % modNumber;
-        }
-
-        int ans = 0;
-        for (; start < stop && *start < 1 + target - *start; ++start) {
-            stop = lower_bound(start, stop, 1 + target - *start);
-
-            ans += seqs[distance(start, stop)];
-            ans %= modNumber;
-        }
-
-        return ans;
+        m_eng = mt19937(random_device{}());
+        m_dist = uniform_int_distribution(1, m_weights.back());
     }
+
+    int pickIndex() {
+        int w = m_dist(m_eng);
+
+        int a = 0;
+        int b = m_weights.size() - 1;
+
+        while (a <= b) {
+            int mid = (a + b) / 2;
+            int val = m_weights[mid];
+
+            if (val < w) {
+                a = mid + 1;
+            } else if (val > w) {
+                b = mid - 1;
+            } else {
+                return mid;
+            }
+        }
+
+        return a;
+    }
+private:
+    mt19937 m_eng;
+    uniform_int_distribution<int> m_dist;
+    vector<int> m_weights;
 };
 
 int main() {
