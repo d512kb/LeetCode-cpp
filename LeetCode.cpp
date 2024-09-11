@@ -7,41 +7,20 @@ using namespace std;
 
 class Solution {
 public:
-    Solution(vector<int>& w) : m_weights(w.size()) {
-        transform(w.begin(), w.end(), m_weights.begin(), [acc = 0](int w) mutable {
-            acc += w;
-            return acc;
-        });
+    bool hasGroupsSizeX(vector<int>& deck) {
+        vector<int16_t> cards(10001);
 
-        m_eng = mt19937(random_device{}());
-        m_dist = uniform_int_distribution(1, m_weights.back());
-    }
+        for (int c : deck) { ++cards[c]; }
+        cards.erase(remove(cards.begin(), cards.end(), 0), cards.end());
 
-    int pickIndex() {
-        int w = m_dist(m_eng);
+        int g = 0;
 
-        int a = 0;
-        int b = m_weights.size() - 1;
-
-        while (a <= b) {
-            int mid = (a + b) / 2;
-            int val = m_weights[mid];
-
-            if (val < w) {
-                a = mid + 1;
-            } else if (val > w) {
-                b = mid - 1;
-            } else {
-                return mid;
-            }
+        for (int c : cards) {
+            g = gcd(g, c);
         }
 
-        return a;
+        return g > 1;
     }
-private:
-    mt19937 m_eng;
-    uniform_int_distribution<int> m_dist;
-    vector<int> m_weights;
 };
 
 int main() {
