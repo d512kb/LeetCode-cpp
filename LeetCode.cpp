@@ -7,19 +7,27 @@ using namespace std;
 
 class Solution {
 public:
-    bool hasGroupsSizeX(vector<int>& deck) {
-        vector<int16_t> cards(10001);
+    bool repeatedSubstringPattern(string s) {
+        int sz = s.size();
 
-        for (int c : deck) { ++cards[c]; }
-        cards.erase(remove(cards.begin(), cards.end(), 0), cards.end());
+        for (int div = 2; div <= sz; ++div) {
+            if (sz % div) { continue; }
 
-        int g = 0;
+            int a = 0;
+            int b = sz / div;
 
-        for (int c : cards) {
-            g = gcd(g, c);
+            for (; b < sz; ++a, ++b) {
+                if (s[a] != s[b]) {
+                    break;
+                }
+            }
+
+            if (b == sz) {
+                return true;
+            }
         }
 
-        return g > 1;
+        return false;
     }
 };
 
