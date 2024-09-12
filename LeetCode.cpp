@@ -7,24 +7,26 @@ using namespace std;
 
 class Solution {
 public:
-    int numOfMinutes(int n, int headID, vector<int>& manager, vector<int>& informTime) {
-        vector<vector<int>> graph(n + 1);
-        manager[headID] = n;
+    vector<vector<int>> allPathsSourceTarget(vector<vector<int>>& graph) {
+        vector<vector<int>> result;
+        vector<int> path{ 0 };
 
-        for (int i = 0; i < n; ++i) {
-            graph[manager[i]].push_back(i);
-        }
+        traverse(graph, path, 0, graph.size() - 1, result);
 
-        return dfs(graph, informTime, headID);
+        return result;
     }
 private:
-    int dfs(vector<vector<int>>& graph, vector<int>& informTime, int n) {
-        int maxTime = 0;
-        for (int sub : graph[n]) {
-            maxTime = max(maxTime, dfs(graph, informTime, sub));
+    void traverse(vector<vector<int>>& graph, vector<int>& path, int node, int lastNode, vector<vector<int>>& result) {
+        if (node == lastNode) {
+            result.push_back(path);
+            return;
         }
 
-        return informTime[n] + maxTime;
+        for (int sub : graph[node]) {
+            path.push_back(sub);
+            traverse(graph, path, sub, lastNode, result);
+            path.pop_back();
+        }
     }
 };
 
