@@ -7,33 +7,43 @@ using namespace std;
 
 class Solution {
 public:
-    vector<int> eventualSafeNodes(vector<vector<int>>& graph) {
-        vector<int> result;
+    vector<int> shortestAlternatingPaths(int n, vector<vector<int>>& redEdges, vector<vector<int>>& blueEdges) {
+        const int maxN = 100;
+        vector<vector<char>> graph(n);
 
-        for (int i = 0; i < graph.size(); ++i) {
-            if (isSafeNode(graph, i)) {
-                result.push_back(i);
+        for (auto& v : redEdges) { graph[v[0]].push_back(v[1]); }
+        for (auto& v : blueEdges) { graph[v[0]].push_back(-v[1]); }
+
+        queue<char> q;
+        q.push(0);
+        int depth = -1;
+        bitset<maxN * 2 + 1> visited;
+        vector<int> result(n, -1);
+
+        while (!q.empty()) {
+            ++depth;
+            int sz = q.size();
+
+            while (sz--) {
+                char from = q.front();
+                visited[from + maxN] = 1;
+                char nodeIndex = abs(from);
+                q.pop();
+
+                if (result[nodeIndex] == -1) {
+                    result[nodeIndex] = depth;
+                }
+
+                for (int to : graph[nodeIndex]) {
+                    if (!visited[to + maxN] && to * from <= 0) {
+                        q.push(to);
+                    }
+                }
             }
         }
 
         return result;
     }
-private:
-    bool isSafeNode(vector<vector<int>>& graph, int node) {
-        if (m_safeNodes[node] || m_visitedNodes[node]) { return m_safeNodes[node]; }
-        if (graph[node].empty()) { return m_safeNodes[node] = 1; }
-
-        m_visitedNodes[node] = 1;
-
-        for (int n : graph[node]) {
-            if (!isSafeNode(graph, n)) { return false; }
-        }
-
-        return m_safeNodes[node] = 1;
-    }
-
-    bitset<10001> m_safeNodes;
-    bitset<10001> m_visitedNodes;
 };
 
 int main() {
