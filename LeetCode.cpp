@@ -7,42 +7,24 @@ using namespace std;
 
 class Solution {
 public:
-    vector<int> shortestAlternatingPaths(int n, vector<vector<int>>& redEdges, vector<vector<int>>& blueEdges) {
-        const int maxN = 100;
-        vector<vector<char>> graph(n);
+    int numOfMinutes(int n, int headID, vector<int>& manager, vector<int>& informTime) {
+        vector<vector<int>> graph(n + 1);
+        manager[headID] = n;
 
-        for (auto& v : redEdges) { graph[v[0]].push_back(v[1]); }
-        for (auto& v : blueEdges) { graph[v[0]].push_back(-v[1]); }
-
-        queue<char> q;
-        q.push(0);
-        int depth = -1;
-        bitset<maxN * 2 + 1> visited;
-        vector<int> result(n, -1);
-
-        while (!q.empty()) {
-            ++depth;
-            int sz = q.size();
-
-            while (sz--) {
-                char from = q.front();
-                visited[from + maxN] = 1;
-                char nodeIndex = abs(from);
-                q.pop();
-
-                if (result[nodeIndex] == -1) {
-                    result[nodeIndex] = depth;
-                }
-
-                for (int to : graph[nodeIndex]) {
-                    if (!visited[to + maxN] && to * from <= 0) {
-                        q.push(to);
-                    }
-                }
-            }
+        for (int i = 0; i < n; ++i) {
+            graph[manager[i]].push_back(i);
         }
 
-        return result;
+        return dfs(graph, informTime, headID);
+    }
+private:
+    int dfs(vector<vector<int>>& graph, vector<int>& informTime, int n) {
+        int maxTime = 0;
+        for (int sub : graph[n]) {
+            maxTime = max(maxTime, dfs(graph, informTime, sub));
+        }
+
+        return informTime[n] + maxTime;
     }
 };
 
