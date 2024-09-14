@@ -7,27 +7,41 @@ using namespace std;
 
 class Solution {
 public:
-    bool canReach(vector<int>& arr, int start) {
-        vector<char> visited(arr.size());
+    vector<vector<int>> updateMatrix(vector<vector<int>>& mat) {
+        int rows = mat.size();
+        int cols = mat[0].size();
 
-        vector<int> stack;
-        stack.push_back(start);
+        for (int row = 0; row < rows; ++row) {
+            for (int col = 0; col < cols; ++col) {
+                if (mat[row][col] == 0) { continue; }
 
-        while (!stack.empty()) {
-            start = stack.back();
-            stack.pop_back();
+                int top = rows * cols;
+                int left = top;
 
-            if (arr[start] == 0) { return true; }
-            visited[start] = 1;
+                if (row > 0) { top = mat[row - 1][col]; }
+                if (col > 0) { left = mat[row][col - 1]; }
 
-            int right = start + arr[start];
-            int left = start - arr[start];
-
-            if (left >= 0 && !visited[left]) { stack.push_back(left); }
-            if (right < arr.size() && !visited[right]) { stack.push_back(right); }
+                mat[row][col] = 1 + min(top, left);
+            }
         }
 
-        return false;
+        for (int row = rows - 1; row >= 0; --row) {
+            for (int col = cols - 1; col >= 0; --col) {
+                int& val = mat[row][col];
+
+                if (val == 0) { continue; }
+
+                int bottom = rows * cols;
+                int right = bottom;
+
+                if (row + 1 < rows) { bottom = mat[row + 1][col]; }
+                if (col + 1 < cols) { right = mat[row][col + 1]; }
+
+                val = min(val, 1 + min(bottom, right));
+            }
+        }
+
+        return mat;
     }
 };
 
