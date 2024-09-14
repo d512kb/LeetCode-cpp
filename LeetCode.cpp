@@ -7,41 +7,44 @@ using namespace std;
 
 class Solution {
 public:
-    vector<vector<int>> updateMatrix(vector<vector<int>>& mat) {
-        int rows = mat.size();
-        int cols = mat[0].size();
+    int shortestPathBinaryMatrix(vector<vector<int>>& grid) {
+        if (grid[0][0] != 0) { return -1; }
 
-        for (int row = 0; row < rows; ++row) {
-            for (int col = 0; col < cols; ++col) {
-                if (mat[row][col] == 0) { continue; }
+        int lastRow = grid.size() - 1;
+        int lastCol = grid[0].size() - 1;
+        int len = 0;
+        queue<pair<int, int>> q;
+        q.emplace(0, 0);
 
-                int top = rows * cols;
-                int left = top;
+        while (!q.empty()) {
+            int sz = q.size();
+            ++len;
 
-                if (row > 0) { top = mat[row - 1][col]; }
-                if (col > 0) { left = mat[row][col - 1]; }
+            while (sz--) {
+                auto [row, col] = q.front();
+                q.pop();
 
-                mat[row][col] = 1 + min(top, left);
+                if (row == lastRow && col == lastCol) { return len; }
+
+                for (int r = -1; r <= 1; ++r) {
+                    for (int c = -1; c <= 1; ++c) {
+                        int newRow = row + r;
+                        int newCol = col + c;
+
+                        if (newRow >= 0 && newRow <= lastRow && newCol >= 0 && newCol <= lastCol) {
+                            int& val = grid[newRow][newCol];
+
+                            if (val == 0) {
+                                val = 1;
+                                q.emplace(newRow, newCol);
+                            }
+                        }
+                    }
+                }
             }
         }
 
-        for (int row = rows - 1; row >= 0; --row) {
-            for (int col = cols - 1; col >= 0; --col) {
-                int& val = mat[row][col];
-
-                if (val == 0) { continue; }
-
-                int bottom = rows * cols;
-                int right = bottom;
-
-                if (row + 1 < rows) { bottom = mat[row + 1][col]; }
-                if (col + 1 < cols) { right = mat[row][col + 1]; }
-
-                val = min(val, 1 + min(bottom, right));
-            }
-        }
-
-        return mat;
+        return -1;
     }
 };
 
