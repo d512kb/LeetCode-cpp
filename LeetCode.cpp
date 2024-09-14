@@ -7,47 +7,68 @@ using namespace std;
 
 class Solution {
 public:
-    vector<vector<int>> criticalConnections(int n, vector<vector<int>>& connections) {
-        vector<vector<int>> graph(n);
+    int shortestBridge(vector<vector<int>>& grid) {
+        int rows = grid.size();
+        int cols = grid[0].size();
+        queue<pair<int, int>> q;
 
-        for (auto& conn : connections) {
-            graph[conn[0]].push_back(conn[1]);
-            graph[conn[1]].push_back(conn[0]);
+        for (int row = 0; row < rows; ++row) {
+            if (!q.empty()) { break; }
+
+            for (int col = 0; col < cols; ++col) {
+                if (grid[row][col] == 1) {
+                    mapIsland(grid, row, col, rows, cols, q);
+                    break;
+                }
+            }
         }
 
-        vector<char> visited(n);
-        vector<int> lowest(n);
-        vector<int> nums(n);
-        int num = 0;
+        char dirs[]{ -1, 0, 1, 0, -1 };
+        int len = 0;
 
-        vector<vector<int>> result;
-        findCycle(graph, -1, 0, num, visited, nums, lowest, result);
+        while (!q.empty()) {
+            int sz = q.size();
+            ++len;
 
-        return result;
+            while (sz--) {
+                auto [row, col] = q.front();
+                q.pop();
+
+                for (int i = 0; i < 4; ++i) {
+                    int newRow = row + dirs[i];
+                    int newCol = col + dirs[i + 1];
+
+                    if (newRow >= 0 && newRow < rows && newCol >= 0 && newCol < cols) {
+                        int& val = grid[newRow][newCol];
+
+                        if (val == 1) { return len - 1; }
+                        if (val == 0) {
+                            val = 2;
+                            q.emplace(newRow, newCol);
+                        }
+                    }
+                }
+            }
+        }
+
+        return len;
     }
 private:
-    int findCycle(vector<vector<int>>& graph, int prevNode, int node, int& num, vector<char>& visited, vector<int>& nums, vector<int>& lowest, vector<vector<int>>& result) {
-        visited[node] = 1;
-        ++num;
-        nums[node] = num;
-        lowest[node] = num;
-        int& low = lowest[node];
+    void mapIsland(vector<vector<int>>& grid, int row, int col, int rows, int cols, queue<pair<int, int>>& q) {
+        q.emplace(row, col);
+        grid[row][col] = 2;
+        char dirs[]{ -1, 0, 1, 0, -1 };
 
-        for (int near : graph[node]) {
-            if (near == prevNode) { continue; }
+        for (int i = 0; i < 4; ++i) {
+            int newRow = row + dirs[i];
+            int newCol = col + dirs[i + 1];
 
-            if (visited[near]) {
-                low = min(low, nums[near]);
-            } else {
-                low = min(low, findCycle(graph, node, near, num, visited, nums, lowest, result));
-            }
-
-            if (nums[node] < lowest[near]) {
-                result.push_back({ node, near });
+            if (newRow >= 0 && newRow < rows && newCol >= 0 && newCol < cols) {
+                if (grid[newRow][newCol] == 1) {
+                    mapIsland(grid, newRow, newCol, rows, cols, q);
+                }
             }
         }
-
-        return low;
     }
 };
 
