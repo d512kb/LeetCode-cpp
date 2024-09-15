@@ -5,51 +5,19 @@
 
 using namespace std;
 
-// Definition for a binary tree node.
-struct TreeNode {
-    int val;
-    TreeNode *left;
-    TreeNode *right;
-    TreeNode(int x) : val(x), left(NULL), right(NULL) {}
-};
- 
 class Solution {
 public:
-    vector<int> distanceK(TreeNode* root, TreeNode* target, int k) {
-        vector<int> result;
+    vector<int> getSneakyNumbers(vector<int>& nums) {
+        int index = nums.size() - 1;
 
-        traverseTree(root, target, k, result);
+        while (index >= 0) {
+            int& a = nums[index];
+            int& b = nums[a];
 
-        return result;
-    }
-private:
-    int traverseTree(TreeNode* node, TreeNode* target, int k, vector<int>& values) {
-        if (!node) { return 500; }
-        if (node == target) {
-            gatherValues(node, k, values);
-            return 1;
+            if (a == b) { --index; } else { swap(a, b); }
         }
 
-        int leftDistance = traverseTree(node->left, target, k, values);
-        int rightDistance = traverseTree(node->right, target, k, values);
-
-        if (leftDistance == k || rightDistance == k) { values.push_back(node->val); }
-        else if (leftDistance < k) { gatherValues(node->right, k - leftDistance - 1, values); }
-        else if (rightDistance < k) { gatherValues(node->left, k - rightDistance - 1, values); }
-
-        return 1 + min(leftDistance, rightDistance);
-    }
-
-    void gatherValues(TreeNode* node, int k, vector<int>& values) {
-        if (!node) { return; }
-
-        if (k == 0) {
-            values.push_back(node->val);
-            return;
-        }
-
-        gatherValues(node->left, k - 1, values);
-        gatherValues(node->right, k - 1, values);
+        return vector<int>(nums.rbegin(), nums.rbegin() + 2);
     }
 };
 
