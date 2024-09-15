@@ -7,17 +7,21 @@ using namespace std;
 
 class Solution {
 public:
-    vector<int> getSneakyNumbers(vector<int>& nums) {
-        int index = nums.size() - 1;
+    long long maxScore(vector<int>& a, vector<int>& b) {
+        int sz = b.size();
+        vector<int64_t> dp(sz + 1);
 
-        while (index >= 0) {
-            int& a = nums[index];
-            int& b = nums[a];
+        for (int aIndex = 1; aIndex <= 4; ++aIndex) {
+            int64_t aVal = a[aIndex - 1];
+            int64_t prev = dp[aIndex - 1];
+            dp[aIndex] = aVal * b[aIndex - 1] + exchange(prev, dp[aIndex]);
 
-            if (a == b) { --index; } else { swap(a, b); }
+            for (int bIndex = aIndex + 1; bIndex <= sz; ++bIndex) {
+                dp[bIndex] = max(dp[bIndex - 1], aVal * b[bIndex - 1] + exchange(prev, dp[bIndex]));
+            }
         }
 
-        return vector<int>(nums.rbegin(), nums.rbegin() + 2);
+        return dp.back();
     }
 };
 
