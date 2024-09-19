@@ -6,47 +6,62 @@
 using namespace std;
 
 class Solution {
-    struct Node {
-        Node() : nodes{ nullptr } {}
-        Node* nodes[26];
-    };
-
-    Node root;
 public:
-    int minValidStrings(vector<string>& words, string target) {
-        int sz = target.size();
-        vector<int> dp(sz + 1, sz + 1);
-        dp.back() = 0;
+    int shortestPathAllKeys(vector<string>& grid) {
+        const int rows = grid.size();
+        const int cols = grid[0].size();
+        pair<int, int> startPoint;
+        bitset<32> keysAvailable = 1 << 31;
 
-        for (auto& w : words) { addWord(w); }
+        for (int i = 0; i < rows; ++i) {
+            for (int j = 0; j < cols; ++j) {
+                char ch = grid[i][j];
 
-        for (int i = sz - 1; i >= 0; --i) {
-            Node* node = &root;
-            int& val = dp[i];
-
-            for (int j = i; j < sz; ++j) {
-                node = node->nodes[target[j] - 'a'];
-                if (!node) { break; }
-
-                val = min(val, 1 + dp[j + 1]);
+                if (ch == '@') {
+                    startPoint = { i, j };
+                } else if (ch >= 'a' && ch <= 'z') {
+                    keysAvailable.set(ch - 'a');
+                }
             }
         }
 
-        return dp.front() <= sz ? dp.front() : -1;
-    }
-private:
-    void addWord(string word) {
-        Node* node = &root;
+        queue<tuple<int, int, bitset<32>>> q({ {startPoint.first, startPoint.second, 1 << 31} });
+        vector<vector<bitset<32>>> visited(rows, vector<bitset<32>>(cols));
+        const char dirs[]{ -1, 0, 1, 0, -1 };
+        int steps = 0;
 
-        for (char c : word) {
-            int index = c - 'a';
+        while (!q.empty()) {
+            int sz = q.size();
+            ++steps;
 
-            if (node->nodes[index] == nullptr) {
-                node->nodes[index] = new Node();
+            while (sz--) {
+                auto [row, col, keys] = q.front();
+                q.pop();
+
+                for (int i = 0; i < 4; ++i) {
+                    int newRow = row + dirs[i];
+                    int newCol = col + dirs[i + 1];
+                    auto newKeys = keys;
+
+                    if (newRow >= 0 && newRow < rows && newCol >= 0 && newCol < cols) {
+                        if ((visited[newRow][newCol] & keys) == keys) { continue; }
+                        int ch = grid[newRow][newCol];
+
+                        if (ch == '#' || (ch >= 'A' && ch <= 'Z' && !keys[ch - 'A'])) { continue; }
+                        if (ch >= 'a' && ch <= 'z') {
+                            newKeys |= 1 << ch - 'a';
+
+                            if (newKeys == keysAvailable) { return steps; }
+                        }
+
+                        q.emplace(newRow, newCol, newKeys);
+                        visited[newRow][newCol] = newKeys;
+                    }
+                }
             }
-
-            node = node->nodes[index];
         }
+
+        return -1;
     }
 };
 
