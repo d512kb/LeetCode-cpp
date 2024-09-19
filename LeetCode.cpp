@@ -7,20 +7,16 @@ using namespace std;
 
 class Solution {
 public:
-    int numEnclaves(vector<vector<int>>& grid) {
+    int closedIsland(vector<vector<int>>& grid) {
         int rows = grid.size();
         int cols = grid[0].size();
-        char dirs[]{ -1, 0, 1, 0, -1 };
         int result = 0;
 
-        for (int row = 1; row < rows - 1; ++row) {
-            for (int col = 1; col < cols - 1; ++col) {
-                if (grid[row][col]) {
-                    int cells = 1;
-                    grid[row][col] = 0;
-
-                    if (dfs(grid, row, col, rows, cols, cells)) {
-                        result += cells;
+        for (int row = 1; row < rows; ++row) {
+            for (int col = 1; col < cols; ++col) {
+                if (grid[row][col] == 0) {
+                    if (traverseLand(grid, row, col, rows, cols)) {
+                        ++result;
                     }
                 }
             }
@@ -29,25 +25,19 @@ public:
         return result;
     }
 private:
-    bool dfs(vector<vector<int>>& grid, int row, int col, int rows, int cols, int& cells) {
-        char dirs[]{ -1, 0, 1, 0, -1 };
-        bool inside = true;
+    bool traverseLand(vector<vector<int>>& grid, int row, int col, int rows, int cols) {
+        if (row < 0 || row == rows || col < 0 || col == cols) { return false; }
+        if (grid[row][col] == 1) { return true; }
 
-        for (int i = 0; i < 4; ++i) {
-            int newRow = row + dirs[i];
-            int newCol = col + dirs[i + 1];
+        grid[row][col] = 1;
 
-            if (newRow >= 0 && newRow < rows && newCol >= 0 && newCol < cols) {
-                if (grid[newRow][newCol] == 0) { continue; }
-                grid[newRow][newCol] = 0;
-                ++cells;
-                inside &= dfs(grid, newRow, newCol, rows, cols, cells);
-            } else {
-                inside = false;
-            }
-        }
+        bool result = true;
+        result &= traverseLand(grid, row - 1, col, rows, cols);
+        result &= traverseLand(grid, row, col + 1, rows, cols);
+        result &= traverseLand(grid, row + 1, col, rows, cols);
+        result &= traverseLand(grid, row, col - 1, rows, cols);
 
-        return inside;
+        return result;
     }
 };
 
