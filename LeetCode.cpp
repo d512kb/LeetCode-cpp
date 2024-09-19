@@ -7,61 +7,47 @@ using namespace std;
 
 class Solution {
 public:
-    int shortestPathAllKeys(vector<string>& grid) {
-        const int rows = grid.size();
-        const int cols = grid[0].size();
-        pair<int, int> startPoint;
-        bitset<32> keysAvailable = 1 << 31;
+    int numEnclaves(vector<vector<int>>& grid) {
+        int rows = grid.size();
+        int cols = grid[0].size();
+        char dirs[]{ -1, 0, 1, 0, -1 };
+        int result = 0;
 
-        for (int i = 0; i < rows; ++i) {
-            for (int j = 0; j < cols; ++j) {
-                char ch = grid[i][j];
+        for (int row = 1; row < rows - 1; ++row) {
+            for (int col = 1; col < cols - 1; ++col) {
+                if (grid[row][col]) {
+                    int cells = 1;
+                    grid[row][col] = 0;
 
-                if (ch == '@') {
-                    startPoint = { i, j };
-                } else if (ch >= 'a' && ch <= 'z') {
-                    keysAvailable.set(ch - 'a');
-                }
-            }
-        }
-
-        queue<tuple<int, int, bitset<32>>> q({ {startPoint.first, startPoint.second, 1 << 31} });
-        vector<vector<bitset<32>>> visited(rows, vector<bitset<32>>(cols));
-        const char dirs[]{ -1, 0, 1, 0, -1 };
-        int steps = 0;
-
-        while (!q.empty()) {
-            int sz = q.size();
-            ++steps;
-
-            while (sz--) {
-                auto [row, col, keys] = q.front();
-                q.pop();
-
-                for (int i = 0; i < 4; ++i) {
-                    int newRow = row + dirs[i];
-                    int newCol = col + dirs[i + 1];
-                    auto newKeys = keys;
-
-                    if (newRow >= 0 && newRow < rows && newCol >= 0 && newCol < cols) {
-                        if ((visited[newRow][newCol] & keys) == keys) { continue; }
-                        int ch = grid[newRow][newCol];
-
-                        if (ch == '#' || (ch >= 'A' && ch <= 'Z' && !keys[ch - 'A'])) { continue; }
-                        if (ch >= 'a' && ch <= 'z') {
-                            newKeys |= 1 << ch - 'a';
-
-                            if (newKeys == keysAvailable) { return steps; }
-                        }
-
-                        q.emplace(newRow, newCol, newKeys);
-                        visited[newRow][newCol] = newKeys;
+                    if (dfs(grid, row, col, rows, cols, cells)) {
+                        result += cells;
                     }
                 }
             }
         }
 
-        return -1;
+        return result;
+    }
+private:
+    bool dfs(vector<vector<int>>& grid, int row, int col, int rows, int cols, int& cells) {
+        char dirs[]{ -1, 0, 1, 0, -1 };
+        bool inside = true;
+
+        for (int i = 0; i < 4; ++i) {
+            int newRow = row + dirs[i];
+            int newCol = col + dirs[i + 1];
+
+            if (newRow >= 0 && newRow < rows && newCol >= 0 && newCol < cols) {
+                if (grid[newRow][newCol] == 0) { continue; }
+                grid[newRow][newCol] = 0;
+                ++cells;
+                inside &= dfs(grid, newRow, newCol, rows, cols, cells);
+            } else {
+                inside = false;
+            }
+        }
+
+        return inside;
     }
 };
 
