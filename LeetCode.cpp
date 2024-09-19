@@ -7,37 +7,26 @@ using namespace std;
 
 class Solution {
 public:
-    int closedIsland(vector<vector<int>>& grid) {
+    int maxAreaOfIsland(vector<vector<int>>& grid) {
         int rows = grid.size();
         int cols = grid[0].size();
         int result = 0;
 
-        for (int row = 1; row < rows; ++row) {
-            for (int col = 1; col < cols; ++col) {
-                if (grid[row][col] == 0) {
-                    if (traverseLand(grid, row, col, rows, cols)) {
-                        ++result;
-                    }
-                }
+        for (int row = 0; row < rows; ++row) {
+            for (int col = 0; col < cols; ++col) {
+                result = max(result, getIslandArea(grid, row, col));
             }
         }
 
         return result;
     }
 private:
-    bool traverseLand(vector<vector<int>>& grid, int row, int col, int rows, int cols) {
-        if (row < 0 || row == rows || col < 0 || col == cols) { return false; }
-        if (grid[row][col] == 1) { return true; }
+    int getIslandArea(vector<vector<int>>& grid, int row, int col) {
+        if (row < 0 || row == grid.size() || col < 0 || col == grid[0].size() || grid[row][col] == 0) { return 0; }
+        grid[row][col] = 0;
 
-        grid[row][col] = 1;
-
-        bool result = true;
-        result &= traverseLand(grid, row - 1, col, rows, cols);
-        result &= traverseLand(grid, row, col + 1, rows, cols);
-        result &= traverseLand(grid, row + 1, col, rows, cols);
-        result &= traverseLand(grid, row, col - 1, rows, cols);
-
-        return result;
+        return 1 + getIslandArea(grid, row - 1, col) + getIslandArea(grid, row, col + 1) +
+            getIslandArea(grid, row + 1, col) + getIslandArea(grid, row, col - 1);
     }
 };
 
