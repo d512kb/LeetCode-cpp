@@ -7,22 +7,18 @@ using namespace std;
 
 class Solution {
 public:
-    int findJudge(int n, vector<vector<int>>& trust) {
-        vector<int> trusts(n + 1);
-        vector<int> trustedBy(n + 1);
+    vector<int> findSmallestSetOfVertices(int n, vector<vector<int>>& edges) {
+        vector<char> nodes(n, 1);
 
-        for (auto& t : trust) {
-            ++trusts[t[0]];
-            ++trustedBy[t[1]];
+        for (auto& e : edges) { nodes[e[1]] = 0; }
+
+        vector<int> result;
+
+        for (int i = 0; i < n; ++i) {
+            if (nodes[i] == 1) result.push_back(i);
         }
 
-        for (int i = 1; i <= n; ++i) {
-            if (trusts[i] == 0 && trustedBy[i] == n - 1) {
-                return i;
-            }
-        }
-
-        return -1;
+        return result;
     }
 };
 
