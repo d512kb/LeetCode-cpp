@@ -7,17 +7,29 @@ using namespace std;
 
 class Solution {
 public:
-    bool reportSpam(vector<string>& message, vector<string>& bannedWords) {
-        unordered_set<string> banned(bannedWords.begin(), bannedWords.end());
+    int maximalNetworkRank(int n, vector<vector<int>>& roads) {
+        vector<int> cityRoads(n);
+        vector<vector<char>> roadMap(n, vector<char>(n));
 
-        int counter = 0;
-        for (auto& mes : message) {
-            if (banned.contains(mes) && ++counter > 1) {
-                return true;
+        for (auto& r : roads) {
+            int c1 = r[0];
+            int c2 = r[1];
+
+            ++cityRoads[c1];
+            ++cityRoads[c2];
+
+            roadMap[c1][c2] = 1;
+            roadMap[c2][c1] = 1;
+        }
+
+        int result = 0;
+        for (int i = 0; i < n; ++i) {
+            for (int j = i + 1; j < n; ++j) {
+                result = max(result, cityRoads[i] + cityRoads[j] - roadMap[i][j]);
             }
         }
 
-        return false;
+        return result;
     }
 };
 
