@@ -7,18 +7,17 @@ using namespace std;
 
 class Solution {
 public:
-    vector<int> findSmallestSetOfVertices(int n, vector<vector<int>>& edges) {
-        vector<char> nodes(n, 1);
+    bool reportSpam(vector<string>& message, vector<string>& bannedWords) {
+        unordered_set<string> banned(bannedWords.begin(), bannedWords.end());
 
-        for (auto& e : edges) { nodes[e[1]] = 0; }
-
-        vector<int> result;
-
-        for (int i = 0; i < n; ++i) {
-            if (nodes[i] == 1) result.push_back(i);
+        int counter = 0;
+        for (auto& mes : message) {
+            if (banned.contains(mes) && ++counter > 1) {
+                return true;
+            }
         }
 
-        return result;
+        return false;
     }
 };
 
