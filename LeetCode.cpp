@@ -7,29 +7,32 @@ using namespace std;
 
 class Solution {
 public:
-    int maximalNetworkRank(int n, vector<vector<int>>& roads) {
-        vector<int> cityRoads(n);
-        vector<vector<char>> roadMap(n, vector<char>(n));
+    bool isBipartite(vector<vector<int>>& graph) {
+        int n = graph.size();
+        vector<int> partitions(n);
 
-        for (auto& r : roads) {
-            int c1 = r[0];
-            int c2 = r[1];
-
-            ++cityRoads[c1];
-            ++cityRoads[c2];
-
-            roadMap[c1][c2] = 1;
-            roadMap[c2][c1] = 1;
-        }
-
-        int result = 0;
         for (int i = 0; i < n; ++i) {
-            for (int j = i + 1; j < n; ++j) {
-                result = max(result, cityRoads[i] + cityRoads[j] - roadMap[i][j]);
+            if (partitions[i] == 0) {
+                if (!partition(graph, partitions, i, -1)) {
+                    return false;
+                }
             }
         }
 
-        return result;
+        return true;
+    }
+private:
+    bool partition(vector<vector<int>>& graph, vector<int>& partitions, int node, int part) {
+        if (partitions[node]) { return partitions[node] == part; }
+
+        partitions[node] = part;
+        bool canPartition = true;
+
+        for (int neighbor : graph[node]) {
+            canPartition = canPartition && partition(graph, partitions, neighbor, -part);
+        }
+
+        return canPartition;
     }
 };
 
