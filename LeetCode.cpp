@@ -7,49 +7,40 @@ using namespace std;
 
 class Solution {
 public:
-    vector<vector<string>> accountsMerge(vector<vector<string>>& accounts) {
-        unordered_map<string, vector<string>> graph;
+    bool equationsPossible(vector<string>& equations) {
+        vector<char> groups(26);
+        iota(begin(groups), end(groups), 0);
 
-        for (auto& account : accounts) {
-            for (int i = 2; i < account.size(); ++i) {
-                string& email1 = account[i - 1];
-                string& email2 = account[i];
-
-                graph[email1].push_back(email2);
-                graph[email2].push_back(email1);
+        for (auto& equation : equations) {
+            if (equation[1] == '=') {
+                unite(groups, equation[0] - 'a', equation[3] - 'a');
             }
         }
 
-        vector<vector<string>> result;
-        unordered_set<string> visited;
+        for (auto& equation : equations) {
+            if (equation[1] == '!') {
+                char& firstGroup = groups[equation[0] - 'a'];
+                char& secondGroup = groups[equation[3] - 'a'];
 
-        for (auto& account : accounts) {
-            string& name = account[0];
-            string& email = account[1];
-
-            vector<string> emails;
-            emails.push_back(name);
-
-            getEmails(graph, email, visited, emails);
-
-            if (emails.size() > 1) {
-                sort(next(emails.begin()), emails.end());
-                result.push_back(move(emails));
+                if (findParent(groups, equation[0] - 'a') == findParent(groups, equation[3] - 'a')) {
+                    return false;
+                }
             }
         }
 
-        return result;
+        return true;
     }
 private:
-    void getEmails(unordered_map<string, vector<string>>& graph, string& email, unordered_set<string>& visited, vector<string>& emails) {
-        if (visited.contains(email)) { return; }
+    int findParent(vector<char>& groups, int x) {
+        if (groups[x] == x) { return x; }
+        groups[x] = findParent(groups, groups[x]);
+        return groups[x];
+    }
+    void unite(vector<char>& groups, int x, int y) {
+        int xParent = findParent(groups, x);
+        int yParent = findParent(groups, y);
 
-        visited.insert(email);
-        emails.push_back(email);
-
-        for (string& email : graph[email]) {
-            getEmails(graph, email, visited, emails);
-        }
+        groups[yParent] = xParent;
     }
 };
 
