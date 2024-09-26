@@ -7,49 +7,18 @@ using namespace std;
 
 class Solution {
 public:
-    int numSimilarGroups(vector<string>& strs) {
-        int sz = strs.size();
-        vector<int> parents(sz);
-        iota(parents.begin(), parents.end(), 0);
-        int result = sz;
+    int reverse(int x) {
+        int upLimit = numeric_limits<int>::max() / 10;
+        int downLimit = numeric_limits<int>::min() / 10;
+        int result = 0;
 
-        for (int i = 0; i < sz; ++i) {
-            for (int j = i + 1; j < sz; ++j) {
-                if (isSimilar(strs[i], strs[j]) && join(parents, i, j)) {
-                    --result;
-                }
-            }
+        while (x) {
+            if (result > upLimit || result < downLimit) return 0;
+            result = result * 10 + (x % 10);
+            x /= 10;
         }
 
         return result;
-    }
-private:
-    int findParent(vector<int>& parents, int x) {
-        if (parents[x] == x) { return x; }
-        return parents[x] = findParent(parents, parents[x]);
-    }
-    inline bool join(vector<int>& parents, int a, int b) {
-        int aParent = findParent(parents, a);
-        int bParent = findParent(parents, b);
-
-        if (aParent == bParent) {
-            return false;
-        } else {
-            parents[bParent] = aParent;
-            return true;
-        }
-    }
-    bool isSimilar(const string& s1, const string& s2) {
-        int sz = s1.size();
-        int diff = 0;
-
-        for (int i = 0; i < sz; ++i) {
-            if (s1[i] != s2[i] && ++diff > 2) {
-                return false;
-            }
-        }
-
-        return true;
     }
 };
 
