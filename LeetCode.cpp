@@ -7,18 +7,28 @@ using namespace std;
 
 class Solution {
 public:
-    int reverse(int x) {
-        int upLimit = numeric_limits<int>::max() / 10;
-        int downLimit = numeric_limits<int>::min() / 10;
-        int result = 0;
+    vector<vector<int>> combinationSum2(vector<int>& candidates, int target) {
+        sort(begin(candidates), end(candidates));
 
-        while (x) {
-            if (result > upLimit || result < downLimit) return 0;
-            result = result * 10 + (x % 10);
-            x /= 10;
-        }
-
+        vector<vector<int>> result;
+        vector<int> comb;
+        calcSum(candidates, candidates.begin(), target, comb, result);
         return result;
+    }
+private:
+    void calcSum(vector<int>& candidates, vector<int>::iterator from, int target, vector<int>& comb, vector<vector<int>>& result) {
+        if (target <= 0) { if (target == 0) { result.push_back(comb); } return; }
+        if (from == candidates.end()) { return; }
+
+        comb.push_back(*from);
+        calcSum(candidates, from + 1, target - *from, comb, result);
+        comb.pop_back();
+
+        auto nextCandidate = upper_bound(from, candidates.end(), *from);
+
+        if (nextCandidate != candidates.end()) {
+            calcSum(candidates, nextCandidate, target, comb, result);
+        }
     }
 };
 
