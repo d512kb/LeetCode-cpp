@@ -7,33 +7,49 @@ using namespace std;
 
 class Solution {
 public:
-    string smallestEquivalentString(string s1, string s2, string baseStr) {
-        vector<char> parents(26);
-        iota(begin(parents), end(parents), 0);
-        string result(baseStr.size(), 0);
+    int numSimilarGroups(vector<string>& strs) {
+        int sz = strs.size();
+        vector<int> parents(sz);
+        iota(parents.begin(), parents.end(), 0);
+        int result = sz;
 
-        for (int i = 0; i < s1.size(); ++i) { join(parents, s1[i] - 'a', s2[i] - 'a'); }
-        for (int i = 0; i < baseStr.size(); ++i) {
-            result[i] = findParent(parents, baseStr[i] - 'a') + 'a';
+        for (int i = 0; i < sz; ++i) {
+            for (int j = i + 1; j < sz; ++j) {
+                if (isSimilar(strs[i], strs[j]) && join(parents, i, j)) {
+                    --result;
+                }
+            }
         }
 
         return result;
     }
 private:
-    int findParent(vector<char>& parents, int c) {
-        if (parents[c] == c) { return c; }
-        parents[c] = findParent(parents, parents[c]);
-        return parents[c];
+    int findParent(vector<int>& parents, int x) {
+        if (parents[x] == x) { return x; }
+        return parents[x] = findParent(parents, parents[x]);
     }
-    void join(vector<char>& parents, int a, int b) {
+    inline bool join(vector<int>& parents, int a, int b) {
         int aParent = findParent(parents, a);
         int bParent = findParent(parents, b);
 
-        if (aParent > bParent) {
-            parents[aParent] = bParent;
+        if (aParent == bParent) {
+            return false;
         } else {
             parents[bParent] = aParent;
+            return true;
         }
+    }
+    bool isSimilar(const string& s1, const string& s2) {
+        int sz = s1.size();
+        int diff = 0;
+
+        for (int i = 0; i < sz; ++i) {
+            if (s1[i] != s2[i] && ++diff > 2) {
+                return false;
+            }
+        }
+
+        return true;
     }
 };
 
