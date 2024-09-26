@@ -7,40 +7,33 @@ using namespace std;
 
 class Solution {
 public:
-    bool equationsPossible(vector<string>& equations) {
-        vector<char> groups(26);
-        iota(begin(groups), end(groups), 0);
+    string smallestEquivalentString(string s1, string s2, string baseStr) {
+        vector<char> parents(26);
+        iota(begin(parents), end(parents), 0);
+        string result(baseStr.size(), 0);
 
-        for (auto& equation : equations) {
-            if (equation[1] == '=') {
-                unite(groups, equation[0] - 'a', equation[3] - 'a');
-            }
+        for (int i = 0; i < s1.size(); ++i) { join(parents, s1[i] - 'a', s2[i] - 'a'); }
+        for (int i = 0; i < baseStr.size(); ++i) {
+            result[i] = findParent(parents, baseStr[i] - 'a') + 'a';
         }
 
-        for (auto& equation : equations) {
-            if (equation[1] == '!') {
-                char& firstGroup = groups[equation[0] - 'a'];
-                char& secondGroup = groups[equation[3] - 'a'];
-
-                if (findParent(groups, equation[0] - 'a') == findParent(groups, equation[3] - 'a')) {
-                    return false;
-                }
-            }
-        }
-
-        return true;
+        return result;
     }
 private:
-    int findParent(vector<char>& groups, int x) {
-        if (groups[x] == x) { return x; }
-        groups[x] = findParent(groups, groups[x]);
-        return groups[x];
+    int findParent(vector<char>& parents, int c) {
+        if (parents[c] == c) { return c; }
+        parents[c] = findParent(parents, parents[c]);
+        return parents[c];
     }
-    void unite(vector<char>& groups, int x, int y) {
-        int xParent = findParent(groups, x);
-        int yParent = findParent(groups, y);
+    void join(vector<char>& parents, int a, int b) {
+        int aParent = findParent(parents, a);
+        int bParent = findParent(parents, b);
 
-        groups[yParent] = xParent;
+        if (aParent > bParent) {
+            parents[aParent] = bParent;
+        } else {
+            parents[bParent] = aParent;
+        }
     }
 };
 
