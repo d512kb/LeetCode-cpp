@@ -7,47 +7,20 @@ using namespace std;
 
 class Solution {
 public:
-    int largestPathValue(string colors, vector<vector<int>>& edges) {
-        int n = colors.size();
-        vector<vector<int>> graph(n);
-        vector<char> enters(n, 1);
-        vector<char> visited(n);
-        vector<char> hasValues(n);
-        vector<vector<int>> dp(n, vector<int>(26));
+    int rob(vector<int>& nums) {
+        int sz = nums.size();
 
-        auto dfs = [&](auto&& dfs, int i) -> bool {
-            if (visited[i]) { return false; }
-            visited[i] = 1;
+        int dp1[2]{ 0, 0 };
+        int dp2[2]{ 0, 0 };
 
-            for (int n : graph[i]) {
-                if (!hasValues[n]) { if (!dfs(dfs, n)) return false; }
-                transform(begin(dp[i]), end(dp[i]), begin(dp[n]), begin(dp[i]), [](int a, int b) { return max(a, b); });
-            }
-
-            ++dp[i][colors[i] - 'a'];
-            hasValues[i] = 1;
-
-            visited[i] = 0;
-            return true;
-        };
-
-        for (auto& edge : edges) {
-            graph[edge[0]].push_back(edge[1]);
-            enters[edge[1]] = 0;
+        dp1[1] = nums[0];
+        for (int i = 1; i < sz - 1; ++i) {
+            dp1[0] = exchange(dp1[1], max(nums[i] + dp1[0], dp1[1]));
+            dp2[0] = exchange(dp2[1], max(nums[i] + dp2[0], dp2[1]));
         }
+        dp2[1] = max(nums.back() + dp2[0], dp2[1]);
 
-        int result = -1;
-        for (int i = 0; i < n; ++i) {
-            if (enters[i] == 1) {
-                if (dfs(dfs, i)) {
-                    result = max(result, *max_element(begin(dp[i]), end(dp[i])));
-                } else {
-                    return -1;
-                }
-            }
-        }
-
-        return find(begin(hasValues), end(hasValues), 0) != end(hasValues) ? -1 : result;
+        return max(dp1[1], dp2[1]);
     }
 };
 
