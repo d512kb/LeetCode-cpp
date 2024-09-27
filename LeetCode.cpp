@@ -7,9 +7,24 @@ using namespace std;
 
 class Solution {
 public:
-    int missingNumber(vector<int>& nums) {
-        int sz = nums.size();
-        return (sz * (sz + 1) / 2) - accumulate(begin(nums), end(nums), 0);
+    int lastStoneWeight(vector<int>& stones) {
+        make_heap(begin(stones), end(stones));
+
+        while (stones.size() > 1) {
+            pop_heap(begin(stones), end(stones));
+            int a = stones.back();
+            stones.pop_back();
+            pop_heap(begin(stones), end(stones));
+
+            if (a == stones.back()) {
+                stones.pop_back();
+            } else {
+                stones.back() = a - stones.back();
+                push_heap(begin(stones), end(stones));
+            }
+        }
+
+        return stones.empty() ? 0 : stones.front();
     }
 };
 
