@@ -7,78 +7,47 @@ using namespace std;
 
 class Solution {
 public:
-    vector<int> sortItems(int n, int m, vector<int>& group, vector<vector<int>>& beforeItems) {
-        vector<vector<int>> groupsDependents(m + 1);
-        vector<int> groupsDepsCount(m + 1);
-        vector<vector<int>> itemsDependents(n);
-        vector<int> itemsDepsCount(n);
+    int largestPathValue(string colors, vector<vector<int>>& edges) {
+        int n = colors.size();
+        vector<vector<int>> graph(n);
+        vector<char> enters(n, 1);
+        vector<char> visited(n);
+        vector<char> hasValues(n);
+        vector<vector<int>> dp(n, vector<int>(26));
 
-        vector<queue<int>> queues(m + 1);
+        auto dfs = [&](auto&& dfs, int i) -> bool {
+            if (visited[i]) { return false; }
+            visited[i] = 1;
 
+            for (int n : graph[i]) {
+                if (!hasValues[n]) { if (!dfs(dfs, n)) return false; }
+                transform(begin(dp[i]), end(dp[i]), begin(dp[n]), begin(dp[i]), [](int a, int b) { return max(a, b); });
+            }
+
+            ++dp[i][colors[i] - 'a'];
+            hasValues[i] = 1;
+
+            visited[i] = 0;
+            return true;
+        };
+
+        for (auto& edge : edges) {
+            graph[edge[0]].push_back(edge[1]);
+            enters[edge[1]] = 0;
+        }
+
+        int result = -1;
         for (int i = 0; i < n; ++i) {
-            if (beforeItems[i].empty()) {
-                queues[group[i] + 1].push(i);
-            } else for (int req : beforeItems[i]) {
-                itemsDependents[req].push_back(i);
-                ++itemsDepsCount[i];
-
-                int currGroup = group[i] + 1;
-                int reqGroup = group[req] + 1;
-
-                if (currGroup > 0 && reqGroup > 0 && currGroup != reqGroup) {
-                    groupsDependents[reqGroup].push_back(currGroup);
-                    ++groupsDepsCount[currGroup];
+            if (enters[i] == 1) {
+                if (dfs(dfs, i)) {
+                    result = max(result, *max_element(begin(dp[i]), end(dp[i])));
+                } else {
+                    return -1;
                 }
             }
         }
 
-        queue<int> groupsQueue;
-        vector<int> result;
-
-        for (int i = 0; i < m + 1; ++i) {
-            if (groupsDepsCount[i] == 0) {
-                groupsQueue.push(i);
-            }
-        }
-
-        while (!groupsQueue.empty()) {
-            int sz = groupsQueue.size();
-
-            while (sz--) {
-                int g = groupsQueue.front();
-                groupsQueue.pop();
-
-                for (int gDep : groupsDependents[g]) {
-                    if (--groupsDepsCount[gDep] == 0) {
-                        groupsQueue.push(gDep);
-                    }
-                }
-
-                auto& q = queues[g];
-
-                while (!q.empty()) {
-                    int sz = q.size();
-
-                    while (sz--) {
-                        int item = q.front();
-                        q.pop();
-
-                        result.push_back(item);
-
-                        for (int iDep : itemsDependents[item]) {
-                            if (--itemsDepsCount[iDep] == 0) {
-                                int g = group[iDep] + 1;
-
-                                queues[g].push(iDep);
-                                if (g == 0) { groupsQueue.push(g); }
-                            }
-                        }
-                    }
-                }
-            }
-        }
-
-        return result.size() == n ? result : vector<int>();
+        return find(begin(hasValues), end(hasValues), 0) != end(hasValues) ? -1 : result;
     }
 };
 
