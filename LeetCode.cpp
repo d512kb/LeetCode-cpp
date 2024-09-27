@@ -7,14 +7,9 @@ using namespace std;
 
 class Solution {
 public:
-    bool containsDuplicate(vector<int>& nums) {
-        unordered_set<int> st;
-
-        for (int n : nums) {
-            if (!st.insert(n).second) { return true; }
-        }
-
-        return false;
+    int missingNumber(vector<int>& nums) {
+        int sz = nums.size();
+        return (sz * (sz + 1) / 2) - accumulate(begin(nums), end(nums), 0);
     }
 };
 
