@@ -7,24 +7,32 @@ using namespace std;
 
 class Solution {
 public:
-    int lastStoneWeight(vector<int>& stones) {
-        make_heap(begin(stones), end(stones));
+    int largestRectangleArea(vector<int>& heights) {
+        int sz = heights.size();
+        vector<pair<int, int>> stack;
+        int result = 0;
 
-        while (stones.size() > 1) {
-            pop_heap(begin(stones), end(stones));
-            int a = stones.back();
-            stones.pop_back();
-            pop_heap(begin(stones), end(stones));
+        for (int i = 0; i < sz; ++i) {
+            int h = heights[i];
+            int newStart = i;
 
-            if (a == stones.back()) {
-                stones.pop_back();
-            } else {
-                stones.back() = a - stones.back();
-                push_heap(begin(stones), end(stones));
+            while (!stack.empty() && stack.back().first >= h) {
+                auto& prevH = stack.back();
+                result = max(result, prevH.first * (i - prevH.second));
+                newStart = prevH.second;
+                stack.pop_back();
             }
+
+            stack.emplace_back(h, newStart);
+        };
+
+        while (!stack.empty()) {
+            auto& prevH = stack.back();
+            result = max(result, prevH.first * (sz - prevH.second));
+            stack.pop_back();
         }
 
-        return stones.empty() ? 0 : stones.front();
+        return result;
     }
 };
 
