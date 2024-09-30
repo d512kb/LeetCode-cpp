@@ -7,29 +7,16 @@ using namespace std;
 
 class Solution {
 public:
-    vector<vector<int>> kClosest(vector<vector<int>>& points, int k) {
-        vector<vector<int>> result;
+    int countSubstrings(string s) {
+        int sz = s.size();
+        int ans = sz; // every single char
 
-        int i = 0;
-        for (; i < k; ++i) {
-            result.push_back(move(points[i]));
+        for (int i = 0; i < sz; ++i) {
+            for (int l = i - 1, r = i + 1; l >= 0 && r < sz && s[l] == s[r]; --l, ++r) { ++ans; }
+            for (int l = i, r = i + 1; l >= 0 && r < sz && s[l] == s[r]; --l, ++r) { ++ans; }
         }
 
-        auto lmb = [](auto& v1, auto& v2) {
-            return sqrt(v1[0] * v1[0] + v1[1] * v1[1]) < sqrt(v2[0] * v2[0] + v2[1] * v2[1]);
-        };
-
-        make_heap(begin(result), end(result), lmb);
-
-        for (; i < points.size(); ++i) {
-            if (lmb(points[i], result.front())) {
-                pop_heap(begin(result), end(result), lmb);
-                swap(result.back(), points[i]);
-                push_heap(begin(result), end(result), lmb);
-            }
-        }
-
-        return result;
+        return ans;
     }
 };
 
