@@ -7,13 +7,22 @@ using namespace std;
 
 class Solution {
 public:
-    void nextPermutation(vector<int>& nums) {
-        auto seqEdge = is_sorted_until(rbegin(nums), rend(nums));
-        if (seqEdge != rend(nums)) {
-            iter_swap(seqEdge, upper_bound(rbegin(nums), seqEdge, *seqEdge));
+    int firstMissingPositive(vector<int>& nums) {
+        int sz = nums.size();
+
+        for (int i = 1; i <= sz; ++i) {
+            int& n = nums[i - 1];
+
+            while (n != i && n > 0 && n <= sz && nums[n - 1] != n) {
+                swap(n, nums[n - 1]);
+            }
         }
 
-        reverse(seqEdge.base(), end(nums));
+        for (int i = 1; i <= sz; ++i) {
+            if (nums[i - 1] != i) { return i; }
+        }
+
+        return sz + 1;
     }
 };
 
