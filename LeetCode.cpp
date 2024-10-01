@@ -7,22 +7,13 @@ using namespace std;
 
 class Solution {
 public:
-    int characterReplacement(string s, int k) {
-        int sz = s.size();
-        int chars[26]{};
-        int mainChars = 0;
-        int left = 0;
-        int right = 0;
-
-        while (right < sz) {
-            mainChars = max(mainChars, ++chars[s[right++] - 'A']);
-
-            if (right - left - mainChars > k) {
-                --chars[s[left++] - 'A'];
-            }
+    int getSum(int a, int b) {
+        while (b != 0) {
+            int carry = a & b;
+            a ^= b;
+            b = carry << 1;
         }
-
-        return right - left;
+        return a;
     }
 };
 
