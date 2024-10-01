@@ -7,16 +7,22 @@ using namespace std;
 
 class Solution {
 public:
-    int countSubstrings(string s) {
+    int characterReplacement(string s, int k) {
         int sz = s.size();
-        int ans = sz; // every single char
+        int chars[26]{};
+        int mainChars = 0;
+        int left = 0;
+        int right = 0;
 
-        for (int i = 0; i < sz; ++i) {
-            for (int l = i - 1, r = i + 1; l >= 0 && r < sz && s[l] == s[r]; --l, ++r) { ++ans; }
-            for (int l = i, r = i + 1; l >= 0 && r < sz && s[l] == s[r]; --l, ++r) { ++ans; }
+        while (right < sz) {
+            mainChars = max(mainChars, ++chars[s[right++] - 'A']);
+
+            if (right - left - mainChars > k) {
+                --chars[s[left++] - 'A'];
+            }
         }
 
-        return ans;
+        return right - left;
     }
 };
 
