@@ -7,24 +7,40 @@ using namespace std;
 
 class Solution {
 public:
-    bool isMatch(string s, string p) {
-        vector<vector<char>> cache(s.size() + 1, vector<char>(p.size() + 1, -1));
+    int swimInWater(vector<vector<int>>& grid) {
+        if (grid.size() == 1) { return 0; }
 
-        return checkPatterns(cache, s, 0, p, 0);
-    }
-private:
-    bool checkPatterns(vector<vector<char>>& cache, const string& s, int sIndex, const string& p, int pIndex) {
-        char& c = cache[sIndex][pIndex];
-        if (c != -1) { return c; }
+        int n = grid.size();
+        int maxN = n * n;
+        int minT = max(grid.front().front(), grid.back().back());
+        int maxT = maxN - 1;
+        vector<char> visited(maxN);
 
-        if (pIndex == p.size() && sIndex == s.size()) { return true; }
+        while (minT <= maxT) {
+            memset(visited.data(), 0, sizeof(char) * maxN);
+            int midT = (minT + maxT) / 2;
 
-        bool hasMatch = sIndex < s.size() && p[pIndex] == '.' || p[pIndex] == s[sIndex];
-        if (pIndex < p.size() - 1 && p[pIndex + 1] == '*') {
-            return c = checkPatterns(cache, s, sIndex, p, pIndex + 2) || (hasMatch && checkPatterns(cache, s, sIndex + 1, p, pIndex));
+            if (dfs(visited, grid, 0, 0, midT)) {
+                maxT = midT - 1;
+            } else {
+                minT = midT + 1;
+            }
         }
 
-        return c = hasMatch && checkPatterns(cache, s, sIndex + 1, p, pIndex + 1);
+        return minT;
+    }
+private:
+    bool dfs(vector<char>& visited, vector<vector<int>>& grid, int row, int col, int t) {
+        if (row < 0 || row == grid.size() || col < 0 || col == grid.size() || grid[row][col] > t) { return false; }
+        if (row == grid.size() - 1 && col == grid.size() - 1) { return true; }
+
+        if (visited[grid[row][col]]) { return false; }
+        visited[grid[row][col]] = 1;
+
+        return dfs(visited, grid, row - 1, col, t) ||
+            dfs(visited, grid, row, col + 1, t) ||
+            dfs(visited, grid, row + 1, col, t) ||
+            dfs(visited, grid, row, col - 1, t);
     }
 };
 
