@@ -7,30 +7,24 @@ using namespace std;
 
 class Solution {
 public:
-    int islandPerimeter(vector<vector<int>>& grid) {
-        char dirs[]{ -1, 0, 1, 0, -1 };
-        int rows = grid.size();
-        int cols = grid[0].size();
-        int result = 0;
+    bool isMatch(string s, string p) {
+        vector<vector<char>> cache(s.size() + 1, vector<char>(p.size() + 1, -1));
 
-        for (int row = 0; row < rows; ++row) {
-            for (int col = 0; col < cols; ++col) {
-                if (grid[row][col] == 1) {
-                    for (int i = 0; i < 4; ++i) {
-                        int newRow = row + dirs[i];
-                        int newCol = col + dirs[i + 1];
+        return checkPatterns(cache, s, 0, p, 0);
+    }
+private:
+    bool checkPatterns(vector<vector<char>>& cache, const string& s, int sIndex, const string& p, int pIndex) {
+        char& c = cache[sIndex][pIndex];
+        if (c != -1) { return c; }
 
-                        if (newRow < 0 || newRow >= rows || newCol < 0 || newCol >= cols) {
-                            ++result;
-                        } else if (grid[newRow][newCol] == 0) {
-                            ++result;
-                        }
-                    }
-                }
-            }
+        if (pIndex == p.size() && sIndex == s.size()) { return true; }
+
+        bool hasMatch = sIndex < s.size() && p[pIndex] == '.' || p[pIndex] == s[sIndex];
+        if (pIndex < p.size() - 1 && p[pIndex + 1] == '*') {
+            return c = checkPatterns(cache, s, sIndex, p, pIndex + 2) || (hasMatch && checkPatterns(cache, s, sIndex + 1, p, pIndex));
         }
 
-        return result;
+        return c = hasMatch && checkPatterns(cache, s, sIndex + 1, p, pIndex + 1);
     }
 };
 
