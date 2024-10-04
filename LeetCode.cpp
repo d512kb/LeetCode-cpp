@@ -7,40 +7,25 @@ using namespace std;
 
 class Solution {
 public:
-    int swimInWater(vector<vector<int>>& grid) {
-        if (grid.size() == 1) { return 0; }
+    int maxCoins(vector<int>& nums) {
+        int n = nums.size();
+        vector<int> baloons{ 1 };
+        copy(begin(nums), end(nums), back_inserter(baloons));
+        baloons.push_back(1);
+        vector<vector<int>> dp(n + 2, vector<int>(n + 2));
 
-        int n = grid.size();
-        int maxN = n * n;
-        int minT = max(grid.front().front(), grid.back().back());
-        int maxT = maxN - 1;
-        vector<char> visited(maxN);
-
-        while (minT <= maxT) {
-            memset(visited.data(), 0, sizeof(char) * maxN);
-            int midT = (minT + maxT) / 2;
-
-            if (dfs(visited, grid, 0, 0, midT)) {
-                maxT = midT - 1;
-            } else {
-                minT = midT + 1;
+        for (int w = 1; w <= n; ++w) {
+            for (int left = 1, right = w; right <= n; ++left, ++right) {
+                int maxVal = 0;
+                for (int i = left; i <= right; ++i) {
+                    maxVal = max(maxVal, baloons[left - 1] * baloons[i] * baloons[right + 1] +
+                                 dp[left][i - 1] + dp[i + 1][right]);
+                }
+                dp[left][right] = maxVal;
             }
         }
 
-        return minT;
-    }
-private:
-    bool dfs(vector<char>& visited, vector<vector<int>>& grid, int row, int col, int t) {
-        if (row < 0 || row == grid.size() || col < 0 || col == grid.size() || grid[row][col] > t) { return false; }
-        if (row == grid.size() - 1 && col == grid.size() - 1) { return true; }
-
-        if (visited[grid[row][col]]) { return false; }
-        visited[grid[row][col]] = 1;
-
-        return dfs(visited, grid, row - 1, col, t) ||
-            dfs(visited, grid, row, col + 1, t) ||
-            dfs(visited, grid, row + 1, col, t) ||
-            dfs(visited, grid, row, col - 1, t);
+        return dp[1][n];
     }
 };
 
