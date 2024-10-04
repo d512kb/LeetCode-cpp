@@ -7,25 +7,34 @@ using namespace std;
 
 class Solution {
 public:
-    int maxCoins(vector<int>& nums) {
-        int n = nums.size();
-        vector<int> baloons{ 1 };
-        copy(begin(nums), end(nums), back_inserter(baloons));
-        baloons.push_back(1);
-        vector<vector<int>> dp(n + 2, vector<int>(n + 2));
+    int longestIncreasingPath(vector<vector<int>>& matrix) {
+        int rows = matrix.size();
+        int cols = matrix[0].size();
+        vector<vector<int>> paths(rows, vector<int>(cols));
 
-        for (int w = 1; w <= n; ++w) {
-            for (int left = 1, right = w; right <= n; ++left, ++right) {
-                int maxVal = 0;
-                for (int i = left; i <= right; ++i) {
-                    maxVal = max(maxVal, baloons[left - 1] * baloons[i] * baloons[right + 1] +
-                                 dp[left][i - 1] + dp[i + 1][right]);
-                }
-                dp[left][right] = maxVal;
+        int result = 0;
+        for (int row = 0; row < rows; ++row) {
+            for (int col = 0; col < cols; ++col) {
+                result = max(result, dfs(matrix, paths, row, col, -1));
             }
         }
 
-        return dp[1][n];
+        return result;
+    }
+private:
+    int dfs(vector<vector<int>>& matrix, vector<vector<int>>& paths, int row, int col, int prev) {
+        if (row < 0 || row == matrix.size() || col < 0 || col == matrix[0].size()) { return 0; }
+        if (matrix[row][col] <= prev) { return 0; }
+        if (paths[row][col] != 0) { return paths[row][col]; }
+
+        int currValue = matrix[row][col];
+
+        int len = max(max(max(dfs(matrix, paths, row - 1, col, currValue),
+                              dfs(matrix, paths, row, col + 1, currValue)),
+                          dfs(matrix, paths, row + 1, col, currValue)),
+                      dfs(matrix, paths, row, col - 1, currValue));
+
+        return paths[row][col] = len + 1;
     }
 };
 
