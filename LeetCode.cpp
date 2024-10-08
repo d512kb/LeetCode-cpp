@@ -17,17 +17,18 @@ struct TreeNode {
 
 class Solution {
 public:
-    bool isSubtree(TreeNode* root, TreeNode* subRoot) {
-        if (!root) { return false; }
-
-        return isIdentical(root, subRoot) || isSubtree(root->left, subRoot) || isSubtree(root->right, subRoot);
+    bool isBalanced(TreeNode* root) {
+        return getHeight(root) != -1;
     }
 private:
-    bool isIdentical(TreeNode* tree1, TreeNode* tree2) {
-        if (!tree1) { return !tree2; }
-        if (!tree2) { return false; }
+    int getHeight(TreeNode* root) {
+        if (!root) { return 0; }
 
-        return tree1->val == tree2->val && isIdentical(tree1->left, tree2->left) && isIdentical(tree1->right, tree2->right);
+        int leftHeight = getHeight(root->left);
+        int rightHeight = getHeight(root->right);
+
+        if (leftHeight == -1 || rightHeight == -1 || abs(leftHeight - rightHeight) > 1) return -1;
+        return 1 + max(leftHeight, rightHeight);
     }
 };
 
