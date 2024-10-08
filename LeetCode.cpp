@@ -15,20 +15,49 @@ struct TreeNode {
     TreeNode(int x, TreeNode *left, TreeNode *right) : val(x), left(left), right(right) {}
 };
 
-class Solution {
+class Codec {
 public:
-    bool isBalanced(TreeNode* root) {
-        return getHeight(root) != -1;
+
+    // Encodes a tree to a single string.
+    string serialize(TreeNode* root) {
+        string result;
+        serialize(root, result);
+        return result;
+    }
+
+    // Decodes your encoded data to tree.
+    TreeNode* deserialize(string data) {
+        int index = 0;
+        return deserialize(data, index);
     }
 private:
-    int getHeight(TreeNode* root) {
-        if (!root) { return 0; }
+    void serialize(TreeNode* node, string& to) {
+        if (!node) { return; }
 
-        int leftHeight = getHeight(root->left);
-        int rightHeight = getHeight(root->right);
+        to.push_back(node->val);
+        to.push_back(node->val >> 8);
 
-        if (leftHeight == -1 || rightHeight == -1 || abs(leftHeight - rightHeight) > 1) return -1;
-        return 1 + max(leftHeight, rightHeight);
+        to.push_back(node->left != nullptr);
+        to.push_back(node->right != nullptr);
+
+        serialize(node->left, to);
+        serialize(node->right, to);
+    }
+
+    TreeNode* deserialize(const string& from, int& index) {
+        if (index >= from.size()) { return nullptr; }
+
+        int a = from[index++] & 0xFF;
+        int b = from[index++];
+        TreeNode* node = new TreeNode(a + (b << 8));
+
+        bool left = from[index++];
+        bool right = from[index++];
+
+        if (left) { node->left = deserialize(from, index); }
+        if (right) { node->right = deserialize(from, index); }
+
+        return node;
     }
 };
 
