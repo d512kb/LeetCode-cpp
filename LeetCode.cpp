@@ -5,59 +5,64 @@
 
 using namespace std;
 
-// Definition for a binary tree node.
-struct TreeNode {
-    int val;
-    TreeNode *left;
-    TreeNode *right;
-    TreeNode() : val(0), left(nullptr), right(nullptr) {}
-    TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}
-    TreeNode(int x, TreeNode *left, TreeNode *right) : val(x), left(left), right(right) {}
-};
-
-class Codec {
+class Solution {
 public:
+    vector<long long> findXSum(vector<int>& nums, int k, int x) {
+        set<pair<int, int>, greater<>> freqMaxSet;
+        set<pair<int, int>> freqMinSet;
+        unordered_map<int, int> freqs;
+        int64_t sum = 0;
 
-    // Encodes a tree to a single string.
-    string serialize(TreeNode* root) {
-        string result;
-        serialize(root, result);
+        for (int i = 0; i < k; ++i) { ++freqs[nums[i]]; }
+        for (const auto& s : freqs) { freqMaxSet.emplace(s.second, s.first); }
+        for (int i = 0; i < x && !freqMaxSet.empty(); ++i) {
+            auto node = freqMaxSet.extract(freqMaxSet.begin());
+            sum += static_cast<int64_t>(node.value().first) * node.value().second;
+            freqMinSet.insert(std::move(node));
+        }
+
+        vector<long long> result;
+        result.push_back(sum);
+
+        for (int prev = 0, next = k; next < nums.size(); ++prev, ++next) {
+            auto prevNum = make_pair(freqs[nums[prev]]--, nums[prev]);
+            auto nextNum = make_pair(freqs[nums[next]]++, nums[next]);
+
+            auto iter = freqMinSet.find(prevNum);
+            if (iter != freqMinSet.end()) {
+                sum -= static_cast<int64_t>(prevNum.first) * prevNum.second;
+                freqMinSet.erase(iter);
+            } else {
+                freqMaxSet.erase(prevNum);
+            }
+
+            freqMaxSet.emplace(prevNum.first - 1, prevNum.second);
+            if (freqMinSet.size() < x) {
+                auto node = freqMaxSet.extract(freqMaxSet.begin());
+                sum += static_cast<int64_t>(node.value().first) * node.value().second;
+                freqMinSet.insert(std::move(node));
+            }
+
+            iter = freqMinSet.find(nextNum);
+            if (iter != freqMinSet.end()) {
+                sum -= static_cast<int64_t>(nextNum.first) * nextNum.second;
+                freqMinSet.erase(iter);
+            } else {
+                freqMaxSet.erase(nextNum);
+            }
+
+            freqMinSet.emplace(nextNum.first + 1, nextNum.second);
+            sum += static_cast<int64_t>(nextNum.first + 1) * nextNum.second;
+            if (freqMinSet.size() > x) {
+                auto node = freqMinSet.extract(freqMinSet.begin());
+                sum -= static_cast<int64_t>(node.value().first) * node.value().second;
+                freqMaxSet.insert(std::move(node));
+            }
+
+            result.push_back(sum);
+        }
+
         return result;
-    }
-
-    // Decodes your encoded data to tree.
-    TreeNode* deserialize(string data) {
-        int index = 0;
-        return deserialize(data, index);
-    }
-private:
-    void serialize(TreeNode* node, string& to) {
-        if (!node) { return; }
-
-        to.push_back(node->val);
-        to.push_back(node->val >> 8);
-
-        to.push_back(node->left != nullptr);
-        to.push_back(node->right != nullptr);
-
-        serialize(node->left, to);
-        serialize(node->right, to);
-    }
-
-    TreeNode* deserialize(const string& from, int& index) {
-        if (index >= from.size()) { return nullptr; }
-
-        int a = from[index++] & 0xFF;
-        int b = from[index++];
-        TreeNode* node = new TreeNode(a + (b << 8));
-
-        bool left = from[index++];
-        bool right = from[index++];
-
-        if (left) { node->left = deserialize(from, index); }
-        if (right) { node->right = deserialize(from, index); }
-
-        return node;
     }
 };
 
