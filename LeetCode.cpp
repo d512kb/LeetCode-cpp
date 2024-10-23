@@ -6,23 +6,42 @@
 using namespace std;
 
 class Solution {
+    unordered_map<int, int> divisors;
 public:
-    int numberOfSubstrings(string s, int k) {
-        int sz = s.size();
+    int minOperations(vector<int>& nums) {
         int ans = 0;
+        int nextVal = nums.back();
 
-        for (int i = 0; i < sz; ++i) {
-            int charCount[26]{};
+        for (int i = nums.size() - 2; i >= 0; --i) {
+            int& n = nums[i];
 
-            for (int j = i; j < sz; ++j) {
-                if (++charCount[s[j] - 'a'] >= k) {
-                    ans += sz - j;
-                    break;
+            while (n > nextVal) {
+                int div = getDivisor(n);
+                if (div == n) { return -1; }
+
+                n /= div;
+                ++ans;
+            }
+
+            nextVal = n;
+        }
+
+        return ans;
+    }
+private:
+    int getDivisor(int n) {
+        if (divisors[n] == 0) {
+            divisors[n] = n;
+
+            for (int i = n / 2; i > 1; --i) {
+                if (n % i == 0) {
+                    divisors[n] = i;
+                    return i;
                 }
             }
         }
 
-        return ans;
+        return divisors[n];
     }
 };
 
