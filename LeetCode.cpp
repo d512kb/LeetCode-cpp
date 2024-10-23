@@ -7,24 +7,22 @@ using namespace std;
 
 class Solution {
 public:
-    vector<string> stringSequence(string target) {
-        vector<string> result;
-        string str;
+    int numberOfSubstrings(string s, int k) {
+        int sz = s.size();
+        int ans = 0;
 
-        for (char targetChar : target) {
-            str.push_back('a');
+        for (int i = 0; i < sz; ++i) {
+            int charCount[26]{};
 
-            for (char c = 'a'; c <= 'z'; ++c) {
-                str.back() = c;
-                result.push_back(str);
-
-                if (c == targetChar) {
+            for (int j = i; j < sz; ++j) {
+                if (++charCount[s[j] - 'a'] >= k) {
+                    ans += sz - j;
                     break;
                 }
             }
         }
 
-        return result;
+        return ans;
     }
 };
 
