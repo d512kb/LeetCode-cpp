@@ -7,53 +7,32 @@ using namespace std;
 
 class Solution {
 public:
-    vector<bool> findAnswer(vector<int>& parent, string s) {
-        int sz = parent.size();
-        vector<vector<int>> nodes(sz);
+    int lengthAfterTransformations(string s, int t) {
+        int mod = 1e9 + 7;
+        vector<int> counts(26);
+        vector<int> countsPrev(26);
 
-        for (int i = 1; i < sz; ++i) { nodes[parent[i]].push_back(i); }
+        for (char c : s) { ++counts[c - 'a']; }
+        for (int i = 0; i < t; ++i) {
+            swap(counts, countsPrev);
 
-        string tmpStr;
-        vector<pair<int, int>> strIndexes(sz);
-        auto dfs = [&](auto& self, int x) -> void {
-            strIndexes[x].first = tmpStr.size();
-            for (int child : nodes[x]) { self(self, child); }
-            tmpStr += s[x];
-            strIndexes[x].second = tmpStr.size();
-        };
-
-        dfs(dfs, 0);
-
-        int uniSz = 2 * sz + 1;
-        string uniStr("^");
-        uniStr.reserve(uniSz + 2);
-
-        for (char c : tmpStr) { uniStr += '#'; uniStr += c; }
-        uniStr += "#$";
-
-        vector<int> wingSizes(uniSz);
-        int start = 0; int stop = 0;
-        for (int i = 2; i < uniSz; ++i) {
-            int pal = 1;
-            if (i < stop) { pal = min(wingSizes[2 * start - i], stop - i); }
-
-            while (uniStr[i - pal] == uniStr[i + pal]) { ++pal; }
-
-            if (i + pal > stop) {
-                start = i;
-                stop = i + pal;
+            for (int c = 0; c < 25; ++c) {
+                counts[c + 1] = (counts[c + 1] + countsPrev[c]) % mod;
+                countsPrev[c] = 0;
             }
 
-            wingSizes[i] = pal;
+            counts[0] = (counts[0] + countsPrev[25]) % mod;
+            counts[1] = (counts[1] + countsPrev[25]) % mod;
+            countsPrev[25] = 0;
         }
 
-        vector<bool> result;
-        result.reserve(sz);
-        for (auto& strIndex : strIndexes) {
-            result.push_back(wingSizes[strIndex.first + strIndex.second + 1] > strIndex.second - strIndex.first);
+        int ans = 0;
+
+        for (int i = 0; i < 26; ++i) {
+            ans = (ans + counts[i]) % mod;
         }
 
-        return result;
+        return ans;
     }
 };
 
