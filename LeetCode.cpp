@@ -10,9 +10,11 @@ class Solution {
         int row;
         int col;
         int time;
+        int stepTime;
 
         friend bool operator>(const Cell& c1, const Cell& c2) {
             if (c1.time != c2.time) { return c1.time > c2.time; }
+            if (c1.stepTime != c2.stepTime) { return c1.stepTime > c2.stepTime; }
             if (c1.row != c2.row) { return c1.row > c2.row; }
             return c1.col > c2.col;
         }
@@ -25,7 +27,7 @@ public:
         priority_queue<Cell, vector<Cell>, greater<Cell>> q;
         vector<vector<int>> cellTimes(rows, vector<int>(cols, numeric_limits<int>::max()));
         char dirs[]{ 1, 0, -1, 0, 1 };
-        q.emplace(0, 0, 0);
+        q.emplace(0, 0, 0, 1);
 
         while (!q.empty()) {
             auto cell = q.top();
@@ -38,11 +40,11 @@ public:
                 int newCol = cell.col + dirs[i + 1];
 
                 if (newRow >= 0 && newRow < rows && newCol >= 0 && newCol < cols) {
-                    int timeToVisit = 1 + max(cell.time, moveTime[newRow][newCol]);
+                    int timeToVisit = cell.stepTime + max(cell.time, moveTime[newRow][newCol]);
 
                     if (timeToVisit < cellTimes[newRow][newCol]) {
                         cellTimes[newRow][newCol] = timeToVisit;
-                        q.emplace(newRow, newCol, timeToVisit);
+                        q.emplace(newRow, newCol, timeToVisit, 3 - cell.stepTime);
                     }
                 }
             }
