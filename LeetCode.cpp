@@ -7,34 +7,31 @@ using namespace std;
 
 class Solution {
 public:
-    vector<int> minInterval(vector<vector<int>>& intervals, vector<int>& queries) {
-        sort(begin(intervals), end(intervals), [](const auto& int1, const auto& int2) { return int1[0] < int2[0]; });
-        auto intervalsIter = intervals.begin();
+    vector<vector<int>> permuteUnique(vector<int>& nums) {
+        vector<vector<int>> result;
+        vector<int> vec;
+        const char offset = 10;
+        vector<char> usedIndexes(21, -1);
 
-        auto sortedQueries = queries;
-        sort(begin(sortedQueries), end(sortedQueries));
-        sortedQueries.erase(unique(begin(sortedQueries), end(sortedQueries)), end(sortedQueries));
-
-        unordered_map<int, int> lengths;
-        priority_queue<pair<int, int>, vector<pair<int, int>>, greater<pair<int, int>>> pq;
-
-        for (int query : sortedQueries) {
-            while (intervalsIter != intervals.end() && (*intervalsIter)[0] <= query) {
-                if ((*intervalsIter)[1] >= query) {
-                    pq.emplace((*intervalsIter)[1] - (*intervalsIter)[0] + 1, (*intervalsIter)[1]);
-                }
-                ++intervalsIter;
+        auto perm = [&](auto&& self, vector<int>& vec) -> void {
+            if (vec.size() == nums.size()) {
+                result.push_back(vec);
+                return;
             }
 
-            while (!pq.empty() && pq.top().second < query) { pq.pop(); }
+            for (int i = 0; i < nums.size(); ++i) {
+                if (usedIndexes[nums[i] + offset] < i) {
+                    int prevUsedIndex = usedIndexes[nums[i] + offset];
+                    usedIndexes[nums[i] + offset] = i;
+                    vec.push_back(nums[i]);
+                    self(self, vec);
+                    vec.pop_back();
+                    usedIndexes[nums[i] + offset] = prevUsedIndex;
+                }
+            }
+        };
 
-            if (pq.empty()) { lengths[query] = -1; } else { lengths[query] = pq.top().first; }
-        }
-
-        vector<int> result;
-        result.reserve(queries.size());
-
-        for (int q : queries) { result.push_back(lengths[q]); }
+        perm(perm, vec);
 
         return result;
     }
