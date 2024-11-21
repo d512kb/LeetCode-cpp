@@ -5,37 +5,35 @@
 
 using namespace std;
 
-class Solution {
+class DetectSquares {
 public:
-    vector<vector<int>> subsetsWithDup(vector<int>& nums) {
-        sort(nums.begin(), nums.end());
+    DetectSquares() {
 
-        int lastInsertedNum = numeric_limits<int>::min();
-        int lastInsertIndex = 0;
-        vector<vector<int>> result;
+    }
 
-        for (int n : nums) {
-            int endIndex = result.size();
+    void add(vector<int> point) {
+        ++grid[point[0]][point[1]];
+    }
 
-            if (n != lastInsertedNum) {
-                lastInsertedNum = n;
-                lastInsertIndex = 0;
+    int count(vector<int> point) {
+        int x = point[0];
+        int y = point[1];
 
-                result.emplace_back(1, n);
-            }
+        int ans = 0;
 
-            for (int i = lastInsertIndex; i < endIndex; ++i) {
-                result.push_back(result[i]);
-                result.back().push_back(n);
-            }
+        for (auto& gridVal : grid[x]) {
+            int yVal = gridVal.first;
+            if (yVal == y) { continue; }
 
-            lastInsertIndex = endIndex;
+            int size = abs(yVal - y);
+            ans += gridVal.second * (grid[x - size][yVal] * grid[x - size][y] + grid[x + size][yVal] * grid[x + size][y]);
         }
 
-        result.emplace_back();
-
-        return result;
+        return ans;
     }
+
+private:
+    unordered_map<int, unordered_map<int, int>> grid;
 };
 
 int main() {
