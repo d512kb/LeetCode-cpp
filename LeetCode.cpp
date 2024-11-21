@@ -7,31 +7,32 @@ using namespace std;
 
 class Solution {
 public:
-    vector<vector<int>> permuteUnique(vector<int>& nums) {
+    vector<vector<int>> subsetsWithDup(vector<int>& nums) {
+        sort(nums.begin(), nums.end());
+
+        int lastInsertedNum = numeric_limits<int>::min();
+        int lastInsertIndex = 0;
         vector<vector<int>> result;
-        vector<int> vec;
-        const char offset = 10;
-        vector<char> usedIndexes(21, -1);
 
-        auto perm = [&](auto&& self, vector<int>& vec) -> void {
-            if (vec.size() == nums.size()) {
-                result.push_back(vec);
-                return;
+        for (int n : nums) {
+            int endIndex = result.size();
+
+            if (n != lastInsertedNum) {
+                lastInsertedNum = n;
+                lastInsertIndex = 0;
+
+                result.emplace_back(1, n);
             }
 
-            for (int i = 0; i < nums.size(); ++i) {
-                if (usedIndexes[nums[i] + offset] < i) {
-                    int prevUsedIndex = usedIndexes[nums[i] + offset];
-                    usedIndexes[nums[i] + offset] = i;
-                    vec.push_back(nums[i]);
-                    self(self, vec);
-                    vec.pop_back();
-                    usedIndexes[nums[i] + offset] = prevUsedIndex;
-                }
+            for (int i = lastInsertIndex; i < endIndex; ++i) {
+                result.push_back(result[i]);
+                result.back().push_back(n);
             }
-        };
 
-        perm(perm, vec);
+            lastInsertIndex = endIndex;
+        }
+
+        result.emplace_back();
 
         return result;
     }
