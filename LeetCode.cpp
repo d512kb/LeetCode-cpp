@@ -6,51 +6,37 @@
 using namespace std;
 
 class Solution {
-    struct Cell {
-        int row;
-        int col;
-        int time;
-        int stepTime;
-
-        friend bool operator>(const Cell& c1, const Cell& c2) {
-            if (c1.time != c2.time) { return c1.time > c2.time; }
-            if (c1.stepTime != c2.stepTime) { return c1.stepTime > c2.stepTime; }
-            if (c1.row != c2.row) { return c1.row > c2.row; }
-            return c1.col > c2.col;
-        }
-    };
 public:
-    int minTimeToReach(vector<vector<int>>& moveTime) {
-        int rows = moveTime.size();
-        int cols = moveTime[0].size();
+    vector<int> minInterval(vector<vector<int>>& intervals, vector<int>& queries) {
+        sort(begin(intervals), end(intervals), [](const auto& int1, const auto& int2) { return int1[0] < int2[0]; });
+        auto intervalsIter = intervals.begin();
 
-        priority_queue<Cell, vector<Cell>, greater<Cell>> q;
-        vector<vector<int>> cellTimes(rows, vector<int>(cols, numeric_limits<int>::max()));
-        char dirs[]{ 1, 0, -1, 0, 1 };
-        q.emplace(0, 0, 0, 1);
+        auto sortedQueries = queries;
+        sort(begin(sortedQueries), end(sortedQueries));
+        sortedQueries.erase(unique(begin(sortedQueries), end(sortedQueries)), end(sortedQueries));
 
-        while (!q.empty()) {
-            auto cell = q.top();
-            q.pop();
+        unordered_map<int, int> lengths;
+        priority_queue<pair<int, int>, vector<pair<int, int>>, greater<pair<int, int>>> pq;
 
-            if (cell.row == rows - 1 && cell.col == cols - 1) { return cell.time; }
-
-            for (int i = 0; i < 4; ++i) {
-                int newRow = cell.row + dirs[i];
-                int newCol = cell.col + dirs[i + 1];
-
-                if (newRow >= 0 && newRow < rows && newCol >= 0 && newCol < cols) {
-                    int timeToVisit = cell.stepTime + max(cell.time, moveTime[newRow][newCol]);
-
-                    if (timeToVisit < cellTimes[newRow][newCol]) {
-                        cellTimes[newRow][newCol] = timeToVisit;
-                        q.emplace(newRow, newCol, timeToVisit, 3 - cell.stepTime);
-                    }
+        for (int query : sortedQueries) {
+            while (intervalsIter != intervals.end() && (*intervalsIter)[0] <= query) {
+                if ((*intervalsIter)[1] >= query) {
+                    pq.emplace((*intervalsIter)[1] - (*intervalsIter)[0] + 1, (*intervalsIter)[1]);
                 }
+                ++intervalsIter;
             }
+
+            while (!pq.empty() && pq.top().second < query) { pq.pop(); }
+
+            if (pq.empty()) { lengths[query] = -1; } else { lengths[query] = pq.top().first; }
         }
 
-        return -1;
+        vector<int> result;
+        result.reserve(queries.size());
+
+        for (int q : queries) { result.push_back(lengths[q]); }
+
+        return result;
     }
 };
 
