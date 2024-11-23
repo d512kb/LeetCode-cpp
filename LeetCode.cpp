@@ -5,38 +5,29 @@
 
 using namespace std;
 
-class DetectSquares {
+// https://medium.com/@satyem77/task-scheduler-leetcode-39d579f3440
+class Solution {
 public:
-    DetectSquares() {
+    int leastInterval(vector<char>& tasks, int n) {
+        vector<int> freq(26);
+        for (char t : tasks) { ++freq[t - 'A']; }
 
-    }
+        make_heap(freq.begin(), freq.end());
+        int maxf = freq.front();
+        int f = 0;
 
-    void add(vector<int> point) {
-        ++grid[point[0]][point[1]];
-    }
-
-    int count(vector<int> point) {
-        int x = point[0];
-        int y = point[1];
-
-        int ans = 0;
-
-        for (auto& gridVal : grid[x]) {
-            int yVal = gridVal.first;
-            if (yVal == y) { continue; }
-
-            int size = abs(yVal - y);
-            ans += gridVal.second * (grid[x - size][yVal] * grid[x - size][y] + grid[x + size][yVal] * grid[x + size][y]);
+        while (!freq.empty() && freq.front() == maxf) {
+            pop_heap(freq.begin(), freq.end());
+            freq.pop_back();
+            ++f;
         }
 
-        return ans;
+        return max<size_t>((n + 1) * (maxf - 1) + f, tasks.size());
     }
-
-private:
-    unordered_map<int, unordered_map<int, int>> grid;
 };
 
-int main() {
+int main()
+ {
     INIT_TIME(timer);
 
     PRINT_ELAPSED(timer);
