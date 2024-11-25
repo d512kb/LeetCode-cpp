@@ -5,24 +5,29 @@
 
 using namespace std;
 
-// https://medium.com/@satyem77/task-scheduler-leetcode-39d579f3440
 class Solution {
 public:
-    int leastInterval(vector<char>& tasks, int n) {
-        vector<int> freq(26);
-        for (char t : tasks) { ++freq[t - 'A']; }
+    bool checkValidString(string s) {
+        int maxOpen = 0;
+        int minOpen = 0;
 
-        make_heap(freq.begin(), freq.end());
-        int maxf = freq.front();
-        int f = 0;
+        for (char c : s) {
+            if (c == '(') {
+                ++maxOpen;
+                ++minOpen;
+            } else if (c == ')') {
+                --maxOpen;
+                --minOpen;
+            } else {
+                ++maxOpen;
+                --minOpen;
+            }
 
-        while (!freq.empty() && freq.front() == maxf) {
-            pop_heap(freq.begin(), freq.end());
-            freq.pop_back();
-            ++f;
+            if (minOpen < 0) { minOpen = 0; }
+            if (maxOpen < 0) { return false; }
         }
 
-        return max<size_t>((n + 1) * (maxf - 1) + f, tasks.size());
+        return minOpen == 0;
     }
 };
 
