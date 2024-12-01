@@ -7,27 +7,51 @@ using namespace std;
 
 class Solution {
 public:
-    bool checkValidString(string s) {
-        int maxOpen = 0;
-        int minOpen = 0;
+    int minCostConnectPoints(vector<vector<int>>& points) {
+        if (points.size() <= 1) { return 0; }
 
-        for (char c : s) {
-            if (c == '(') {
-                ++maxOpen;
-                ++minOpen;
-            } else if (c == ')') {
-                --maxOpen;
-                --minOpen;
-            } else {
-                ++maxOpen;
-                --minOpen;
+        using Connection = pair<int, pair<int, int>>;
+        vector<Connection> graph;
+        graph.reserve((points.size() - 1) * points.size() / 2);
+
+        for (int i = 0; i < points.size(); ++i) {
+            for (int j = i + 1; j < points.size(); ++j) {
+                graph.emplace_back(calcDistance(points[i], points[j]), make_pair(i, j));
             }
-
-            if (minOpen < 0) { minOpen = 0; }
-            if (maxOpen < 0) { return false; }
         }
 
-        return minOpen == 0;
+        vector<int> pointsChains(points.size());
+        iota(pointsChains.begin(), pointsChains.end(), 0);
+
+        auto cmp = [](const Connection& conn1, const Connection& conn2) { return conn1.first > conn2.first; };
+        make_heap(graph.begin(), graph.end(), cmp);
+        int connections = 0;
+        int ans = 0;
+
+        while (connections < points.size() - 1) {
+            pop_heap(graph.begin(), graph.end(), cmp);
+
+            auto [p1, p2] = graph.back().second;
+            int cost = graph.back().first;
+            graph.pop_back();
+
+            while (p1 != pointsChains[p1]) { p1 = pointsChains[p1]; }
+            while (p2 != pointsChains[p2]) { p2 = pointsChains[p2]; }
+
+            if (p1 != p2) {
+                if (p1 > p2) { swap(p1, p2); }
+
+                pointsChains[p2] = p1;
+                ans += cost;
+                ++connections;
+            }
+        }
+
+        return ans;
+    }
+private:
+    inline int calcDistance(const auto& p1, const auto& p2) {
+        return abs(p1[0] - p2[0]) + abs(p1[1] - p2[1]);
     }
 };
 
