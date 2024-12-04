@@ -5,65 +5,25 @@
 
 using namespace std;
 
-class Twitter {
-    struct FeedCompare {
-        bool operator()(const auto& tweet1, const auto& tweet2) {
-            return tweet1.second > tweet2.second;
-        }
-    };
+class Solution {
+public:
+    bool isNStraightHand(vector<int>& hand, int groupSize) {
+        if (hand.size() % groupSize != 0) { return false; }
 
-    static FeedCompare feedCompare;
+        sort(hand.begin(), hand.end());
+        unordered_map<int, int> numCounts;
 
-    void fillFeedWithNewTweets(int userId, vector<pair<int, int>>& feed) {
-        for (auto& tweet : m_tweets[userId]) {
-            if (tweet.second > feed.front().second) {
-                pop_heap(feed.begin(), feed.end(), feedCompare);
-                feed.back() = tweet;
-                push_heap(feed.begin(), feed.end(), feedCompare);
-            } else {
-                break;
+        for (int n : hand) { ++numCounts[n]; }
+        for (int n : hand) {
+            if (numCounts[n] > 0) {
+                for (int i = 0; i < groupSize; ++i) {
+                    if (--numCounts[n++] < 0) { return false; }
+                }
             }
         }
+
+        return true;
     }
-public:
-    Twitter() : m_time(0) {
-
-    }
-
-    void postTweet(int userId, int tweetId) {
-        auto& tweetsQueue = m_tweets[userId];
-
-        tweetsQueue.emplace_front(tweetId, ++m_time);
-        if (tweetsQueue.size() > 10) { tweetsQueue.pop_back(); }
-    }
-
-    vector<int> getNewsFeed(int userId) {
-        vector<pair<int, int>> feed(10);
-
-        fillFeedWithNewTweets(userId, feed);
-        for (int followee : m_followees[userId]) { fillFeedWithNewTweets(followee, feed); }
-
-        sort(feed.begin(), feed.end(), [](const auto& tweet1, const auto& tweet2) { return tweet1.second > tweet2.second; });
-
-        vector<int> result;
-        for (auto& tweet : feed) {
-            if (tweet.second > 0) { result.push_back(tweet.first); } else { break; }
-        }
-
-        return result;
-    }
-
-    void follow(int followerId, int followeeId) {
-        m_followees[followerId].insert(followeeId);
-    }
-
-    void unfollow(int followerId, int followeeId) {
-        m_followees[followerId].erase(followeeId);
-    }
-private:
-    unordered_map<int, deque<pair<int, int>>> m_tweets;
-    unordered_map<int, set<int>> m_followees;
-    int m_time;
 };
 
 int main()
