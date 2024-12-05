@@ -7,27 +7,20 @@ using namespace std;
 
 class Solution {
 public:
-    int carFleet(int target, vector<int>& position, vector<int>& speed) {
-        vector<pair<int, float>> finishTimes;
-        finishTimes.reserve(position.size());
+    bool mergeTriplets(vector<vector<int>>& triplets, vector<int>& target) {
+        bitset<3> targetNumbers;
 
-        for (int i = 0; i < position.size(); ++i) {
-            finishTimes.emplace_back(position[i], static_cast<float>(target - position[i]) / speed[i]);
+        for (auto& triplet : triplets) {
+            if (triplet[0] > target[0] || triplet[1] > target[1] || triplet[2] > target[2]) {
+                continue;
+            }
+
+            targetNumbers.set(0, targetNumbers[0] || triplet[0] == target[0]);
+            targetNumbers.set(1, targetNumbers[1] || triplet[1] == target[1]);
+            targetNumbers.set(2, targetNumbers[2] || triplet[2] == target[2]);
         }
 
-        sort(finishTimes.begin(), finishTimes.end());
-
-        int ans = 1;
-        float minTime = finishTimes.rbegin()->second;
-
-        for (auto iter = finishTimes.rbegin(); iter != finishTimes.rend(); ++iter) {
-            if (iter->second > minTime) {
-                minTime = iter->second;
-                ++ans;
-            }
-        };
-
-        return ans;
+        return targetNumbers.to_ulong() == 7;
     }
 };
 
