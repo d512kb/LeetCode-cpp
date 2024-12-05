@@ -7,22 +7,27 @@ using namespace std;
 
 class Solution {
 public:
-    bool isNStraightHand(vector<int>& hand, int groupSize) {
-        if (hand.size() % groupSize != 0) { return false; }
+    int carFleet(int target, vector<int>& position, vector<int>& speed) {
+        vector<pair<int, float>> finishTimes;
+        finishTimes.reserve(position.size());
 
-        sort(hand.begin(), hand.end());
-        unordered_map<int, int> numCounts;
-
-        for (int n : hand) { ++numCounts[n]; }
-        for (int n : hand) {
-            if (numCounts[n] > 0) {
-                for (int i = 0; i < groupSize; ++i) {
-                    if (--numCounts[n++] < 0) { return false; }
-                }
-            }
+        for (int i = 0; i < position.size(); ++i) {
+            finishTimes.emplace_back(position[i], static_cast<float>(target - position[i]) / speed[i]);
         }
 
-        return true;
+        sort(finishTimes.begin(), finishTimes.end());
+
+        int ans = 1;
+        float minTime = finishTimes.rbegin()->second;
+
+        for (auto iter = finishTimes.rbegin(); iter != finishTimes.rend(); ++iter) {
+            if (iter->second > minTime) {
+                minTime = iter->second;
+                ++ans;
+            }
+        };
+
+        return ans;
     }
 };
 
