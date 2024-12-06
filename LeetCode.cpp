@@ -7,22 +7,21 @@ using namespace std;
 
 class Solution {
 public:
-    bool mergeTriplets(vector<vector<int>>& triplets, vector<int>& target) {
-        bitset<3> targetNumbers;
+    int findTargetSumWays(vector<int>& nums, int target) {
+        sort(nums.begin(), nums.end());
+        int totalSum = accumulate(nums.begin(), nums.end(), 0);
 
-        for (auto& triplet : triplets) {
-            if (triplet[0] > target[0] || triplet[1] > target[1] || triplet[2] > target[2]) {
-                continue;
-            }
-
-            targetNumbers.set(0, targetNumbers[0] || triplet[0] == target[0]);
-            targetNumbers.set(1, targetNumbers[1] || triplet[1] == target[1]);
-            targetNumbers.set(2, targetNumbers[2] || triplet[2] == target[2]);
-        }
-
-        return targetNumbers.to_ulong() == 7;
+        return checkNum(nums, 0, totalSum - target);
     }
-};
+private:
+    int checkNum(vector<int>& nums, int index, int target) {
+        if (target < 0) { return 0; }
+        if (index == nums.size()) { return target == 0; }
+
+        return checkNum(nums, index + 1, target) +
+            checkNum(nums, index + 1, target - (2 * nums[index]));
+    }
+};  
 
 int main()
  {
