@@ -5,62 +5,58 @@
 
 using namespace std;
 
-//Definition for a binary tree node.
-struct TreeNode {
-    int val;
-    TreeNode *left;
-    TreeNode *right;
-    TreeNode(int x) : val(x), left(NULL), right(NULL) {}
-};
-
-class Codec {
+class StreamChecker {
+    struct Node {
+        bool w = false;
+        Node* nodes[26]{};
+    };
 public:
-
-    // Encodes a tree to a single string.
-    string serialize(TreeNode* root) {
-        string serialData;
-
-        serialize(root, serialData);
-
-        return serialData;
+    StreamChecker(vector<string>& words) {
+        for (auto& word : words) { addWord(word); }
     }
 
-    // Decodes your encoded data to tree.
-    TreeNode* deserialize(string data) {
-        int index = 0;
-        return deserialize(data, index);
+    bool query(char letter) {
+        m_nodesToCheck.push_back(&m_root);
+
+        auto iter = m_nodesToCheck.begin();
+        int idx = letter - 'a';
+        bool ans = false;
+
+        while (iter != m_nodesToCheck.end()) {
+            auto& node = *iter;
+            node = node->nodes[idx];
+
+            if (!node) {
+                iter = m_nodesToCheck.erase(iter);
+            } else {
+                ans = ans || node->w;
+                ++iter;
+            }
+        }
+
+        return ans;
     }
 
 private:
-    void serialize(TreeNode* node, string& to) {
-        if (!node) {
-            to.push_back(static_cast<char>(0xFF));
-            return;
+    Node m_root;
+
+    void addWord(const string& word) {
+        Node* node = &m_root;
+
+        for (char c : word) {
+            int idx = c - 'a';
+
+            if (node->nodes[idx] == nullptr) {
+                node->nodes[idx] = new Node();
+            }
+
+            node = node->nodes[idx];
         }
 
-        to.push_back(node->val >> 8);
-        to.push_back(node->val);
-
-        serialize(node->left, to);
-        serialize(node->right, to);
+        node->w = true;
     }
 
-    TreeNode* deserialize(const string& from, int& index) {
-        if (index >= from.size()) { return nullptr; }
-        if (from[index] == static_cast<char>(0xFF)) {
-            ++index;
-            return nullptr;
-        }
-
-        int a = from[index++];
-        int b = static_cast<unsigned char>(from[index++]);
-        TreeNode* root = new TreeNode((a << 8) + b);
-
-        root->left = deserialize(from, index);
-        root->right = deserialize(from, index);
-
-        return root;
-    }
+    list<Node*> m_nodesToCheck;
 };
 
 int main()
