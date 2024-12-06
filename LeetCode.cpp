@@ -5,23 +5,51 @@
 
 using namespace std;
 
+//Definition for singly-linked list.
+struct ListNode {
+    int val;
+    ListNode *next;
+    ListNode() : val(0), next(nullptr) {}
+    ListNode(int x) : val(x), next(nullptr) {}
+    ListNode(int x, ListNode *next) : val(x), next(next) {}
+};
+
 class Solution {
 public:
-    int findTargetSumWays(vector<int>& nums, int target) {
-        sort(nums.begin(), nums.end());
-        int totalSum = accumulate(nums.begin(), nums.end(), 0);
+    void reorderList(ListNode* head) {
+        auto slow = head;
+        auto fast = head;
 
-        return checkNum(nums, 0, totalSum - target);
-    }
-private:
-    int checkNum(vector<int>& nums, int index, int target) {
-        if (target < 0) { return 0; }
-        if (index == nums.size()) { return target == 0; }
+        while (fast != nullptr && fast->next != nullptr) {
+            fast = fast->next->next;
+            slow = slow->next;
+        }
 
-        return checkNum(nums, index + 1, target) +
-            checkNum(nums, index + 1, target - (2 * nums[index]));
+        ListNode* prev = nullptr;
+        while (slow != nullptr) {
+            auto next = slow->next;
+            slow->next = prev;
+            prev = slow;
+            slow = next;
+        }
+
+        auto left = head;
+        auto right = prev;
+        auto last = left;
+
+        while (left != right) {
+            if (last == left) {
+                left = left->next;
+                last->next = right;
+                last = right;
+            } else {
+                right = right->next;
+                last->next = left;
+                last = left;
+            }
+        }
     }
-};  
+};
 
 int main()
  {
