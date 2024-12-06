@@ -5,49 +5,24 @@
 
 using namespace std;
 
-//Definition for singly-linked list.
-struct ListNode {
+//Definition for a binary tree node.
+struct TreeNode {
     int val;
-    ListNode *next;
-    ListNode() : val(0), next(nullptr) {}
-    ListNode(int x) : val(x), next(nullptr) {}
-    ListNode(int x, ListNode *next) : val(x), next(next) {}
+    TreeNode *left;
+    TreeNode *right;
+    TreeNode(int x) : val(x), left(NULL), right(NULL) {}
 };
+
 
 class Solution {
 public:
-    void reorderList(ListNode* head) {
-        auto slow = head;
-        auto fast = head;
+    TreeNode* lowestCommonAncestor(TreeNode* root, TreeNode* p, TreeNode* q) {
+        if (p == root || q == root) { return root; }
 
-        while (fast != nullptr && fast->next != nullptr) {
-            fast = fast->next->next;
-            slow = slow->next;
-        }
+        if (root->val > p->val && root->val > q->val) { return lowestCommonAncestor(root->left, p, q); }
+        if (root->val < p->val && root->val < q->val) { return lowestCommonAncestor(root->right, p, q); }
 
-        ListNode* prev = nullptr;
-        while (slow != nullptr) {
-            auto next = slow->next;
-            slow->next = prev;
-            prev = slow;
-            slow = next;
-        }
-
-        auto left = head;
-        auto right = prev;
-        auto last = left;
-
-        while (left != right) {
-            if (last == left) {
-                left = left->next;
-                last->next = right;
-                last = right;
-            } else {
-                right = right->next;
-                last->next = left;
-                last = left;
-            }
-        }
+        return root;
     }
 };
 
