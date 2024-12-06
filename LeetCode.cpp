@@ -5,62 +5,57 @@
 
 using namespace std;
 
-class StreamChecker {
-    struct Node {
-        bool w = false;
-        Node* nodes[26]{};
-    };
+class Solution {
 public:
-    StreamChecker(vector<string>& words) {
-        for (auto& word : words) { addWord(word); }
-    }
+    int minAbsDifference(vector<int>& nums, int goal) {
+        if (nums.size() == 1) { return min(abs(goal), abs(goal - nums.front())); }
 
-    bool query(char letter) {
-        m_nodesToCheck.push_back(&m_root);
+        int mid = nums.size() / 2;
+        vector<int> halfNums(nums.begin(), nums.begin() + mid);
+        sort(halfNums.begin(), halfNums.end());
 
-        auto iter = m_nodesToCheck.begin();
-        int idx = letter - 'a';
-        bool ans = false;
+        vector<int> sums;
+        generateSubsetsSums(halfNums, 0, 0, sums);
 
-        while (iter != m_nodesToCheck.end()) {
-            auto& node = *iter;
-            node = node->nodes[idx];
+        sort(sums.begin(), sums.end());
+        sums.erase(unique(sums.begin(), sums.end()), sums.end());
 
-            if (!node) {
-                iter = m_nodesToCheck.erase(iter);
-            } else {
-                ans = ans || node->w;
-                ++iter;
+        halfNums.assign(nums.begin() + mid, nums.end());
+        sort(halfNums.begin(), halfNums.end());
+        vector<int> rightSums;
+        generateSubsetsSums(halfNums, 0, 0, rightSums);
+
+        int ans = numeric_limits<int>::max();
+
+        for (int sum : rightSums) {
+            auto iter = lower_bound(sums.begin(), sums.end(), goal - sum);
+
+            if (iter != sums.end()) {
+                ans = min(ans, abs(goal - sum - *iter));
+            }
+
+            if (iter != sums.begin()) {
+                ans = min(ans, abs(goal - sum - *prev(iter)));
             }
         }
 
         return ans;
     }
-
 private:
-    Node m_root;
+    void generateSubsetsSums(const vector<int>& nums, int index, int sum, vector<int>& sums) {
+        if (index == nums.size()) { return sums.push_back(sum); return; }
 
-    void addWord(const string& word) {
-        Node* node = &m_root;
+        generateSubsetsSums(nums, index + 1, sum + nums[index], sums);
 
-        for (char c : word) {
-            int idx = c - 'a';
+        while (index < nums.size() - 1 && nums[index] == nums[index + 1]) { ++index; }
 
-            if (node->nodes[idx] == nullptr) {
-                node->nodes[idx] = new Node();
-            }
-
-            node = node->nodes[idx];
-        }
-
-        node->w = true;
+        generateSubsetsSums(nums, index + 1, sum, sums);
     }
-
-    list<Node*> m_nodesToCheck;
 };
 
+
 int main()
- {
+{
     INIT_TIME(timer);
 
     PRINT_ELAPSED(timer);
