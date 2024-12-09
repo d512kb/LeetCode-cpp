@@ -6,67 +6,72 @@
 using namespace std;
 
 class Solution {
+    struct Compare {
+        bool operator()(const auto& p1, const auto& p2) const {
+            return p1.second > p2.second;
+        }
+    };
 public:
-    int minimumDifference(vector<int>& nums) {
-        int midSize = nums.size() / 2;
-        vector<vector<int>> leftSums(midSize + 1), rightSums(midSize + 1);
+    vector<vector<string>> findLadders(string beginWord, string endWord, vector<string>& wordList) {
+        int wordSize = beginWord.size();
+        unordered_map<string, pair<int, vector<string>>> distances;
 
-        vector<int> halfNums(nums.begin(), nums.begin() + midSize);
-        sort(halfNums.begin(), halfNums.end());
-        generateSubsetsSums(halfNums, 0, 0, 0, leftSums);
-        halfNums.assign(nums.begin() + midSize, nums.end());
-        sort(halfNums.begin(), halfNums.end());
-        generateSubsetsSums(halfNums, 0, 0, 0, rightSums);
+        for (auto& word : wordList) { distances.emplace(word, make_pair(numeric_limits<int>::max(), vector<string>())); }
+        distances[beginWord].first = 0;
 
-        for (auto& sums : rightSums) { sort(sums.begin(), sums.end()); }
+        priority_queue<pair<string, int>, vector<pair<string, int>>, Compare> pq;
+        pq.emplace(beginWord, 0);
 
-        int totalSum = accumulate(nums.begin(), nums.end(), 0);
-        int targetSum = totalSum / 2.;
-        int ans = numeric_limits<int>::max();
+        while (!pq.empty()) {
+            auto currentNode = pq.top();
+            auto word = currentNode.first;
+            pq.pop();
 
-        for (int i = 0; i <= midSize; ++i) {
-            const auto& otherSums = rightSums[midSize - i];
+            for (int i = 0; i < wordSize; ++i) {
+                char prevC = word[i];
 
-            for (int sum : leftSums[i]) {
-                int neededSum = targetSum - sum;
-                int left = 0; int right = otherSums.size() - 1;
-                int otherSum = otherSums[left];
+                for (int c = 'a'; c <= 'z'; ++c) {
+                    word[i] = c;
+                    auto iter = distances.find(word);
 
-                while (left < right) {
-                    int mid = (left + right) / 2;
-                    int midSum = otherSums[mid];
+                    if (iter != distances.end()) {
+                        int newCost = currentNode.second + 1;
 
-                    if (midSum < neededSum) {
-                        left = mid + 1;
-                    } else if (midSum > neededSum) {
-                        right = mid - 1;
-                    } else {
-                        left = right = mid;
+                        if (newCost < iter->second.first) {
+                            iter->second = make_pair(newCost, vector<string>(1, currentNode.first));
+                            pq.emplace(word, newCost);
+                        } else if (newCost == iter->second.first) {
+                            iter->second.second.push_back(currentNode.first);
+                        }
                     }
                 }
 
-                ans = min(ans, abs(totalSum - 2 * (sum + otherSums[left])));
-
-                if (left > 0) { // if we have 2 potential sums we have to check which gives us lesser difference
-                    // between PotentialSum and its complement (TotalSum - PotentialSum). The diffence
-                    // is abs(TotalSum-PotentialSum - PotentialSum) which is abs(TotalSum - 2*PotentialSum)
-                    ans = min(ans, abs(totalSum - 2 * (sum + otherSums[left - 1])));
-                }
+                word[i] = prevC;
             }
         }
 
-        return ans;
+        vector<vector<string>> result;
+
+        if (!distances[endWord].second.empty()) {
+            vector<string> path(1, endWord);
+            buildPaths(distances, endWord, path, result);
+
+            for (auto& path : result) {
+                reverse(path.begin(), path.end());
+            }
+        }
+
+        return result;
     }
-
 private:
-    void generateSubsetsSums(vector<int>& nums, int index, int usedItems, int sum, vector<vector<int>>& sums) {
-        if (index == nums.size()) { sums[usedItems].push_back(sum); return; }
+    void buildPaths(unordered_map<string, pair<int, vector<string>>>& distances, string word, vector<string>& path, vector<vector<string>>& result) {
+        if (distances[word].second.empty()) { result.push_back(path); return; }
 
-        generateSubsetsSums(nums, index + 1, usedItems + 1, sum + nums[index], sums);
-
-        while (index < nums.size() - 1 && nums[index] == nums[index + 1]) { ++index; }
-
-        generateSubsetsSums(nums, index + 1, usedItems, sum, sums);
+        for (auto& fromWord : distances[word].second) {
+            path.push_back(fromWord);
+            buildPaths(distances, fromWord, path, result);
+            path.pop_back();
+        }
     }
 };
 
