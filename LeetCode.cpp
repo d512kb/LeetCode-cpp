@@ -6,30 +6,57 @@
 using namespace std;
 
 class Solution {
+    struct Node {
+        bool word = false;
+        Node* nodes[26]{};
+    } m_root;
 public:
-    int minCost(int n, vector<int>& cuts) {
-        cuts.push_back(0);
-        cuts.push_back(n);
-        sort(cuts.begin(), cuts.end());
-        vector<vector<int>> cache(cuts.size(), vector<int>(cuts.size(), -1));
+    vector<string> wordBreak(string s, vector<string>& wordDict) {
+        for (auto& word : wordDict) { addWord(word); }
 
-        auto cutStick = [&](auto&& self, int i, int j) -> int {
-            if (i + 1 == j) { return 0; }
+        vector<string> result;
+        string str;
 
-            int& cachedValue = cache[i][j];
-            if (cachedValue != -1) { return cachedValue; }
-
-            int minCut = numeric_limits<int>::max();
-            int cutCost = cuts[j] - cuts[i];
-
-            for (int k = i + 1; k < j; ++k) {
-                minCut = min(minCut, self(self, i, k) + self(self, k, j) + cutCost);
+        auto parseString = [&](auto&& self, int index, Node* node) -> void {
+            if (index == s.size()) {
+                if (node->word) { result.push_back(str); }
+                return;
             }
 
-            return cachedValue = minCut;
+            node = node->nodes[s[index] - 'a'];
+            if (!node) { return; }
+
+            str.push_back(s[index]);
+
+            if (node->word) {
+                str.push_back(' ');
+                self(self, index + 1, &m_root);
+                str.pop_back();
+            }
+
+            self(self, index + 1, node);
+            str.pop_back();
         };
 
-        return cutStick(cutStick, 0, cuts.size() - 1);
+        parseString(parseString, 0, &m_root);
+
+        return result;
+    }
+private:
+    void addWord(const string& word) {
+        Node* node = &m_root;
+
+        for (char c : word) {
+            int idx = c - 'a';
+
+            if (!node->nodes[idx]) {
+                node->nodes[idx] = new Node();
+            }
+
+            node = node->nodes[idx];
+        }
+
+        node->word = true;
     }
 };
 
