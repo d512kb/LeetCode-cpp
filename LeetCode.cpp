@@ -6,48 +6,38 @@
 using namespace std;
 
 class Solution {
-    vector<string> teens{ "", "One", "Two", "Three", "Four", "Five", "Six", "Seven", "Eight", "Nine", "Ten",
-                        "Eleven", "Twelve", "Thirteen", "Fourteen", "Fifteen", "Sixteen", "Seventeen", "Eighteen", "Nineteen" };
-
-    vector<string> decimals{ "", "Ten", "Twenty", "Thirty", "Forty", "Fifty", "Sixty", "Seventy", "Eighty", "Ninety" };
-
 public:
-    string numberToWords(int num) {
-        if (num == 0) { return "Zero"; }
+    int longestPath(vector<int>& parent, string s) {
+        vector<vector<int>> graph(s.size());
 
-        int h = (num / 100) % 10;
-        int t = ((num / 10) % 10) * 10 + (num % 10);
-        num /= 1000;
-        int hK = (num / 100) % 10;
-        int tK = ((num / 10) % 10) * 10 + (num % 10);
-        num /= 1000;
-        int hM = (num / 100) % 10;
-        int tM = ((num / 10) % 10) * 10 + (num % 10);
-        num /= 1000;
-        int tB = num % 10;
+        for (int i = 1; i < parent.size(); ++i) { graph[parent[i]].push_back(i); }
+        int ans = 0;
 
-        string result;
+        auto calcMaxPath = [&](auto&& self, int node) -> int {
+            int longer = 0;
+            int longest = 0;
 
-        if (tB) { result += teens[tB] + " Billion "; }
-        if (hM) { result += teens[hM] + " Hundred "; }
-        if (tM) { result += convertDecimal(tM) + " "; }
-        if (hM + tM) { result += "Million "; }
-        if (hK) { result += teens[hK] + " Hundred "; }
-        if (tK) { result += convertDecimal(tK) + " "; }
-        if (hK + tK) { result += "Thousand "; }
-        if (h) { result += teens[h] + " Hundred "; }
-        if (t) { result += convertDecimal(t); }
+            for (int child : graph[node]) {
+                int length = self(self, child);
 
-        if (result.back() == ' ') { result.pop_back(); }
+                if (s[node] != s[child]) {
+                    if (length > longest) {
+                        longer = longest;
+                        longest = length;
+                    } else if (length > longer) {
+                        longer = length;
+                    }
+                }
+            }
 
-        return result;
-    }
-private:
-    string convertDecimal(int num) {
-        if (num < 20) { return teens[num]; }
-        if (num % 10) { return decimals[num / 10] + " " + teens[num % 10]; }
+            ans = max(ans, longer + longest + 1);
 
-        return decimals[num / 10];
+            return 1 + longest;
+        };
+
+        calcMaxPath(calcMaxPath, 0);
+
+        return ans;
     }
 };
 
