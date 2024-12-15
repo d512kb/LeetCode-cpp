@@ -7,54 +7,36 @@ using namespace std;
 
 class Solution {
 public:
-    int largestIsland(vector<vector<int>>& grid) {
-        int sz = grid.size();
-        vector<vector<int>> islands(sz, vector<int>(sz));
-        vector<int> islandsSizes{ 0 };
-        char dirs[]{ 1, 0, -1, 0, 1 };
+    int minMovesToMakePalindrome(string s) {
+        return calcMinMoves(s, 0, s.size() - 1);
+    }
+private:
+    int calcMinMoves(string& s, int a, int b) {
+        if (a >= b) { return 0; }
+        if (s[a] == s[b]) { return calcMinMoves(s, a + 1, b - 1); }
 
-        auto discoverIsland = [&](auto&& self, int row, int col, int islandNumber) -> int {
-            if (row < 0 || row == sz || col < 0 || col == sz || !grid[row][col] || islands[row][col]) { return 0; }
-
-            islands[row][col] = islandNumber;
-            return 1 + self(self, row - 1, col, islandNumber) +
-                self(self, row, col + 1, islandNumber) +
-                self(self, row + 1, col, islandNumber) +
-                self(self, row, col - 1, islandNumber);
-        };
-
-        for (int row = 0; row < sz; ++row) {
-            for (int col = 0; col < sz; ++col) {
-                if (grid[row][col] && !islands[row][col]) {
-                    int islandNumber = islandsSizes.size();
-                    islandsSizes.push_back(discoverIsland(discoverIsland, row, col, islandNumber));
-                }
+        int leftCh = a, rightCh = b;
+        for (int i = b; i > a; --i) {
+            if (s[i] == s[a]) {
+                leftCh = i;
+                break;
             }
         }
 
-        int ans = 0;
-
-        for (int row = 0; row < sz; ++row) {
-            for (int col = 0; col < sz; ++col) {
-                if (islands[row][col] == 0) {
-                    map<int, int> islandsNear;
-
-                    for (int i = 0; i < 4; ++i) {
-                        int newRow = row + dirs[i];
-                        int newCol = col + dirs[i + 1];
-
-                        if (newRow >= 0 && newRow < sz && newCol >= 0 && newCol < sz) {
-                            int islandNumber = islands[newRow][newCol];
-                            islandsNear.emplace(islandNumber, islandsSizes[islandNumber]);
-                        }
-                    }
-
-                    ans = max(ans, accumulate(islandsNear.begin(), islandsNear.end(), 1, [](int a, const auto& p) { return a + p.second; }));
-                }
+        for (int i = a; i < b; ++i) {
+            if (s[i] == s[b]) {
+                rightCh = i;
+                break;
             }
         }
 
-        return max(ans, *max_element(islandsSizes.begin(), islandsSizes.end()));
+        if (b - leftCh < rightCh - a) { // it's cheaper to mirror the leftmost char
+            for (int i = leftCh; i < b; ++i) { swap(s[i], s[i + 1]); }
+            return b - leftCh + calcMinMoves(s, a + 1, b - 1);
+        } else {
+            for (int i = rightCh; i > a; --i) { swap(s[i], s[i - 1]); }
+            return rightCh - a + calcMinMoves(s, a + 1, b - 1);
+        }
     }
 };
 
