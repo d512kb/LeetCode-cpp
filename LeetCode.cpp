@@ -7,21 +7,30 @@ using namespace std;
 
 class Solution {
 public:
-    int findMaxLength(vector<int>& nums) {
-        int sz = nums.size();
-        vector<int> counts(2 * sz + 1, sz);
-        counts[sz] = 0;
-        int counter = 0;
-        int ans = 0;
+    int nextGreaterElement(int n) {
+        vector<char> digits;
 
-        for (int i = 0; i < nums.size(); ++i) {
-            if (nums[i] == 1) { ++counter; } else { --counter; }
-
-            counts[counter + sz] = min(counts[counter + sz], i + 1);
-            ans = max(ans, i - counts[sz + counter] + 1);
+        while (n) {
+            digits.push_back(n % 10);
+            n /= 10;
         }
 
-        return ans;
+        auto iter = is_sorted_until(digits.begin(), digits.end());
+        if (iter == digits.end()) { return -1; }
+
+        iter_swap(iter, upper_bound(digits.begin(), iter, *iter));
+        reverse(digits.begin(), iter);
+
+        constexpr int maxMult = numeric_limits<int>::max() / 10;
+        int test = 0;
+        for (int k = digits.size() - 1; k >= 0; --k) {
+            if (test > maxMult) { return -1; }
+            test *= 10;
+            if (test > numeric_limits<int>::max() - digits[k]) { return -1; }
+            test += digits[k];
+        }
+
+        return test;
     }
 };
 
