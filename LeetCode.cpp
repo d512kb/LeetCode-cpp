@@ -7,26 +7,26 @@ using namespace std;
 
 class Solution {
 public:
-    int twoCitySchedCost(vector<vector<int>>& costs) {
-        sort(costs.begin(), costs.end(), [](const auto& c1, const auto& c2) {
-            return abs(c1[0] - c1[1]) > abs(c2[0] - c2[1]);
-        });
+    int maxSumTwoNoOverlap(vector<int>& nums, int firstLen, int secondLen) {
+        vector<int> prefixSums(nums.size() + 1);
 
-        int aCount = costs.size() / 2;
-        int bCount = aCount;
-        int ans = 0;
+        for (int i = 1; i < prefixSums.size(); ++i) { prefixSums[i] = nums[i - 1] + prefixSums[i - 1]; }
 
-        for (auto& cost : costs) {
-            if (cost[0] < cost[1] && aCount > 0 || bCount == 0) {
-                ans += cost[0];
-                --aCount;
-            } else {
-                ans += cost[1];
-                --bCount;
+        auto calcMax = [&](int len1, int len2) {
+            int maxSum = 0;
+
+            for (int i = len1; i < prefixSums.size() - len2; ++i) {
+                int sum1 = prefixSums[i] - prefixSums[i - len1];
+
+                for (int j = i + len2; j < prefixSums.size(); ++j) {
+                    maxSum = max(maxSum, sum1 + prefixSums[j] - prefixSums[j - len2]);
+                }
             }
-        }
 
-        return ans;
+            return maxSum;
+        };
+
+        return max(calcMax(firstLen, secondLen), calcMax(secondLen, firstLen));
     }
 };
 
