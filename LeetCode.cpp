@@ -7,29 +7,31 @@ using namespace std;
 
 class Solution {
 public:
-    vector<string> getFolderNames(vector<string>& names) {
-        map<string, int> assignedCounts;
-        vector<string> result;
-        result.reserve(names.size());
+    int compareVersion(string version1, string version2) {
+        string::size_type a = 0;
+        string::size_type b = 0;
 
-        for (auto& name : names) {
-            auto ins = assignedCounts.emplace(name, 1);
+        while (a != version1.size() || b != version2.size()) {
+            int aEnd = version1.find('.', a);
+            int bEnd = version2.find('.', b);
 
-            if (ins.second) {
-                result.push_back(name);
-            } else {
-                int counter = ins.first->second;
+            if (aEnd == string::npos) { aEnd = version1.size(); }
+            if (bEnd == string::npos) { bEnd = version2.size(); }
 
-                while (!assignedCounts.emplace(std::format("{0}({1})", name, counter), 1).second) {
-                    ++counter;
-                }
+            int aVer(0), bVer(0);
+            from_chars(&version1[a], &version1[aEnd], aVer);
+            from_chars(&version2[b], &version2[bEnd], bVer);
 
-                result.push_back(std::format("{0}({1})", name, counter));
-                assignedCounts[name] = ++counter;
-            }
+            if (aVer < bVer) { return -1; }
+            if (aVer > bVer) { return 1; }
+
+            a = aEnd;
+            b = bEnd;
+            if (a < version1.size()) { ++a; }
+            if (b < version2.size()) { ++b; }
         }
 
-        return result;
+        return 0;
     }
 };
 
