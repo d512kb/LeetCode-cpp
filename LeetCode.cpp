@@ -7,30 +7,26 @@ using namespace std;
 
 class Solution {
 public:
-    int nextGreaterElement(int n) {
-        vector<char> digits;
+    int twoCitySchedCost(vector<vector<int>>& costs) {
+        sort(costs.begin(), costs.end(), [](const auto& c1, const auto& c2) {
+            return abs(c1[0] - c1[1]) > abs(c2[0] - c2[1]);
+        });
 
-        while (n) {
-            digits.push_back(n % 10);
-            n /= 10;
+        int aCount = costs.size() / 2;
+        int bCount = aCount;
+        int ans = 0;
+
+        for (auto& cost : costs) {
+            if (cost[0] < cost[1] && aCount > 0 || bCount == 0) {
+                ans += cost[0];
+                --aCount;
+            } else {
+                ans += cost[1];
+                --bCount;
+            }
         }
 
-        auto iter = is_sorted_until(digits.begin(), digits.end());
-        if (iter == digits.end()) { return -1; }
-
-        iter_swap(iter, upper_bound(digits.begin(), iter, *iter));
-        reverse(digits.begin(), iter);
-
-        constexpr int maxMult = numeric_limits<int>::max() / 10;
-        int test = 0;
-        for (int k = digits.size() - 1; k >= 0; --k) {
-            if (test > maxMult) { return -1; }
-            test *= 10;
-            if (test > numeric_limits<int>::max() - digits[k]) { return -1; }
-            test += digits[k];
-        }
-
-        return test;
+        return ans;
     }
 };
 
