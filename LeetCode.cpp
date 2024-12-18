@@ -7,12 +7,23 @@ using namespace std;
 
 class Solution {
 public:
-    int minOperations(int n) {
-        // if n is odd, the diffs are 2 + 4 + 6 + ...
-        // if n is even, the diffs are 1 + 3 + 5 + ...
-        // after all the simplifications we can get the following formula
+    int minCost(string colors, vector<int>& neededTime) {
+        int time = neededTime[0];
+        int maxTime = time;
+        int ans = 0;
 
-        return (n / 2) * (n / 2 + n % 2);
+        for (int i = 1; i < colors.size(); ++i) {
+            if (colors[i] == colors[i - 1]) {
+                time += neededTime[i];
+                maxTime = max(maxTime, neededTime[i]);
+            } else {
+                ans += time - maxTime;
+                time = neededTime[i];
+                maxTime = time;
+            }
+        }
+
+        return ans + time - maxTime;
     }
 };
 
