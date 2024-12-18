@@ -18,7 +18,13 @@
 #include <unordered_set>
 #include <vector>
 
-// TODO: Reference additional headers your program requires here.
+//Definition for a binary tree node.
+struct TreeNode {
+    int val;
+    TreeNode* left;
+    TreeNode* right;
+    TreeNode(int x) : val(x), left(NULL), right(NULL) {}
+};
 
 #define INIT_TIME(timerName) \
     auto timerName = std::chrono::steady_clock::now();
