@@ -7,16 +7,12 @@ using namespace std;
 
 class Solution {
 public:
-    vector<int> missingRolls(vector<int>& rolls, int mean, int n) {
-        int rollsSum = accumulate(rolls.begin(), rolls.end(), 0);
-        int targetSum = (rolls.size() + n) * mean - rollsSum;
+    int minOperations(int n) {
+        // if n is odd, the diffs are 2 + 4 + 6 + ...
+        // if n is even, the diffs are 1 + 3 + 5 + ...
+        // after all the simplifications we can get the following formula
 
-        if (targetSum < n || targetSum > 6 * n) { return {}; }
-
-        vector<int> result(n, targetSum / n);
-        fill_n(result.begin(), targetSum % n, 1 + (targetSum / n));
-
-        return result;
+        return (n / 2) * (n / 2 + n % 2);
     }
 };
 
