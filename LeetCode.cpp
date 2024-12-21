@@ -6,54 +6,40 @@
 using namespace std;
 
 class Solution {
-    function<bool(int, int)> m_lessPred = less<int>();
-    function<bool(int, int)> m_greaterPred = greater<int>();
 public:
-    void recoverTree(TreeNode* root) {
-        if (!root) { return; }
+    string fractionToDecimal(int num, int denom) {
+        if (num == 0) { return "0"; }
 
-        auto leftWrongChild = findWrongChild(root, root->val, root->left, m_lessPred);
-        auto rightWrongChild = findWrongChild(root, root->val, root->right, m_greaterPred);
+        int64_t numerator = num;
+        int64_t denominator = denom;
 
-        if (leftWrongChild && rightWrongChild) {
-            swap(leftWrongChild->val, rightWrongChild->val);
-            return;
+        string result;
+        if (numerator < 0 ^ denominator < 0) { result.push_back('-'); }
+
+        numerator = abs(numerator);
+        denominator = abs(denominator);
+        result.append(to_string(numerator / denominator));
+
+        int64_t rem = numerator % denominator;
+        if (rem == 0) { return result; }
+
+        result.push_back('.');
+        unordered_map<int64_t, int> positions;
+        rem *= 10;
+
+        while (rem != 0 && !positions.contains(rem)) {
+            positions[rem] = result.size();
+            result.append(to_string(rem / denominator));
+            rem %= denominator;
+            rem *= 10;
         }
 
-        if (leftWrongChild) {
-            swap(root->val, leftWrongChild->val);
-            return;
+        if (rem != 0) {
+            result.insert(positions[rem], 1, '(');
+            result.push_back(')');
         }
 
-        if (rightWrongChild) {
-            swap(root->val, rightWrongChild->val);
-            return;
-        }
-
-        recoverTree(root->left);
-        recoverTree(root->right);
-    }
-
-private:
-    template<typename Pr>
-    TreeNode* findWrongChild(TreeNode* root, int bestVal, TreeNode* node, const Pr& pred) {
-        if (!node) { return nullptr; }
-        TreeNode* result = nullptr;
-
-        if (!pred(node->val, bestVal)) {
-            bestVal = node->val;
-            result = node;
-        }
-
-        auto child = findWrongChild(root, bestVal, node->left, pred);
-        if (child) {
-            bestVal = child->val;
-            result = child;
-        }
-
-        child = findWrongChild(root, bestVal, node->right, pred);
-
-        return child ? child : result;
+        return result;
     }
 };
 
