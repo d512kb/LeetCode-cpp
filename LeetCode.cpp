@@ -7,16 +7,19 @@ using namespace std;
 
 class Solution {
 public:
-    int minimumDeletions(string s) {
-        int bCounter = 0;
-        int ans = 0;
+    int minDeletions(string s) {
+        vector<int> freq(26);
 
-        for (char c : s) {
-            if (c == 'b') {
-                ++bCounter;
-            } else if (bCounter > 0) {
-                ++ans;
-                --bCounter;
+        for (char c : s) { ++freq[c - 'a']; }
+        sort(begin(freq), end(freq), greater<>());
+
+        int ans = 0;
+        for (int i = 1; i < 26; ++i) {
+            if (freq[i] >= freq[i - 1]) {
+                int newFreq = max(0, freq[i - 1] - 1);
+
+                ans += freq[i] - newFreq;
+                freq[i] = newFreq;
             }
         }
 
