@@ -7,36 +7,28 @@ using namespace std;
 
 class Solution {
 public:
-    string fractionToDecimal(int num, int denom) {
-        if (num == 0) { return "0"; }
+    vector<string> findAllRecipes(vector<string>& recipes, vector<vector<string>>& ingredients, vector<string>& supplies) {
+        unordered_map<string, vector<int>> dependents;
+        vector<int> depsCount;
 
-        int64_t numerator = num;
-        int64_t denominator = denom;
-
-        string result;
-        if (numerator < 0 ^ denominator < 0) { result.push_back('-'); }
-
-        numerator = abs(numerator);
-        denominator = abs(denominator);
-        result.append(to_string(numerator / denominator));
-
-        int64_t rem = numerator % denominator;
-        if (rem == 0) { return result; }
-
-        result.push_back('.');
-        unordered_map<int64_t, int> positions;
-        rem *= 10;
-
-        while (rem != 0 && !positions.contains(rem)) {
-            positions[rem] = result.size();
-            result.append(to_string(rem / denominator));
-            rem %= denominator;
-            rem *= 10;
+        for (int i = 0; i < recipes.size(); ++i) {
+            for (auto& ingred : ingredients[i]) { dependents[ingred].push_back(i); }
+            depsCount.push_back(ingredients[i].size());
         }
 
-        if (rem != 0) {
-            result.insert(positions[rem], 1, '(');
-            result.push_back(')');
+        queue<string> q(supplies.begin(), supplies.end());
+        vector<string> result;
+
+        while (!q.empty()) {
+            string ingredientAvailable(std::move(q.front()));
+            q.pop();
+
+            for (int dep : dependents[ingredientAvailable]) {
+                if (--depsCount[dep] == 0) {
+                    q.push(recipes[dep]);
+                    result.push_back(recipes[dep]);
+                }
+            }
         }
 
         return result;
