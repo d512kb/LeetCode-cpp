@@ -7,29 +7,29 @@ using namespace std;
 
 class Solution {
 public:
-    vector<string> findAllRecipes(vector<string>& recipes, vector<vector<string>>& ingredients, vector<string>& supplies) {
-        unordered_map<string, vector<int>> dependents;
-        vector<int> depsCount;
+    vector<string> topKFrequent(vector<string>& words, int k) {
+        unordered_map<string, int> wordFreqs{ {"", 0} };
+        for (const string& word : words) { ++wordFreqs[word]; }
 
-        for (int i = 0; i < recipes.size(); ++i) {
-            for (auto& ingred : ingredients[i]) { dependents[ingred].push_back(i); }
-            depsCount.push_back(ingredients[i].size());
+        using WordPair = pair<string, int>;
+        auto cmp = [](const WordPair& p1, const WordPair& p2) {
+            if (p1.second == p2.second) { return p1.first < p2.first; }
+            return p1.second > p2.second;
+        };
+
+        priority_queue<WordPair, vector<WordPair>, decltype(cmp)> pq;
+
+        for (auto& freq : wordFreqs) {
+            pq.push(freq);
+            if (pq.size() > k) { pq.pop(); }
         }
 
-        queue<string> q(supplies.begin(), supplies.end());
         vector<string> result;
-
-        while (!q.empty()) {
-            string ingredientAvailable(std::move(q.front()));
-            q.pop();
-
-            for (int dep : dependents[ingredientAvailable]) {
-                if (--depsCount[dep] == 0) {
-                    q.push(recipes[dep]);
-                    result.push_back(recipes[dep]);
-                }
-            }
+        while (!pq.empty()) {
+            result.push_back(pq.top().first);
+            pq.pop();
         }
+        reverse(result.begin(), result.end());
 
         return result;
     }
