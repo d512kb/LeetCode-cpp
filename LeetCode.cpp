@@ -7,18 +7,20 @@ using namespace std;
 
 class Solution {
 public:
-    int minSwaps(vector<int>& nums) {
-        int windowSize = accumulate(nums.begin(), nums.end(), 0);
-        int ones = accumulate(nums.begin(), nums.begin() + windowSize, 0);
-        int sz = nums.size();
-        int maxOnes = ones;
+    int minimumDeletions(string s) {
+        int bCounter = 0;
+        int ans = 0;
 
-        for (int a = 0, b = windowSize; b < sz + windowSize - 1; ++a, ++b) {
-            ones += nums[b % sz] - nums[a];
-            maxOnes = max(maxOnes, ones);
+        for (char c : s) {
+            if (c == 'b') {
+                ++bCounter;
+            } else if (bCounter > 0) {
+                ++ans;
+                --bCounter;
+            }
         }
 
-        return windowSize - maxOnes;
+        return ans;
     }
 };
 
