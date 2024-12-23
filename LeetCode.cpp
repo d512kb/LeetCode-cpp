@@ -7,31 +7,18 @@ using namespace std;
 
 class Solution {
 public:
-    vector<string> topKFrequent(vector<string>& words, int k) {
-        unordered_map<string, int> wordFreqs{ {"", 0} };
-        for (const string& word : words) { ++wordFreqs[word]; }
+    int minSwaps(vector<int>& nums) {
+        int windowSize = accumulate(nums.begin(), nums.end(), 0);
+        int ones = accumulate(nums.begin(), nums.begin() + windowSize, 0);
+        int sz = nums.size();
+        int maxOnes = ones;
 
-        using WordPair = pair<string, int>;
-        auto cmp = [](const WordPair& p1, const WordPair& p2) {
-            if (p1.second == p2.second) { return p1.first < p2.first; }
-            return p1.second > p2.second;
-        };
-
-        priority_queue<WordPair, vector<WordPair>, decltype(cmp)> pq;
-
-        for (auto& freq : wordFreqs) {
-            pq.push(freq);
-            if (pq.size() > k) { pq.pop(); }
+        for (int a = 0, b = windowSize; b < sz + windowSize - 1; ++a, ++b) {
+            ones += nums[b % sz] - nums[a];
+            maxOnes = max(maxOnes, ones);
         }
 
-        vector<string> result;
-        while (!pq.empty()) {
-            result.push_back(pq.top().first);
-            pq.pop();
-        }
-        reverse(result.begin(), result.end());
-
-        return result;
+        return windowSize - maxOnes;
     }
 };
 
