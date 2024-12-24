@@ -7,23 +7,32 @@ using namespace std;
 
 class Solution {
 public:
-    int minDeletions(string s) {
-        vector<int> freq(26);
+    string longestDiverseString(int a, int b, int c) {
+        using CharCount = pair<int, char>;
+        vector<CharCount> chars{ {a, 'a'}, {b, 'b'}, {c, 'c'} };
 
-        for (char c : s) { ++freq[c - 'a']; }
-        sort(begin(freq), end(freq), greater<>());
+        string s("  ");
 
-        int ans = 0;
-        for (int i = 1; i < 26; ++i) {
-            if (freq[i] >= freq[i - 1]) {
-                int newFreq = max(0, freq[i - 1] - 1);
+        while (true) {
+            sort(chars.begin(), chars.end());
+            int sz = s.size();
 
-                ans += freq[i] - newFreq;
-                freq[i] = newFreq;
+            for (int i = 2; i >= 0; --i) {
+                auto& [cnt, c] = chars[i];
+
+                if (cnt > 0 && (s[sz - 1] != c || s[sz - 2] != c)) {
+                    --cnt;
+                    s.push_back(c);
+                    break;
+                }
+            }
+
+            if (sz == s.size()) {
+                break;
             }
         }
 
-        return ans;
+        return s.erase(0, 2);
     }
 };
 
