@@ -7,31 +7,32 @@ using namespace std;
 
 class Solution {
 public:
-    int maxLength(vector<string>& arr) {
-        vector<bitset<26>> letters;
-        for (auto& str : arr) {
-            bitset<26> chars;
+    int minOperations(vector<int>& nums1, vector<int>& nums2) {
+        int diff = accumulate(nums2.begin(), nums2.end(), 0) - accumulate(nums1.begin(), nums1.end(), 0);
 
-            for (char c : str) { chars.set(c - 'a'); }
-            if (chars.count() == str.size()) { letters.push_back(std::move(chars)); }
+        if (diff == 0) { return 0; }
+        if (diff < 0) {
+            swap(nums1, nums2);
+            diff = -diff;
         }
 
-        bitset<26> str;
-        return count(letters, 0, str);
-    }
-private:
-    size_t count(const vector<bitset<26>>& letters, int i, bitset<26>& str) {
-        if (i == letters.size()) { return str.count(); }
+        vector<int> count(6);
+        for (int n : nums1) { ++count[6 - n]; }
+        for (int n : nums2) { ++count[n - 1]; }
 
-        size_t result = count(letters, i + 1, str);
+        int result = 0;
 
-        if ((str & letters[i]) == 0) {
-            str |= letters[i];
-            result = max(result, count(letters, i + 1, str));
-            str &= ~letters[i];
+        for (int i = 5; i > 0; --i) {
+            result += count[i];
+            diff -= i * count[i];
+
+            if (diff <= 0) {
+                result -= -diff / i;
+                return result;
+            }
         }
 
-        return result;
+        return -1;
     }
 };
 
