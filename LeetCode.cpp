@@ -7,24 +7,31 @@ using namespace std;
 
 class Solution {
 public:
-    int waysToSplit(vector<int>& nums) {
-        constexpr int modulo = 1e9 + 7;
-        const int sz = nums.size();
-        int ans = 0;
+    int maxLength(vector<string>& arr) {
+        vector<bitset<26>> letters;
+        for (auto& str : arr) {
+            bitset<26> chars;
 
-        for (int i = 1; i < sz; ++i) { nums[i] += nums[i - 1]; }
-
-        int from = 1, to = 1;
-        for (int i = 0; i < sz - 2; ++i) {
-            from = max(from, i + 1);
-            while (from < sz - 1 && nums[from] - nums[i] < nums[i]) { ++from; }
-            to = max(to, from);
-            while (to < sz - 1 && nums[to] - nums[i] <= nums.back() - nums[to]) { ++to; }
-
-            ans = (ans + to - from) % modulo;
+            for (char c : str) { chars.set(c - 'a'); }
+            if (chars.count() == str.size()) { letters.push_back(std::move(chars)); }
         }
 
-        return ans;
+        bitset<26> str;
+        return count(letters, 0, str);
+    }
+private:
+    size_t count(const vector<bitset<26>>& letters, int i, bitset<26>& str) {
+        if (i == letters.size()) { return str.count(); }
+
+        size_t result = count(letters, i + 1, str);
+
+        if ((str & letters[i]) == 0) {
+            str |= letters[i];
+            result = max(result, count(letters, i + 1, str));
+            str &= ~letters[i];
+        }
+
+        return result;
     }
 };
 
