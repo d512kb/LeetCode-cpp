@@ -7,33 +7,25 @@ using namespace std;
 
 class Solution {
 public:
-    vector<vector<int>> permuteUnique(vector<int>& nums) {
-        vector<vector<int>> result;
-        vector<int> vec;
+    bool reorderedPowerOf2(int n) {
+        auto getDigits = [](int n) {
+            vector<char> digits(10);
 
-        unordered_map<int, int> numCounts;
-        for (int n : nums) { ++numCounts[n]; }
-
-        auto perm = [&](auto&& self, vector<int>& vec) -> void {
-            if (vec.size() == nums.size()) {
-                result.push_back(vec);
-                return;
+            while (n > 0) {
+                ++digits[n % 10];
+                n /= 10;
             }
 
-            for (auto& [num, count] : numCounts) {
-                if (count > 0) {
-                    --count;
-                    vec.push_back(num);
-                    self(self, vec);
-                    vec.pop_back();
-                    ++count;
-                }
-            }
+            return digits;
         };
 
-        perm(perm, vec);
+        auto nDigits = getDigits(n);
 
-        return result;
+        for (int i = 0; i < 32; ++i) {
+            if (nDigits == getDigits(1 << i)) { return true; }
+        }
+
+        return false;
     }
 };
 
