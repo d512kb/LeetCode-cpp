@@ -7,9 +7,33 @@ using namespace std;
 
 class Solution {
 public:
-    bool isPowerOfTwo(int n) {
-        if (n < 0) { return false; }
-        return bitset<32>(n).count() == 1;
+    vector<vector<int>> permuteUnique(vector<int>& nums) {
+        vector<vector<int>> result;
+        vector<int> vec;
+
+        unordered_map<int, int> numCounts;
+        for (int n : nums) { ++numCounts[n]; }
+
+        auto perm = [&](auto&& self, vector<int>& vec) -> void {
+            if (vec.size() == nums.size()) {
+                result.push_back(vec);
+                return;
+            }
+
+            for (auto& [num, count] : numCounts) {
+                if (count > 0) {
+                    --count;
+                    vec.push_back(num);
+                    self(self, vec);
+                    vec.pop_back();
+                    ++count;
+                }
+            }
+        };
+
+        perm(perm, vec);
+
+        return result;
     }
 };
 
