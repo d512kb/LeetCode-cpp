@@ -7,25 +7,29 @@ using namespace std;
 
 class Solution {
 public:
-    bool reorderedPowerOf2(int n) {
-        auto getDigits = [](int n) {
-            vector<char> digits(10);
+    vector<vector<int>> spiralMatrixIII(int rows, int cols, int rStart, int cStart) {
+        const int maxSize = rows * cols;
+        char dirs[]{ 0, 1, 0, -1, 0 };
+        char dir = 0; // east
+        vector<int> pos{ rStart, cStart };
+        vector<vector<int>> result{ {rStart, cStart} };
+        int sideSize = 0;
 
-            while (n > 0) {
-                ++digits[n % 10];
-                n /= 10;
+        while (result.size() < maxSize) {
+            if (dir == 0 || dir == 2) { ++sideSize; }
+
+            for (int i = 0; i < sideSize; ++i) {
+                pos[0] += dirs[dir];
+                pos[1] += dirs[dir + 1];
+
+                if (pos[0] < 0 || pos[0] >= rows || pos[1] < 0 || pos[1] >= cols) { continue; }
+                result.push_back(pos);
             }
 
-            return digits;
-        };
-
-        auto nDigits = getDigits(n);
-
-        for (int i = 0; i < 32; ++i) {
-            if (nDigits == getDigits(1 << i)) { return true; }
+            dir = (dir + 1) % 4;
         }
 
-        return false;
+        return result;
     }
 };
 
