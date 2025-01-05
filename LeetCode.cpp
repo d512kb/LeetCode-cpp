@@ -7,19 +7,11 @@ using namespace std;
 
 class Solution {
 public:
-    int partitionString(string s) {
-        bool charsUsed[26]{};
-        int ans = 1;
-
-        for (char c : s) {
-            if (charsUsed[c - 'a']) {
-                memset(charsUsed, 0, sizeof(charsUsed));
-                ++ans;
-            }
-            charsUsed[c - 'a'] = 1;
-        }
-
-        return ans;
+    int minMoves(vector<int>& nums) {
+        // on every step we need to align the min element with the max element
+        // let's consider decreasing the single Nth max element instead of increasing N-1 elements
+        // so on every step we push items down toward min element, which eventually is a simple sum difference
+        return accumulate(nums.begin(), nums.end(), 0) - *min_element(nums.begin(), nums.end()) * nums.size();
     }
 };
 
