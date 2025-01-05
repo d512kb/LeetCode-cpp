@@ -7,23 +7,36 @@ using namespace std;
 
 class Solution {
 public:
-    vector<int> numsSameConsecDiff(int n, int k) {
-        vector<int> result;
-        int goodNumber = pow(10, n - 1);
+    int numSteps(string s) {
+        int lastIndex = s.size() - 1;
+        int steps = 0;
 
-        auto generate = [&](auto&& self, int n) -> void {
-            if (n >= goodNumber) { result.push_back(n); return; };
+        while (lastIndex != 0) {
+            if (s[lastIndex] == '0') {
+                --lastIndex;
+                ++steps;
+            } else {
+                char carry = 1;
+                for (int i = lastIndex; i >= 0; --i) {
+                    if (s[i] == '1') {
+                        s[i] = '0';
+                    } else {
+                        s[i] += 1;
+                        carry = 0;
+                        break;
+                    }
+                }
 
-            for (int i = 0; i <= 9; ++i) {
-                if (abs(n % 10 - i) == k) {
-                    self(self, (n * 10) + i);
+                ++steps;
+
+                if (carry) {
+                    steps += lastIndex + 1;
+                    break;
                 }
             }
-        };
+        }
 
-        for (int i = 1; i <= 9; ++i) { generate(generate, i); }
-
-        return result;
+        return steps;
     }
 };
 
