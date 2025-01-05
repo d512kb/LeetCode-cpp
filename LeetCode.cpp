@@ -7,36 +7,40 @@ using namespace std;
 
 class Solution {
 public:
-    int numSteps(string s) {
-        int lastIndex = s.size() - 1;
-        int steps = 0;
+    vector<int> findDiagonalOrder(vector<vector<int>>& mat) {
+        const int rows = mat.size();
+        const int cols = mat[0].size();
+        const int sz = rows * cols;
+        pair<int, int> rightEdge(0, 0);
+        pair<int, int> leftEdge(0, 0);
+        vector<int> result;
+        bool up = true;
 
-        while (lastIndex != 0) {
-            if (s[lastIndex] == '0') {
-                --lastIndex;
-                ++steps;
-            } else {
-                char carry = 1;
-                for (int i = lastIndex; i >= 0; --i) {
-                    if (s[i] == '1') {
-                        s[i] = '0';
-                    } else {
-                        s[i] += 1;
-                        carry = 0;
-                        break;
-                    }
+        while (result.size() < sz) {
+            if (up) {
+                for (pair<int, int> cell = leftEdge; cell >= rightEdge; cell.first -= 1, cell.second += 1) {
+                    result.push_back(mat[cell.first][cell.second]);
                 }
-
-                ++steps;
-
-                if (carry) {
-                    steps += lastIndex + 1;
-                    break;
+            } else {
+                for (pair<int, int> cell = rightEdge; cell <= leftEdge; cell.first += 1, cell.second -= 1) {
+                    result.push_back(mat[cell.first][cell.second]);
                 }
             }
+
+            rightEdge.second += 1;
+            if (rightEdge.second == cols) {
+                rightEdge.second -= 1;
+                rightEdge.first += 1;
+            }
+            leftEdge.first += 1;
+            if (leftEdge.first == rows) {
+                leftEdge.first -= 1;
+                leftEdge.second += 1;
+            }
+            up = !up;
         }
 
-        return steps;
+        return result;
     }
 };
 
