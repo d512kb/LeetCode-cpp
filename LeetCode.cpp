@@ -7,33 +7,61 @@ using namespace std;
 
 class Solution {
 public:
-    int maxNumberOfFamilies(int n, vector<vector<int>>& reservedSeats) {
-        sort(reservedSeats.begin(), reservedSeats.end());
-        int row = 0;
-        int ans = 0;
-        int leftPartFree = 0;
-        int centralPartFree = 0;
-        int rightPartFree = 0;
+    string validIPAddress(string queryIP) {
+        if (checkIPv4(queryIP)) { return "IPv4"; }
+        if (checkIPv6(queryIP)) { return "IPv6"; }
+        return "Neither";
+    }
 
-        for (auto& seat : reservedSeats) {
-            int place = seat[1];
+private:
+    bool checkOctet(const string& queryIP, int from, int to) {
+        if (to - from < 1 || to - from > 3) { return false; }
+        if (to - from > 1 && queryIP[from] == '0') { return false; }
 
-            if (seat[0] > row) {
-                ans += max(leftPartFree + rightPartFree, centralPartFree);
-                ans += 2 * (seat[0] - row - 1); // add empty rows
-                row = seat[0];
-                leftPartFree = centralPartFree = rightPartFree = 1;
-            }
+        int num = 0;
+        for (int i = from; i < to; ++i) {
+            if (queryIP[i] < '0' || queryIP[i] > '9') { return false; }
+            num = (num * 10) + queryIP[i] - '0';
+        }
+        return num <= 255;
+    }
 
-            if (place >= 2 && place <= 5) { leftPartFree = 0; }
-            if (place >= 4 && place <= 7) { centralPartFree = 0; }
-            if (place >= 6 && place <= 9) { rightPartFree = 0; }
+    bool checkIPv4(const string& queryIP) {
+        int dotPos = -1;
+        for (int i = 0; i < 3; ++i) {
+            int nextDotPos = queryIP.find('.', dotPos + 1);
+            if (nextDotPos == string::npos) { return false; }
+
+            if (!checkOctet(queryIP, dotPos + 1, nextDotPos)) { return false; }
+            dotPos = nextDotPos;
         }
 
-        ans += max(leftPartFree + rightPartFree, centralPartFree);
-        ans += 2 * (n - row);
+        return checkOctet(queryIP, dotPos + 1, queryIP.size());
+    }
 
-        return ans;
+    bool checkWord(const string& queryIP, int from, int to) {
+        if (to - from < 1 || to - from > 4) { return false; }
+
+        for (int i = from; i < to; ++i) {
+            char c = queryIP[i];
+            const bool isValidChar = (c >= '0' && c <= '9') || (c >= 'a' && c <= 'f') || (c >= 'A' && c <= 'F');
+
+            if (!isValidChar) { return false; }
+        }
+        return true;
+    }
+
+    bool checkIPv6(const string& queryIP) {
+        int delimPos = -1;
+        for (int i = 0; i < 7; ++i) {
+            int nextDelimPos = queryIP.find(':', delimPos + 1);
+            if (nextDelimPos == string::npos) { return false; }
+
+            if (!checkWord(queryIP, delimPos + 1, nextDelimPos)) { return false; }
+            delimPos = nextDelimPos;
+        }
+
+        return checkWord(queryIP, delimPos + 1, queryIP.size());
     }
 };
 
