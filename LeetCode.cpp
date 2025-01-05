@@ -7,11 +7,33 @@ using namespace std;
 
 class Solution {
 public:
-    int minMoves(vector<int>& nums) {
-        // on every step we need to align the min element with the max element
-        // let's consider decreasing the single Nth max element instead of increasing N-1 elements
-        // so on every step we push items down toward min element, which eventually is a simple sum difference
-        return accumulate(nums.begin(), nums.end(), 0) - *min_element(nums.begin(), nums.end()) * nums.size();
+    int maxNumberOfFamilies(int n, vector<vector<int>>& reservedSeats) {
+        sort(reservedSeats.begin(), reservedSeats.end());
+        int row = 0;
+        int ans = 0;
+        int leftPartFree = 0;
+        int centralPartFree = 0;
+        int rightPartFree = 0;
+
+        for (auto& seat : reservedSeats) {
+            int place = seat[1];
+
+            if (seat[0] > row) {
+                ans += max(leftPartFree + rightPartFree, centralPartFree);
+                ans += 2 * (seat[0] - row - 1); // add empty rows
+                row = seat[0];
+                leftPartFree = centralPartFree = rightPartFree = 1;
+            }
+
+            if (place >= 2 && place <= 5) { leftPartFree = 0; }
+            if (place >= 4 && place <= 7) { centralPartFree = 0; }
+            if (place >= 6 && place <= 9) { rightPartFree = 0; }
+        }
+
+        ans += max(leftPartFree + rightPartFree, centralPartFree);
+        ans += 2 * (n - row);
+
+        return ans;
     }
 };
 
