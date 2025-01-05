@@ -7,61 +7,23 @@ using namespace std;
 
 class Solution {
 public:
-    string validIPAddress(string queryIP) {
-        if (checkIPv4(queryIP)) { return "IPv4"; }
-        if (checkIPv6(queryIP)) { return "IPv6"; }
-        return "Neither";
-    }
+    vector<int> numsSameConsecDiff(int n, int k) {
+        vector<int> result;
+        int goodNumber = pow(10, n - 1);
 
-private:
-    bool checkOctet(const string& queryIP, int from, int to) {
-        if (to - from < 1 || to - from > 3) { return false; }
-        if (to - from > 1 && queryIP[from] == '0') { return false; }
+        auto generate = [&](auto&& self, int n) -> void {
+            if (n >= goodNumber) { result.push_back(n); return; };
 
-        int num = 0;
-        for (int i = from; i < to; ++i) {
-            if (queryIP[i] < '0' || queryIP[i] > '9') { return false; }
-            num = (num * 10) + queryIP[i] - '0';
-        }
-        return num <= 255;
-    }
+            for (int i = 0; i <= 9; ++i) {
+                if (abs(n % 10 - i) == k) {
+                    self(self, (n * 10) + i);
+                }
+            }
+        };
 
-    bool checkIPv4(const string& queryIP) {
-        int dotPos = -1;
-        for (int i = 0; i < 3; ++i) {
-            int nextDotPos = queryIP.find('.', dotPos + 1);
-            if (nextDotPos == string::npos) { return false; }
+        for (int i = 1; i <= 9; ++i) { generate(generate, i); }
 
-            if (!checkOctet(queryIP, dotPos + 1, nextDotPos)) { return false; }
-            dotPos = nextDotPos;
-        }
-
-        return checkOctet(queryIP, dotPos + 1, queryIP.size());
-    }
-
-    bool checkWord(const string& queryIP, int from, int to) {
-        if (to - from < 1 || to - from > 4) { return false; }
-
-        for (int i = from; i < to; ++i) {
-            char c = queryIP[i];
-            const bool isValidChar = (c >= '0' && c <= '9') || (c >= 'a' && c <= 'f') || (c >= 'A' && c <= 'F');
-
-            if (!isValidChar) { return false; }
-        }
-        return true;
-    }
-
-    bool checkIPv6(const string& queryIP) {
-        int delimPos = -1;
-        for (int i = 0; i < 7; ++i) {
-            int nextDelimPos = queryIP.find(':', delimPos + 1);
-            if (nextDelimPos == string::npos) { return false; }
-
-            if (!checkWord(queryIP, delimPos + 1, nextDelimPos)) { return false; }
-            delimPos = nextDelimPos;
-        }
-
-        return checkWord(queryIP, delimPos + 1, queryIP.size());
+        return result;
     }
 };
 
