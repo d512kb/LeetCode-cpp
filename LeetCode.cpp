@@ -7,16 +7,15 @@ using namespace std;
 
 class Solution {
 public:
-    vector<int> sumZero(int n) {
-        vector<int> result(n);
-        if (n % 2) { --n; }
+    int arraySign(vector<int>& nums) {
+        int neg = 0;
 
-        for (int i = 1; i < n; i += 2) {
-            result[i] = i;
-            result[i - 1] = -i;
+        for (int n : nums) {
+            if (n == 0) { return 0; }
+            if (n < 0) { ++neg; }
         }
 
-        return result;
+        return 1 - 2 * (neg % 2);
     }
 };
 
