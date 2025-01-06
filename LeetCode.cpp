@@ -7,38 +7,14 @@ using namespace std;
 
 class Solution {
 public:
-    string reorderSpaces(string text) {
-        vector<string> words(1, "");
-        int spacesCount = 0;
-        bool wasWord = false;
-
-        for (char c : text) {
-            if (c == ' ') {
-                ++spacesCount;
-                if (wasWord) {
-                    wasWord = false;
-                    words.emplace_back();
-                }
-            } else {
-                words.back().push_back(c);
-                wasWord = true;
+    string removeDigit(string number, char digit) {
+        for (int i = 0; i < number.size() - 1; ++i) {
+            if (number[i] == digit && number[i] < number[i + 1]) {
+                return number.erase(i, 1);
             }
         }
 
-        if (words.back().empty()) { words.pop_back(); }
-
-        string result;
-        if (words.size() > 1) { spacesCount /= words.size() - 1; }
-
-        result.append(words.front());
-
-        for (int i = 1; i < words.size(); ++i) {
-            result.append(spacesCount, ' ');
-            result.append(words[i]);
-        }
-
-        result.append(text.size() - result.size(), ' ');
-        return result;
+        return number.erase(number.find_last_of(digit), 1);
     }
 };
 
