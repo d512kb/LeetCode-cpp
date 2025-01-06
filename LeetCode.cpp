@@ -7,9 +7,20 @@ using namespace std;
 
 class Solution {
 public:
-    bool isRectangleOverlap(vector<int>& rec1, vector<int>& rec2) {
-        // one of the x and y coords will be bigger when rects are overlapped horizontally and vertically
-        return rec1[0] < rec2[2] && rec2[0] < rec1[2] && rec1[1] < rec2[3] && rec2[1] < rec1[3];
+    string tictactoe(vector<vector<int>>& moves) {
+        vector<char> aLines{ 0, 0, 0, 0, 0, 0, 0, 0, 'A' }; // 3 horizontal top to bottom, 3 vertical left to right ...
+        vector<char> bLines{ 0, 0, 0, 0, 0, 0, 0, 0, 'B' }; // ... and 2 diagonals (left and right) and player ID
+
+        for (auto& move : moves) {
+            if (++aLines[move[0]] == 3) { return { aLines.back() }; }
+            if (++aLines[3 + move[1]] == 3) { return { aLines.back() }; }
+            if (move[0] == move[1] && ++aLines[6] == 3) { return { aLines.back() }; }
+            if (move[0] + move[1] == 2 && ++aLines[7] == 3) { return { aLines.back() }; }
+
+            swap(aLines, bLines);
+        }
+
+        return moves.size() == 9 ? "Draw" : "Pending";
     }
 };
 
