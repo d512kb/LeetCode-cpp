@@ -7,15 +7,10 @@ using namespace std;
 
 class Solution {
 public:
-    int arraySign(vector<int>& nums) {
-        int neg = 0;
+    int numberOfSteps(int num) {
+        if (num == 0) { return 0; }
 
-        for (int n : nums) {
-            if (n == 0) { return 0; }
-            if (n < 0) { ++neg; }
-        }
-
-        return 1 - 2 * (neg % 2);
+        return bit_width(static_cast<uint32_t>(num)) + popcount(static_cast<uint32_t>(num)) - 1;
     }
 };
 
