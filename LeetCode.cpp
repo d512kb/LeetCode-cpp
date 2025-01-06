@@ -5,41 +5,12 @@
 
 using namespace std;
 
-class MyHashMap {
-    using Bucket = vector<pair<int, int>>;
-    using HashData = vector<Bucket>;
+class Solution {
 public:
-    MyHashMap() : m_data(1 << 10) {
-
+    bool isRectangleOverlap(vector<int>& rec1, vector<int>& rec2) {
+        // one of the x and y coords will be bigger when rects are overlapped horizontally and vertically
+        return rec1[0] < rec2[2] && rec2[0] < rec1[2] && rec1[1] < rec2[3] && rec2[1] < rec1[3];
     }
-
-    void put(int key, int value) {
-        auto item = findItem(key);
-        if (item.second == item.first.end()) { item.first.emplace_back(key, value); } else { item.second->second = value; }
-    }
-
-    int get(int key) {
-        auto item = findItem(key);
-        if (item.second == item.first.end()) { return -1; }
-        return item.second->second;
-    }
-
-    void remove(int key) {
-        auto item = findItem(key);
-        if (item.second != item.first.end()) { item.first.erase(item.second); }
-    }
-private:
-    inline int hash(int v) {
-        return v >> 10;
-    }
-
-    pair<Bucket&, Bucket::iterator> findItem(int key) {
-        auto& values = m_data[hash(key)];
-
-        return { ref(values), find_if(values.begin(), values.end(), [key](const auto& val) { return val.first == key; }) };
-    }
-
-    HashData m_data;
 };
 
 int main()
