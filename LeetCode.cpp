@@ -7,39 +7,37 @@ using namespace std;
 
 class Solution {
 public:
-    vector<int> findDiagonalOrder(vector<vector<int>>& mat) {
-        const int rows = mat.size();
-        const int cols = mat[0].size();
-        const int sz = rows * cols;
-        pair<int, int> rightEdge(0, 0);
-        pair<int, int> leftEdge(0, 0);
-        vector<int> result;
-        bool up = true;
+    string reorderSpaces(string text) {
+        vector<string> words(1, "");
+        int spacesCount = 0;
+        bool wasWord = false;
 
-        while (result.size() < sz) {
-            if (up) {
-                for (pair<int, int> cell = leftEdge; cell >= rightEdge; cell.first -= 1, cell.second += 1) {
-                    result.push_back(mat[cell.first][cell.second]);
+        for (char c : text) {
+            if (c == ' ') {
+                ++spacesCount;
+                if (wasWord) {
+                    wasWord = false;
+                    words.emplace_back();
                 }
             } else {
-                for (pair<int, int> cell = rightEdge; cell <= leftEdge; cell.first += 1, cell.second -= 1) {
-                    result.push_back(mat[cell.first][cell.second]);
-                }
+                words.back().push_back(c);
+                wasWord = true;
             }
-
-            rightEdge.second += 1;
-            if (rightEdge.second == cols) {
-                rightEdge.second -= 1;
-                rightEdge.first += 1;
-            }
-            leftEdge.first += 1;
-            if (leftEdge.first == rows) {
-                leftEdge.first -= 1;
-                leftEdge.second += 1;
-            }
-            up = !up;
         }
 
+        if (words.back().empty()) { words.pop_back(); }
+
+        string result;
+        if (words.size() > 1) { spacesCount /= words.size() - 1; }
+
+        result.append(words.front());
+
+        for (int i = 1; i < words.size(); ++i) {
+            result.append(spacesCount, ' ');
+            result.append(words[i]);
+        }
+
+        result.append(text.size() - result.size(), ' ');
         return result;
     }
 };
