@@ -5,17 +5,41 @@
 
 using namespace std;
 
-class Solution {
+class MyHashMap {
+    using Bucket = vector<pair<int, int>>;
+    using HashData = vector<Bucket>;
 public:
-    string removeDigit(string number, char digit) {
-        for (int i = 0; i < number.size() - 1; ++i) {
-            if (number[i] == digit && number[i] < number[i + 1]) {
-                return number.erase(i, 1);
-            }
-        }
+    MyHashMap() : m_data(1 << 10) {
 
-        return number.erase(number.find_last_of(digit), 1);
     }
+
+    void put(int key, int value) {
+        auto item = findItem(key);
+        if (item.second == item.first.end()) { item.first.emplace_back(key, value); } else { item.second->second = value; }
+    }
+
+    int get(int key) {
+        auto item = findItem(key);
+        if (item.second == item.first.end()) { return -1; }
+        return item.second->second;
+    }
+
+    void remove(int key) {
+        auto item = findItem(key);
+        if (item.second != item.first.end()) { item.first.erase(item.second); }
+    }
+private:
+    inline int hash(int v) {
+        return v >> 10;
+    }
+
+    pair<Bucket&, Bucket::iterator> findItem(int key) {
+        auto& values = m_data[hash(key)];
+
+        return { ref(values), find_if(values.begin(), values.end(), [key](const auto& val) { return val.first == key; }) };
+    }
+
+    HashData m_data;
 };
 
 int main()
