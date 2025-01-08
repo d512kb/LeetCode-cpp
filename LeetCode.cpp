@@ -7,10 +7,26 @@ using namespace std;
 
 class Solution {
 public:
-    int numberOfSteps(int num) {
-        if (num == 0) { return 0; }
+    string largestPalindromic(string num) {
+        int numCount[10]{};
+        for (char c : num) { ++numCount[c - '0']; }
+        string leftPart;
+        string center;
 
-        return bit_width(static_cast<uint32_t>(num)) + popcount(static_cast<uint32_t>(num)) - 1;
+        for (int i = 9; i >= 0; --i) {
+            if (i == 0 && leftPart.empty()) { if (center.empty()) { center.push_back('0'); }; break; }
+            while (numCount[i] > 1) {
+                leftPart.push_back(i + '0');
+                numCount[i] -= 2;
+            }
+            if (numCount[i] > 0 && center.empty()) { center.push_back(i + '0'); }
+        }
+
+        if (!leftPart.empty()) {
+            return leftPart + center + string(leftPart.rbegin(), leftPart.rend());
+        }
+
+        return center;
     }
 };
 
