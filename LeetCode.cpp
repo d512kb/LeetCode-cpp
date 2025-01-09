@@ -7,26 +7,49 @@ using namespace std;
 
 class Solution {
 public:
-    string largestPalindromic(string num) {
-        int numCount[10]{};
-        for (char c : num) { ++numCount[c - '0']; }
-        string leftPart;
-        string center;
+    long long minimumCost(vector<int>& nums, int k, int dist) {
+        multiset<int, greater<>> pqMax;
+        multiset<int> pqMin;
+        int64_t runningSum = 0;
 
-        for (int i = 9; i >= 0; --i) {
-            if (i == 0 && leftPart.empty()) { if (center.empty()) { center.push_back('0'); }; break; }
-            while (numCount[i] > 1) {
-                leftPart.push_back(i + '0');
-                numCount[i] -= 2;
+        for (int i = 1; i <= dist + 1; ++i) { pqMin.insert(nums[i]); }
+
+        while (pqMax.size() < k - 1) {
+            pqMax.insert(*pqMin.begin());
+            runningSum += *pqMin.begin();
+            pqMin.erase(pqMin.begin());
+        }
+
+        int64_t result = runningSum;
+        for (int a = 1, b = dist + 2; b < nums.size(); ++a, ++b) {
+            if (pqMin.extract(nums[a]).empty()) {
+                pqMax.extract(nums[a]);
+                runningSum -= nums[a];
             }
-            if (numCount[i] > 0 && center.empty()) { center.push_back(i + '0'); }
+
+            if (nums[b] < *pqMax.begin()) {
+                pqMax.insert(nums[b]);
+                runningSum += nums[b];
+            } else {
+                pqMin.insert(nums[b]);
+            }
+
+            if (pqMax.size() < k - 1) {
+                pqMax.insert(*pqMin.begin());
+                runningSum += *pqMin.begin();
+                pqMin.extract(*pqMin.begin());
+            }
+
+            if (pqMax.size() > k - 1) {
+                pqMin.insert(*pqMax.begin());
+                runningSum -= *pqMax.begin();
+                pqMax.extract(*pqMax.begin());
+            }
+
+            result = min(result, runningSum);
         }
 
-        if (!leftPart.empty()) {
-            return leftPart + center + string(leftPart.rbegin(), leftPart.rend());
-        }
-
-        return center;
+        return result + nums[0];
     }
 };
 
