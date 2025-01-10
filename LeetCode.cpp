@@ -5,20 +5,34 @@
 
 using namespace std;
 
-class Solution {
+class FreqStack {
 public:
-    long long appealSum(string s) {
-        vector<int> lastPos(26, -1);
-        int64_t ans = 0;
-        int64_t appeal = 0;
+    FreqStack() {
 
-        for (int i = 0; i < s.size(); ++i) {
-            appeal += i - exchange(lastPos[s[i] - 'a'], i);
-            ans += appeal;
+    }
+
+    void push(int val) {
+        int freq = m_freqMap[val]++;
+
+        if (m_freqToValues.size() == freq) {
+            m_freqToValues.emplace_back(1, val);
+            return;
         }
 
-        return ans;
+        m_freqToValues[freq].push_back(val);
     }
+
+    int pop() {
+        if (m_freqToValues.back().empty()) { m_freqToValues.pop_back(); }
+
+        int val = m_freqToValues.back().back();
+        m_freqToValues.back().pop_back();
+        --m_freqMap[val];
+        return val;
+    }
+private:
+    unordered_map<int, int> m_freqMap;
+    deque<vector<int>> m_freqToValues;
 };
 
 int main()
