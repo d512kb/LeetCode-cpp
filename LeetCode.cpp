@@ -7,14 +7,34 @@ using namespace std;
 
 class Solution {
 public:
-    string largestNumber(vector<int>& nums) {
-        vector<string> numsStr(nums.size());
+    int minimumOperationsToMakeEqual(int x, int y) {
+        if (x <= y) { return y - x; }
 
-        transform(nums.begin(), nums.end(), numsStr.begin(), [](int num) { return to_string(num); });
-        sort(numsStr.begin(), numsStr.end(), [](const string& a, const string& b) { return a + b > b + a; });
+        queue<int> q({ x });
+        unordered_set<int> triedNumbers;
+        int steps = 0;
 
-        if (numsStr.front() == "0") { return "0"; }
-        return accumulate(numsStr.begin(), numsStr.end(), string());
+        while (!q.empty()) {
+            int sz = q.size();
+
+            while (sz--) {
+                x = q.front();
+                q.pop();
+
+                if (!triedNumbers.insert(x).second) { continue; }
+
+                if (x == y) { return steps; }
+                if (x < y) { q.push(x + 1); continue; }
+                if (x % 11 == 0) { q.push(x / 11); }
+                if (x % 5 == 0) { q.push(x / 5); }
+                q.push(x - 1);
+                q.push(x + 1);
+            }
+
+            ++steps;
+        }
+
+        return steps;
     }
 };
 
