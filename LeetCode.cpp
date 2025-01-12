@@ -7,41 +7,14 @@ using namespace std;
 
 class Solution {
 public:
-    int minimumMoves(vector<vector<int>>& grid) {
-        map<pair<int, int>, int> richCells;
-        vector<pair<int, int>> poorCells;
+    string largestNumber(vector<int>& nums) {
+        vector<string> numsStr(nums.size());
 
-        for (int i = 0; i < 3; ++i) {
-            for (int j = 0; j < 3; ++j) {
-                int val = grid[i][j];
-                if (val > 1) {
-                    richCells.emplace(make_pair(i, j), val - 1);
-                } else if (val == 0) {
-                    poorCells.emplace_back(i, j);
-                }
-            }
-        }
+        transform(nums.begin(), nums.end(), numsStr.begin(), [](int num) { return to_string(num); });
+        sort(numsStr.begin(), numsStr.end(), [](const string& a, const string& b) { return a + b > b + a; });
 
-        int ans = numeric_limits<int>::max();
-
-        auto perm = [&](auto&& self, int permIndex, int moves) {
-            if (permIndex == poorCells.size()) {
-                ans = min(ans, moves);
-                return;
-            }
-
-            for (auto& [cell, value] : richCells) {
-                if (value > 0) {
-                    --value;
-                    self(self, permIndex + 1, moves + abs(cell.first - poorCells[permIndex].first) + abs(cell.second - poorCells[permIndex].second));
-                    ++value;
-                }
-            }
-        };
-
-        perm(perm, 0, 0);
-
-        return ans;
+        if (numsStr.front() == "0") { return "0"; }
+        return accumulate(numsStr.begin(), numsStr.end(), string());
     }
 };
 
