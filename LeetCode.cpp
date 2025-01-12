@@ -7,34 +7,54 @@ using namespace std;
 
 class Solution {
 public:
-    int minimumOperationsToMakeEqual(int x, int y) {
-        if (x <= y) { return y - x; }
+    vector<string> removeComments(vector<string>& source) {
+        vector<string> result{ "" };
+        bool blockComment = false;
 
-        queue<int> q({ x });
-        unordered_set<int> triedNumbers;
-        int steps = 0;
+        for (auto& sourceStr : source) {
+            int startFrom = 0;
 
-        while (!q.empty()) {
-            int sz = q.size();
-
-            while (sz--) {
-                x = q.front();
-                q.pop();
-
-                if (!triedNumbers.insert(x).second) { continue; }
-
-                if (x == y) { return steps; }
-                if (x < y) { q.push(x + 1); continue; }
-                if (x % 11 == 0) { q.push(x / 11); }
-                if (x % 5 == 0) { q.push(x / 5); }
-                q.push(x - 1);
-                q.push(x + 1);
+            if (blockComment) {
+                auto termPos = sourceStr.find("*/");
+                if (termPos == string::npos) { continue; }
+                startFrom = termPos + 2;
+                blockComment = false;
             }
 
-            ++steps;
+            auto& str = result.back();
+
+            for (int i = startFrom; i < sourceStr.size(); ++i) {
+                if (blockComment) {
+                    auto termPos = sourceStr.find("*/", i);
+
+                    if (termPos == string::npos) { break; }
+                    i = termPos + 1; // not +2 because of for loop increase
+                    blockComment = false;
+                    continue;
+                }
+
+                if (sourceStr[i] == '/' || sourceStr[i] == '*') {
+                    if (!str.empty() && str.back() == '/') {
+                        str.pop_back();
+                        if (sourceStr[i] == '/') { // line comment
+                            break;
+                        } else {
+                            blockComment = true;
+                            continue;
+                        }
+                    }
+                }
+
+                str.push_back(sourceStr[i]);
+            }
+
+            if (!str.empty() && !blockComment) {
+                result.emplace_back();
+            }
         }
 
-        return steps;
+        result.pop_back();
+        return result;
     }
 };
 
