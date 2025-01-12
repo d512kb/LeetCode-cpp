@@ -7,26 +7,22 @@ using namespace std;
 
 class Solution {
 public:
-    int minCameraCover(TreeNode* root) {
-        int cameraCount = 0;
+    int uniqueLetterString(string s) {
+        vector<pair<int, int>> charPositions(26, { -1, -1 });
+        int ans = 0;
 
-        if (traverseTree(root, cameraCount) > 1) { ++cameraCount; }
-
-        return cameraCount;
-    }
-private:
-    int traverseTree(TreeNode* root, int& cameraCount) {
-        if (!root) { return 1; }
-
-        int leftChild = traverseTree(root->left, cameraCount);
-        int rightChild = traverseTree(root->right, cameraCount);
-
-        if (leftChild > 1 || rightChild > 1) {
-            ++cameraCount;
-            return 0;
+        for (int i = 0; i < s.size(); ++i) {
+            auto& prevPos = charPositions[s[i] - 'A'];
+            ans += (prevPos.second - prevPos.first) * (i - prevPos.second);
+            prevPos.first = prevPos.second;
+            prevPos.second = i;
         }
 
-        return 1 + min(leftChild, rightChild);
+        for (auto& charPos : charPositions) {
+            ans += (charPos.second - charPos.first) * (s.size() - charPos.second);
+        }
+
+        return ans;
     }
 };
 
