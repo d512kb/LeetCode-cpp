@@ -5,67 +5,28 @@
 
 using namespace std;
 
-class LFUCache {
-    using FrequencyItems = list<pair<int, int>>;
-    struct Frequency {
-        int freq;
-        FrequencyItems::iterator iter;
-    };
+class Solution {
 public:
-    LFUCache(int capacity) : m_capacity(capacity), m_minFreq(0) {
+    int minCameraCover(TreeNode* root) {
+        int cameraCount = 0;
 
-    }
+        if (traverseTree(root, cameraCount) > 1) { ++cameraCount; }
 
-    int get(int key) {
-        auto value = findValue(key);
-        if (value) { return *value; }
-
-        return -1;
-    }
-
-    void put(int key, int value) {
-        auto val = findValue(key);
-
-        if (val) {
-            val->get() = value;
-            return;
-        }
-
-        if (m_keyToFreq.size() == m_capacity) {
-            auto& freqList = m_freqToItems[m_minFreq];
-            m_keyToFreq.erase(freqList.front().first);
-            freqList.pop_front();
-            if (freqList.empty()) { m_freqToItems.erase(m_minFreq); }
-        }
-
-        m_minFreq = 0;
-        auto& freqList = m_freqToItems[0];
-        m_keyToFreq[key].iter = freqList.emplace(freqList.end(), key, value);
+        return cameraCount;
     }
 private:
-    int m_capacity;
-    int m_minFreq;
-    unordered_map<int, Frequency> m_keyToFreq;
-    unordered_map<int, FrequencyItems> m_freqToItems;
+    int traverseTree(TreeNode* root, int& cameraCount) {
+        if (!root) { return 1; }
 
-    std::optional<reference_wrapper<int>> findValue(int key) {
-        auto keyIter = m_keyToFreq.find(key);
-        if (keyIter == m_keyToFreq.end()) { return std::nullopt; }
+        int leftChild = traverseTree(root->left, cameraCount);
+        int rightChild = traverseTree(root->right, cameraCount);
 
-        auto& [freq, iter] = keyIter->second;
-        auto& curList = m_freqToItems[freq];
-        auto& nextList = m_freqToItems[freq + 1];
-
-        nextList.splice(nextList.end(), curList, iter);
-        iter = --nextList.end();
-
-        if (curList.empty()) {
-            m_freqToItems.erase(freq);
-            if (m_minFreq == freq) { ++m_minFreq; }
+        if (leftChild > 1 || rightChild > 1) {
+            ++cameraCount;
+            return 0;
         }
 
-        ++freq;
-        return iter->second;
+        return 1 + min(leftChild, rightChild);
     }
 };
 
