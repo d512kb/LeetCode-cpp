@@ -7,32 +7,20 @@ using namespace std;
 
 class Solution {
 public:
-    int latestTimeCatchTheBus(vector<int>& buses, vector<int>& passengers, int capacity) {
-        sort(buses.begin(), buses.end());
-        sort(passengers.begin(), passengers.end());
+    int minimumBuckets(string hamsters) {
+        int ans = 0;
+        const int sz = hamsters.size();
 
-        int passIndex = 0;
-        int takenPlaces = 0;
-        for (int busIndex = 0; busIndex < buses.size(); ++busIndex) {
-            takenPlaces = 0;
-
-            while (takenPlaces < capacity && passIndex < passengers.size() && passengers[passIndex] <= buses[busIndex]) {
-                ++takenPlaces;
-                ++passIndex;
+        for (int i = 0; i < sz; ++i) {
+            if (hamsters[i] == 'H') {
+                if (i > 0 && hamsters[i - 1] == 'o') { continue; }
+                if (i < sz - 1 && hamsters[i + 1] == '.') { hamsters[i + 1] = 'o'; ++ans; continue; }
+                if (i > 0 && hamsters[i - 1] == '.') { hamsters[i - 1] = 'o'; ++ans; continue; }
+                return -1;
             }
         }
 
-        if (takenPlaces < capacity) {
-            if (passIndex == 0 || passengers[passIndex - 1] < buses.back()) { return buses.back(); }
-        }
-
-        for (--passIndex; passIndex > 0; --passIndex) {
-            if (passengers[passIndex] - passengers[passIndex - 1] > 1) {
-                return passengers[passIndex] - 1;
-            }
-        }
-
-        return passengers.front() - 1;
+        return ans;
     }
 };
 
