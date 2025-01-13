@@ -7,17 +7,25 @@ using namespace std;
 
 class Solution {
 public:
-    int minimumBuckets(string hamsters) {
+    int maxRepOpt1(string text) {
+        vector<int> charCount(26);
+        for (char c : text) { ++charCount[c - 'a']; }
         int ans = 0;
-        const int sz = hamsters.size();
 
-        for (int i = 0; i < sz; ++i) {
-            if (hamsters[i] == 'H') {
-                if (i > 0 && hamsters[i - 1] == 'o') { continue; }
-                if (i < sz - 1 && hamsters[i + 1] == '.') { hamsters[i + 1] = 'o'; ++ans; continue; }
-                if (i > 0 && hamsters[i - 1] == '.') { hamsters[i - 1] = 'o'; ++ans; continue; }
-                return -1;
+        for (char c = 'a'; c <= 'z'; ++c) {
+            if (charCount[c - 'a'] == 0) { continue; }
+
+            int start = 0;
+            int stop = 0;
+            char filler = 0;
+
+            for (stop; stop < text.size(); ++stop) {
+                if (text[stop] == c && filler < 2) { continue; }
+                if (text[stop] != c && ++filler < 2) { continue; }
+                if (text[start++] != c) { --filler; }
             }
+
+            ans = max(ans, min(charCount[c - 'a'], stop - start));
         }
 
         return ans;
