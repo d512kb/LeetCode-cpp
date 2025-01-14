@@ -7,25 +7,12 @@ using namespace std;
 
 class Solution {
 public:
-    string reverseParentheses(string s) {
-        string result;
-        stack<int> revertPositions;
+    double angleClock(int hour, int minutes) {
+        double minutesAngle = minutes * 6;
+        double hourAngle = hour * 30 + minutesAngle / 12;
+        double angle = abs(hourAngle - minutesAngle);
 
-        for (int i = 0; i < s.size(); ++i) {
-            if (s[i] == '(') {
-                revertPositions.push(result.size());
-                continue;
-            }
-            if (s[i] == ')') {
-                reverse(result.begin() + revertPositions.top(), result.end());
-                revertPositions.pop();
-                continue;
-            }
-
-            result.push_back(s[i]);
-        }
-
-        return result;
+        return angle > 180 ? 360 - angle : angle;
     }
 };
 
