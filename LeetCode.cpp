@@ -7,15 +7,25 @@ using namespace std;
 
 class Solution {
 public:
-    long long largestPerimeter(vector<int>& nums) {
-        sort(nums.begin(), nums.end());
+    string reverseParentheses(string s) {
+        string result;
+        stack<int> revertPositions;
 
-        int64_t sidesSum = accumulate(nums.begin(), nums.end() - 1, 0l);
-        for (int lastSide = nums.size() - 1; lastSide >= 2; --lastSide, sidesSum -= nums[lastSide]) {
-            if (sidesSum > nums[lastSide]) { return sidesSum + nums[lastSide]; }
+        for (int i = 0; i < s.size(); ++i) {
+            if (s[i] == '(') {
+                revertPositions.push(result.size());
+                continue;
+            }
+            if (s[i] == ')') {
+                reverse(result.begin() + revertPositions.top(), result.end());
+                revertPositions.pop();
+                continue;
+            }
+
+            result.push_back(s[i]);
         }
 
-        return -1;
+        return result;
     }
 };
 
