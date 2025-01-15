@@ -7,16 +7,13 @@ using namespace std;
 
 class Solution {
 public:
-    int findClosestNumber(vector<int>& nums) {
-        int ans = nums.front();
+    int maxBottlesDrunk(int numBottles, int numExchange) {
+        int ans = numBottles;
 
-        for (int n : nums) {
-            if (abs(n) < abs(ans)) {
-                ans = n;
-            } else if (abs(n) == abs(ans) && n > ans) {
-                ans = n;
-            }
-
+        while (numBottles >= numExchange) {
+            numBottles -= numExchange - 1;
+            ++numExchange;
+            ++ans;
         }
 
         return ans;
