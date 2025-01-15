@@ -7,23 +7,30 @@ using namespace std;
 
 class Solution {
 public:
-    int minAbsoluteDifference(vector<int>& nums, int x) {
-        if (x == 0) { return 0; }
+    string rankTeams(vector<string>& votes) {
+        const int voteSize = votes.front().size();
+        vector<vector<int>> voteTable(voteSize, vector<int>(26));
 
-        auto ans = numeric_limits<int>::max();
-        multiset<int> previousValues;
-
-        for (int j = x; j < nums.size(); ++j) {
-            previousValues.insert(nums[j - x]);
-            auto iter = previousValues.lower_bound(nums[j]);
-            if (iter == previousValues.end()) { --iter; } else if (iter != previousValues.begin()) {
-                ans = min(ans, abs(nums[j] - *prev(iter)));
+        for (auto& vote : votes) {
+            for (int i = 0; i < voteSize; ++i) {
+                ++voteTable[i][vote[i] - 'A'];
             }
-
-            ans = min(ans, abs(nums[j] - *iter));
         }
 
-        return ans;
+        string result;
+        transform(votes[0].begin(), votes[0].end(), back_inserter(result), [](char c) { return c - 'A'; });
+
+        sort(result.begin(), result.end(), [&voteTable](char a, char b) {
+            for (auto& vote : voteTable) {
+                if (vote[a] != vote[b]) { return vote[a] > vote[b]; }
+            }
+
+            return a < b;
+        });
+
+        transform(result.begin(), result.end(), result.begin(), [](char c) { return c + 'A'; });
+
+        return result;
     }
 };
 
