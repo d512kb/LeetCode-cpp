@@ -7,13 +7,20 @@ using namespace std;
 
 class Solution {
 public:
-    int maxBottlesDrunk(int numBottles, int numExchange) {
-        int ans = numBottles;
+    int minAbsoluteDifference(vector<int>& nums, int x) {
+        if (x == 0) { return 0; }
 
-        while (numBottles >= numExchange) {
-            numBottles -= numExchange - 1;
-            ++numExchange;
-            ++ans;
+        auto ans = numeric_limits<int>::max();
+        multiset<int> previousValues;
+
+        for (int j = x; j < nums.size(); ++j) {
+            previousValues.insert(nums[j - x]);
+            auto iter = previousValues.lower_bound(nums[j]);
+            if (iter == previousValues.end()) { --iter; } else if (iter != previousValues.begin()) {
+                ans = min(ans, abs(nums[j] - *prev(iter)));
+            }
+
+            ans = min(ans, abs(nums[j] - *iter));
         }
 
         return ans;
