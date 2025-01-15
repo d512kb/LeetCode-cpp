@@ -7,35 +7,24 @@ using namespace std;
 
 class Solution {
 public:
-    string removeKdigits(string num, int k) {
-        string result;
-        int i = 0;
+    vector<int> findOriginalArray(vector<int>& changed) {
+        if (changed.size() % 2) { return {}; }
 
-        // skip all skippable leading zeroes
-        while (i < num.size() && k > 0) {
-            auto zeroPos = num.find('0', i);
-            if (zeroPos - i > k) { break; }
+        sort(changed.begin(), changed.end());
+        unordered_map<int, int> nums;
 
-            k -= zeroPos - i;
-            i = num.find_first_not_of("0", zeroPos + 1);
+        for (int n : changed) { ++nums[n]; }
+
+        vector<int> result;
+        result.reserve(changed.size() / 2);
+
+        for (int n : changed) {
+            if (--nums[n] < 0) { continue; }
+            if (--nums[n * 2] < 0) { return {}; }
+            result.push_back(n);
         }
 
-        // process the rest of the string
-        for (i; i < num.size(); ++i) {
-            while (!result.empty() && k > 0 && num[i] < result.back()) {
-                result.pop_back();
-                --k;
-            }
-
-            result.push_back(num[i]);
-        }
-
-        while (k > 0 && !result.empty()) {
-            result.pop_back();
-            --k;
-        }
-
-        return result.empty() ? "0" : result;
+        return result;
     }
 };
 
