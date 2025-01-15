@@ -5,26 +5,41 @@
 
 using namespace std;
 
+// Definition for a Node.
+class Node {
+public:
+    int val;
+    Node* left;
+    Node* right;
+    Node* next;
+
+    Node() : val(0), left(NULL), right(NULL), next(NULL) {}
+
+    Node(int _val) : val(_val), left(NULL), right(NULL), next(NULL) {}
+
+    Node(int _val, Node* _left, Node* _right, Node* _next)
+        : val(_val), left(_left), right(_right), next(_next) {
+    }
+};
+
 class Solution {
 public:
-    vector<int> findOriginalArray(vector<int>& changed) {
-        if (changed.size() % 2) { return {}; }
+    Node* connect(Node* root) {
+        if (!root) { return nullptr; }
 
-        sort(changed.begin(), changed.end());
-        unordered_map<int, int> nums;
+        connect(root->left);
+        connect(root->right);
 
-        for (int n : changed) { ++nums[n]; }
+        connectBranches(root->left, root->right);
 
-        vector<int> result;
-        result.reserve(changed.size() / 2);
+        return root;
+    }
+private:
+    void connectBranches(Node* left, Node* right) {
+        if (!left) { return; }
 
-        for (int n : changed) {
-            if (--nums[n] < 0) { continue; }
-            if (--nums[n * 2] < 0) { return {}; }
-            result.push_back(n);
-        }
-
-        return result;
+        left->next = right;
+        connectBranches(left->right, right->left);
     }
 };
 
