@@ -7,32 +7,35 @@ using namespace std;
 
 class Solution {
 public:
-    long long minimumFuelCost(vector<vector<int>>& roads, int seats) {
-        vector<vector<int>> graph(roads.size() + 1);
+    string removeKdigits(string num, int k) {
+        string result;
+        int i = 0;
 
-        for (auto& road : roads) {
-            graph[road[0]].push_back(road[1]);
-            graph[road[1]].push_back(road[0]);
+        // skip all skippable leading zeroes
+        while (i < num.size() && k > 0) {
+            auto zeroPos = num.find('0', i);
+            if (zeroPos - i > k) { break; }
+
+            k -= zeroPos - i;
+            i = num.find_first_not_of("0", zeroPos + 1);
         }
-        int64_t cost = 0;
 
-        auto calcSubtree = [&](auto&& self, int prev, int from) -> int {
-            int subcitiesCount = 0;
-
-            for (int city : graph[from]) {
-                if (city == prev) { continue; }
-                subcitiesCount += self(self, from, city);
+        // process the rest of the string
+        for (i; i < num.size(); ++i) {
+            while (!result.empty() && k > 0 && num[i] < result.back()) {
+                result.pop_back();
+                --k;
             }
 
-            cost += ceil((1.0 + subcitiesCount) / seats);
-            return 1 + subcitiesCount;
-        };
-
-        for (int city : graph[0]) {
-            calcSubtree(calcSubtree, 0, city);
+            result.push_back(num[i]);
         }
 
-        return cost;
+        while (k > 0 && !result.empty()) {
+            result.pop_back();
+            --k;
+        }
+
+        return result.empty() ? "0" : result;
     }
 };
 
