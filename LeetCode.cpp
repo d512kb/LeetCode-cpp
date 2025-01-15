@@ -5,41 +5,28 @@
 
 using namespace std;
 
-// Definition for a Node.
-class Node {
-public:
-    int val;
-    Node* left;
-    Node* right;
-    Node* next;
-
-    Node() : val(0), left(NULL), right(NULL), next(NULL) {}
-
-    Node(int _val) : val(_val), left(NULL), right(NULL), next(NULL) {}
-
-    Node(int _val, Node* _left, Node* _right, Node* _next)
-        : val(_val), left(_left), right(_right), next(_next) {
-    }
-};
-
 class Solution {
 public:
-    Node* connect(Node* root) {
-        if (!root) { return nullptr; }
+    int furthestBuilding(vector<int>& heights, int bricks, int ladders) {
+        priority_queue<int, vector<int>, greater<>> pq;
 
-        connect(root->left);
-        connect(root->right);
+        int ans = 1;
+        for (ans; ans < heights.size(); ++ans) {
+            int diff = heights[ans] - heights[ans - 1];
 
-        connectBranches(root->left, root->right);
+            if (diff > 0) {
+                pq.push(diff);
 
-        return root;
-    }
-private:
-    void connectBranches(Node* left, Node* right) {
-        if (!left) { return; }
+                if (pq.size() > ladders) {
+                    bricks -= pq.top();
+                    pq.pop();
 
-        left->next = right;
-        connectBranches(left->right, right->left);
+                    if (bricks < 0) { return ans - 1; }
+                }
+            }
+        }
+
+        return ans - 1;
     }
 };
 
