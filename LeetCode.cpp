@@ -7,37 +7,34 @@ using namespace std;
 
 class Solution {
 public:
-    vector<int> largestDivisibleSubset(vector<int>& nums) {
-        sort(nums.begin(), nums.end());
-        vector<int> dp(nums.size());
-        vector<int> links(nums.size(), -1);
-        int maxChainIndex = 0;
+    int longestValidSubstring(string word, vector<string>& forbidden) {
+        unordered_set<string> fbWords(forbidden.begin(), forbidden.end());
 
-        for (int i = 1; i < nums.size(); ++i) {
-            for (int j = 0; j < i; ++j) {
-                if (nums[i] % nums[j] == 0 && dp[j] >= dp[i]) {
-                    dp[i] = 1 + dp[j];
-                    links[i] = j;
-                    if (dp[i] > dp[maxChainIndex]) { maxChainIndex = i; }
+        int ans = 0;
+        int validEnd = word.size();
+
+        for (int i = word.size() - 1; i >= 0; --i) {
+            string str;
+
+            for (int j = i; j < validEnd && j - i < 10; ++j) {
+                str.push_back(word[j]);
+
+                if (fbWords.contains(str)) {
+                    ans = max(ans, validEnd - i - 1); // we count all the chars between two forbidden words not including the first char
+                    validEnd = j;
+                    break;
                 }
             }
         }
 
-        vector<int> result;
-
-        while (maxChainIndex >= 0) {
-            result.push_back(nums[maxChainIndex]);
-            maxChainIndex = links[maxChainIndex];
-        }
-
-        return result;
+        return max(ans, validEnd);
     }
 };
 
 int main()
 {
     INIT_TIME(timer);
-
+    
     PRINT_ELAPSED(timer);
     return 0;
 }
