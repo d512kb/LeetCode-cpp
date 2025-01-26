@@ -7,25 +7,21 @@ using namespace std;
 
 class Solution {
 public:
-    vector<int> nextGreaterElement(vector<int>& nums1, vector<int>& nums2) {
-        unordered_map<int, int> mapping;
-        stack<int> monoStack;
+    int countPartitions(vector<int>& nums) {
+        int rightSum = accumulate(nums.begin(), nums.end(), 0);
+        int leftSum = 0;
 
-        for (int n : nums2) {
-            while (!monoStack.empty() && monoStack.top() < n) {
-                mapping[monoStack.top()] = n;
-                monoStack.pop();
+        int ans = 0;
+        for (int i = 0; i < nums.size() - 1; ++i) {
+            leftSum += nums[i];
+            rightSum -= nums[i];
+
+            if ((leftSum - rightSum) % 2 == 0) {
+                ++ans;
             }
-
-            mapping[n] = -1;
-            monoStack.push(n);
         }
 
-        vector<int> result;
-
-        for (int n : nums1) { result.push_back(mapping[n]); }
-
-        return result;
+        return ans;
     }
 };
 
