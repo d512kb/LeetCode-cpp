@@ -7,48 +7,56 @@ using namespace std;
 
 class Solution {
 public:
-    vector<int> countMentions(int numberOfUsers, vector<vector<string>>& events) {
-        vector<int> mentions(numberOfUsers);
-        vector<int> offlineTimes(numberOfUsers, numeric_limits<int>::min());
+    int totalStrength(vector<int>& strength) {
+        constexpr int modulo = 1e9 + 7;
+        const int sz = strength.size();
 
-        sort(events.begin(), events.end(), [](const auto& v1, const auto& v2) {
-            int t1 = stoi(v1[1]);
-            int t2 = stoi(v2[1]);
+        vector<pair<int, int>> minRanges(sz, { 0, sz - 1 }); // [left, right]
+        vector<pair<int, int>> monoStack; // index, value
+        monoStack.reserve(sz);
 
-            if (t1 == t2) { return v1[0][0] == 'O' || v2[0][0] != 'O'; }
-            return t1 < t2;
-        });
-
-        for (auto& event : events) {
-            if (event[0][0] == 'M') {
-                auto& mentionStr = event[2];
-                int timeStamp = stoi(event[1]);
-
-                if (mentionStr[0] == 'A') {
-                    for (int& m : mentions) { ++m; }
-                } else if (mentionStr[0] == 'H') {
-                    for (int i = 0; i < numberOfUsers; ++i) {
-                        if (offlineTimes[i] + 60 <= timeStamp) { ++mentions[i]; }
-                    }
-                } else {
-                    int start = 0, end = 0;
-                    int userId = 0;
-
-                    while ((end = mentionStr.find(' ', start)) != string::npos) {
-                        from_chars(&mentionStr[start + 2], &mentionStr[end], userId);
-                        ++mentions[userId];
-                        start = end + 1;
-                    }
-
-                    from_chars(&mentionStr[start + 2], &*mentionStr.end(), userId);
-                    ++mentions[userId];
-                }
-            } else {
-                offlineTimes[stoi(event[2])] = stoi(event[1]);
+        for (int i = 0; i < sz; ++i) {
+            while (!monoStack.empty() && strength[i] <= monoStack.back().second) {
+                minRanges[monoStack.back().first].second = i - 1;
+                monoStack.pop_back();
             }
+
+            monoStack.emplace_back(i, strength[i]);
         }
 
-        return mentions;
+        monoStack.clear();
+
+        for (int i = sz - 1; i >= 0; --i) {
+            while (!monoStack.empty() && strength[i] < monoStack.back().second) {
+                minRanges[monoStack.back().first].first = i + 1;
+                monoStack.pop_back();
+            }
+
+            monoStack.emplace_back(i, strength[i]);
+        }
+
+        const int shiftSize = 2;
+        vector<int64_t> prefixSum(sz + shiftSize);
+        vector<int64_t> prefixSumSum(sz + shiftSize);
+        partial_sum(strength.begin(), strength.end(), prefixSum.begin() + shiftSize, [modulo](int a, int b) { return (a + b) % modulo; });
+        partial_sum(prefixSum.begin(), prefixSum.end(), prefixSumSum.begin(), [modulo](int a, int b) { return (a + b) % modulo; });
+
+        int ans = 0;
+
+        for (int i = 0; i < sz; ++i) {
+            const int leftIndexSum = minRanges[i].first + shiftSize;
+            const int rightIndexSum = minRanges[i].second + shiftSize;
+            const int leftSideSize = i - minRanges[i].first + 1;
+            const int rightSideSize = minRanges[i].second - i + 1;
+
+            int64_t rangeStrength = (prefixSumSum[rightIndexSum] - prefixSumSum[i + 1] + modulo) * leftSideSize % modulo;
+            rangeStrength -= (prefixSumSum[i + 1] - prefixSumSum[leftIndexSum - 2] + modulo) * rightSideSize % modulo;
+            rangeStrength = (rangeStrength + modulo) % modulo;
+
+            ans = (rangeStrength * strength[i] + ans) % modulo;
+        }
+
+        return ans;
     }
 };
 
