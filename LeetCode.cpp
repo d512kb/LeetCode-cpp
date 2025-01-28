@@ -7,56 +7,29 @@ using namespace std;
 
 class Solution {
 public:
-    int totalStrength(vector<int>& strength) {
-        constexpr int modulo = 1e9 + 7;
-        const int sz = strength.size();
+    vector<string> findAllConcatenatedWordsInADict(vector<string>& words) {
+        unordered_set<string> wSet(words.begin(), words.end());
+        vector<string> result;
 
-        vector<pair<int, int>> minRanges(sz, { 0, sz - 1 }); // [left, right]
-        vector<pair<int, int>> monoStack; // index, value
-        monoStack.reserve(sz);
+        for (const auto& word : words) {
+            vector<char> dp(word.size() + 1);
+            dp[0] = 1;
 
-        for (int i = 0; i < sz; ++i) {
-            while (!monoStack.empty() && strength[i] <= monoStack.back().second) {
-                minRanges[monoStack.back().first].second = i - 1;
-                monoStack.pop_back();
+            for (int i = 0; i < word.size(); ++i) {
+                if (!dp[i]) { continue; }
+
+                string str;
+                for (int j = i; j < word.size(); ++j) {
+                    str.push_back(word[j]);
+
+                    if (wSet.contains(str)) { ++dp[j + 1]; }
+                }
             }
 
-            monoStack.emplace_back(i, strength[i]);
+            if (dp.back() > 1) { result.push_back(word); }
         }
 
-        monoStack.clear();
-
-        for (int i = sz - 1; i >= 0; --i) {
-            while (!monoStack.empty() && strength[i] < monoStack.back().second) {
-                minRanges[monoStack.back().first].first = i + 1;
-                monoStack.pop_back();
-            }
-
-            monoStack.emplace_back(i, strength[i]);
-        }
-
-        const int shiftSize = 2;
-        vector<int64_t> prefixSum(sz + shiftSize);
-        vector<int64_t> prefixSumSum(sz + shiftSize);
-        partial_sum(strength.begin(), strength.end(), prefixSum.begin() + shiftSize, [modulo](int a, int b) { return (a + b) % modulo; });
-        partial_sum(prefixSum.begin(), prefixSum.end(), prefixSumSum.begin(), [modulo](int a, int b) { return (a + b) % modulo; });
-
-        int ans = 0;
-
-        for (int i = 0; i < sz; ++i) {
-            const int leftIndexSum = minRanges[i].first + shiftSize;
-            const int rightIndexSum = minRanges[i].second + shiftSize;
-            const int leftSideSize = i - minRanges[i].first + 1;
-            const int rightSideSize = minRanges[i].second - i + 1;
-
-            int64_t rangeStrength = (prefixSumSum[rightIndexSum] - prefixSumSum[i + 1] + modulo) * leftSideSize % modulo;
-            rangeStrength -= (prefixSumSum[i + 1] - prefixSumSum[leftIndexSum - 2] + modulo) * rightSideSize % modulo;
-            rangeStrength = (rangeStrength + modulo) % modulo;
-
-            ans = (rangeStrength * strength[i] + ans) % modulo;
-        }
-
-        return ans;
+        return result;
     }
 };
 
