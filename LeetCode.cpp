@@ -7,29 +7,17 @@ using namespace std;
 
 class Solution {
 public:
-    vector<string> findAllConcatenatedWordsInADict(vector<string>& words) {
-        unordered_set<string> wSet(words.begin(), words.end());
-        vector<string> result;
+    int minOperations(vector<int>& nums) {
+        unordered_map<int, int> numCount;
+        for (int n : nums) { ++numCount[n]; }
 
-        for (const auto& word : words) {
-            vector<char> dp(word.size() + 1);
-            dp[0] = 1;
-
-            for (int i = 0; i < word.size(); ++i) {
-                if (!dp[i]) { continue; }
-
-                string str;
-                for (int j = i; j < word.size(); ++j) {
-                    str.push_back(word[j]);
-
-                    if (wSet.contains(str)) { ++dp[j + 1]; }
-                }
-            }
-
-            if (dp.back() > 1) { result.push_back(word); }
+        int ans = 0;
+        for (auto [n, count] : numCount) {
+            if (count == 1) { return -1; }
+            ans += ceil(count / 3.);
         }
 
-        return result;
+        return ans;
     }
 };
 
