@@ -7,9 +7,9 @@ using namespace std;
 
 class Solution {
 public:
-    int minOperations(vector<int>& nums) {
+    int minimumRounds(vector<int>& tasks) {
         unordered_map<int, int> numCount;
-        for (int n : nums) { ++numCount[n]; }
+        for (int n : tasks) { ++numCount[n]; }
 
         int ans = 0;
         for (auto [n, count] : numCount) {
