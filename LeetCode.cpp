@@ -7,17 +7,46 @@ using namespace std;
 
 class Solution {
 public:
-    int minimumRounds(vector<int>& tasks) {
-        unordered_map<int, int> numCount;
-        for (int n : tasks) { ++numCount[n]; }
+    vector<int> platesBetweenCandles(string s, vector<vector<int>>& queries) {
+        vector<int> rightCandles(s.size(), s.size() - 1);
+        vector<int> leftCandles(s.size());
+        vector<int> prefixSum(s.size());
+        int plates = 0;
 
-        int ans = 0;
-        for (auto [n, count] : numCount) {
-            if (count == 1) { return -1; }
-            ans += ceil(count / 3.);
+        for (int i = 0; i < s.size(); ++i) {
+            if (s[i] == '|') {
+                for (int j = i; j >= 0 && rightCandles[j] > i; --j) {
+                    rightCandles[j] = i;
+                }
+            } else {
+                ++plates;
+            }
+
+            prefixSum[i] = plates;
         }
 
-        return ans;
+        for (int i = s.size() - 1; i >= 0; --i) {
+            if (s[i] == '|') {
+                for (int j = i; j < s.size() && leftCandles[j] < j; ++j) {
+                    leftCandles[j] = i;
+                }
+            }
+        }
+
+        vector<int> result;
+
+        for (auto& q : queries) {
+            int leftEdge = rightCandles[q[0]];
+            int rightEdge = leftCandles[q[1]];
+
+            if (rightEdge > leftEdge) {
+                result.push_back(prefixSum[rightEdge] - prefixSum[leftEdge]);
+            } else {
+                result.push_back(0);
+            }
+        }
+
+        return result;
     }
 };
 
