@@ -7,46 +7,16 @@ using namespace std;
 
 class Solution {
 public:
-    vector<int> platesBetweenCandles(string s, vector<vector<int>>& queries) {
-        vector<int> rightCandles(s.size(), s.size() - 1);
-        vector<int> leftCandles(s.size());
-        vector<int> prefixSum(s.size());
-        int plates = 0;
+    int maximumElementAfterDecrementingAndRearranging(vector<int>& arr) {
+        sort(arr.begin(), arr.end());
+        const int sz = arr.size();
+        arr[0] = 1;
 
-        for (int i = 0; i < s.size(); ++i) {
-            if (s[i] == '|') {
-                for (int j = i; j >= 0 && rightCandles[j] > i; --j) {
-                    rightCandles[j] = i;
-                }
-            } else {
-                ++plates;
-            }
-
-            prefixSum[i] = plates;
+        for (int i = 1; i < sz; ++i) {
+            arr[i] = min(arr[i - 1] + 1, arr[i]);
         }
 
-        for (int i = s.size() - 1; i >= 0; --i) {
-            if (s[i] == '|') {
-                for (int j = i; j < s.size() && leftCandles[j] < j; ++j) {
-                    leftCandles[j] = i;
-                }
-            }
-        }
-
-        vector<int> result;
-
-        for (auto& q : queries) {
-            int leftEdge = rightCandles[q[0]];
-            int rightEdge = leftCandles[q[1]];
-
-            if (rightEdge > leftEdge) {
-                result.push_back(prefixSum[rightEdge] - prefixSum[leftEdge]);
-            } else {
-                result.push_back(0);
-            }
-        }
-
-        return result;
+        return arr[sz - 1];
     }
 };
 
