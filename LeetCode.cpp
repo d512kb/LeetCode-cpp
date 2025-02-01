@@ -7,16 +7,23 @@ using namespace std;
 
 class Solution {
 public:
-    int maximumElementAfterDecrementingAndRearranging(vector<int>& arr) {
-        sort(arr.begin(), arr.end());
-        const int sz = arr.size();
-        arr[0] = 1;
+    vector<int> deckRevealedIncreasing(vector<int>& deck) {
+        sort(deck.begin(), deck.end());
+        vector<int> result(deck.size());
 
-        for (int i = 1; i < sz; ++i) {
-            arr[i] = min(arr[i - 1] + 1, arr[i]);
+        queue<int> q;
+        for (int i = 0; i < deck.size(); ++i) {
+            q.push(i);
         }
 
-        return arr[sz - 1];
+        for (int i = 0; i < deck.size(); ++i) {
+            result[q.front()] = deck[i];
+            q.pop();
+            q.push(q.front());
+            q.pop();
+        }
+
+        return result;
     }
 };
 
