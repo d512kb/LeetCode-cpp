@@ -7,28 +7,17 @@ using namespace std;
 
 class Solution {
 public:
-    int knightDialer(int n) {
-        if (n == 1) { return 10; }
+    bool isPathCrossing(string path) {
+        set<pair<int, int>> visitedPoints{ {0, 0} };
+        pair<int, int> point;
 
-        constexpr int modulo = 1e9 + 7;
-        array<int64_t, 10> dp{ 1,1,1,1,1,0,1,1,1,1 };
-        array<int64_t, 10> dpPrev;
+        for (char c : path) {
+            if (c == 'N') { ++point.second; } else if (c == 'E') { ++point.first; } else if (c == 'S') { --point.second; } else { --point.first; }
 
-        for (--n; n > 0; --n) {
-            swap(dp, dpPrev);
-
-            dp[0] = (dpPrev[4] + dpPrev[6]) % modulo;
-            dp[1] = (dpPrev[6] + dpPrev[8]) % modulo;
-            dp[2] = (dpPrev[7] + dpPrev[9]) % modulo;
-            dp[3] = (dpPrev[4] + dpPrev[8]) % modulo;
-            dp[4] = (dpPrev[0] + dpPrev[3] + dpPrev[9]) % modulo;
-            dp[6] = (dpPrev[0] + dpPrev[1] + dpPrev[7]) % modulo;
-            dp[7] = (dpPrev[2] + dpPrev[6]) % modulo;
-            dp[8] = (dpPrev[1] + dpPrev[3]) % modulo;
-            dp[9] = (dpPrev[2] + dpPrev[4]) % modulo;
+            if (!visitedPoints.insert(point).second) { return true; }
         }
 
-        return accumulate(dp.begin(), dp.end(), 0l) % modulo;
+        return false;
     }
 };
 
