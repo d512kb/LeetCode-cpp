@@ -7,14 +7,29 @@ using namespace std;
 
 class Solution {
 public:
-    string customSortString(string order, string s) {
-        array<char, 26> positions;
-        for (int i = 0; i < order.size(); ++i) {
-            positions[order[i] - 'a'] = i;
+    int countNicePairs(vector<int>& nums) {
+        constexpr int modulo = 1e9 + 7;
+        unordered_map<int64_t, int64_t> revCount;
+
+        for (int n : nums) {
+            int64_t num = n;
+            int64_t rev = 0;
+
+            while (n) {
+                rev = rev * 10 + n % 10;
+                n /= 10;
+            }
+
+            ++revCount[num - rev];
         }
 
-        sort(s.begin(), s.end(), [&positions](char a, char b) { return positions[a - 'a'] < positions[b - 'a']; });
-        return s;
+        int ans = 0;
+        for (auto [num, count] : revCount) {
+            ans += ((count - 1) * count / 2) % modulo;
+            ans %= modulo;
+        };
+
+        return ans;
     }
 };
 
