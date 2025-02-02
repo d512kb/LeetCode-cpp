@@ -7,31 +7,32 @@ using namespace std;
 
 class Solution {
 public:
-    int amountOfTime(TreeNode* root, int start) {
+    int maxEvents(vector<vector<int>>& events) {
+        vector<pair<int, int>> eventsTimes;
+        eventsTimes.reserve(events.size());
+
+        for (const auto& e : events) { eventsTimes.emplace_back(e[0], e[1]); }
+        sort(eventsTimes.begin(), eventsTimes.end());
+
+        auto cmp = [](const auto& e1, const auto& e2) { return e1.second > e2.second; };
+        priority_queue<pair<int, int>, vector<pair<int, int>>, decltype(cmp)> pq;
+        auto eventsTimesIter = eventsTimes.begin();
         int ans = 0;
 
-        dfs(root, start, ans);
+        for (int day = eventsTimes[0].first; !pq.empty() || eventsTimesIter != eventsTimes.end(); ++day) {
+            while (!pq.empty() && pq.top().second < day) { pq.pop(); }
+
+            while (eventsTimesIter != eventsTimes.end() && eventsTimesIter->first == day) {
+                pq.push(std::move(*eventsTimesIter++));
+            }
+
+            if (!pq.empty()) {
+                ++ans;
+                pq.pop();
+            }
+        }
 
         return ans;
-    }
-private:
-    int dfs(TreeNode* node, int start, int& result) {
-        if (!node) { return 0; }
-
-        int left = dfs(node->left, start, result);
-        int right = dfs(node->right, start, result);
-
-        if (node->val == start) {
-            result = max(left, right);
-            return -1;
-        }
-
-        if (left >= 0 && right >= 0) {
-            return max(left, right) + 1;
-        }
-
-        result = max(result, abs(left) + abs(right));
-        return min(left, right) - 1;
     }
 };
 
