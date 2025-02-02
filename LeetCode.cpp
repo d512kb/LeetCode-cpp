@@ -7,23 +7,22 @@ using namespace std;
 
 class Solution {
 public:
-    vector<int> deckRevealedIncreasing(vector<int>& deck) {
-        sort(deck.begin(), deck.end());
-        vector<int> result(deck.size());
+    int maxDifference(string s) {
+        array<int, 26> charCount{};
 
-        queue<int> q;
-        for (int i = 0; i < deck.size(); ++i) {
-            q.push(i);
+        for (char c : s) {
+            ++charCount[c - 'a'];
         }
 
-        for (int i = 0; i < deck.size(); ++i) {
-            result[q.front()] = deck[i];
-            q.pop();
-            q.push(q.front());
-            q.pop();
+        int maxF = 0;
+        int minF = s.size();
+        for (int f : charCount) {
+            if (f == 0) { continue; }
+
+            if (f % 2) { maxF = max(maxF, f); } else { minF = min(minF, f); }
         }
 
-        return result;
+        return maxF - minF;
     }
 };
 
