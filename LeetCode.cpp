@@ -7,22 +7,14 @@ using namespace std;
 
 class Solution {
 public:
-    int maxDifference(string s) {
-        array<int, 26> charCount{};
-
-        for (char c : s) {
-            ++charCount[c - 'a'];
+    string customSortString(string order, string s) {
+        array<char, 26> positions;
+        for (int i = 0; i < order.size(); ++i) {
+            positions[order[i] - 'a'] = i;
         }
 
-        int maxF = 0;
-        int minF = s.size();
-        for (int f : charCount) {
-            if (f == 0) { continue; }
-
-            if (f % 2) { maxF = max(maxF, f); } else { minF = min(minF, f); }
-        }
-
-        return maxF - minF;
+        sort(s.begin(), s.end(), [&positions](char a, char b) { return positions[a - 'a'] < positions[b - 'a']; });
+        return s;
     }
 };
 
