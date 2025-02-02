@@ -7,29 +7,33 @@ using namespace std;
 
 class Solution {
 public:
-    int countNicePairs(vector<int>& nums) {
-        constexpr int modulo = 1e9 + 7;
-        unordered_map<int64_t, int64_t> revCount;
+    int pseudoPalindromicPaths(TreeNode* root) {
+        array<char, 10> numCounts{};
+        int pathCount = 0;
 
-        for (int n : nums) {
-            int64_t num = n;
-            int64_t rev = 0;
+        traverseTree(root, numCounts, pathCount);
 
-            while (n) {
-                rev = rev * 10 + n % 10;
-                n /= 10;
+        return pathCount;
+    }
+private:
+    void traverseTree(TreeNode* node, array<char, 10>& numCounts, int& pathCount) {
+        if (!node) { return; }
+
+        ++numCounts[node->val];
+
+        if (node->left || node->right) {
+            traverseTree(node->left, numCounts, pathCount);
+            traverseTree(node->right, numCounts, pathCount);
+        } else {
+            int oddCount = 0;
+            for (char c : numCounts) {
+                if (c % 2) { ++oddCount; }
             }
 
-            ++revCount[num - rev];
+            if (oddCount <= 1) { ++pathCount; }
         }
 
-        int ans = 0;
-        for (auto [num, count] : revCount) {
-            ans += ((count - 1) * count / 2) % modulo;
-            ans %= modulo;
-        };
-
-        return ans;
+        --numCounts[node->val];
     }
 };
 
