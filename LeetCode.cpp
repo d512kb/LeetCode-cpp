@@ -7,28 +7,18 @@ using namespace std;
 
 class Solution {
 public:
-    int maxEvents(vector<vector<int>>& events) {
-        vector<pair<int, int>> eventsTimes;
-        eventsTimes.reserve(events.size());
+    double largestTriangleArea(vector<vector<int>>& points) {
+        double ans = 0;
 
-        for (const auto& e : events) { eventsTimes.emplace_back(e[0], e[1]); }
-        sort(eventsTimes.begin(), eventsTimes.end());
+        for (int i = 0; i < points.size(); ++i) {
+            for (int j = i + 1; j < points.size(); ++j) {
+                for (int k = j + 1; k < points.size(); ++k) {
+                    double area = 0.5 * abs(points[i][0] * (points[j][1] - points[k][1]) +
+                                            points[j][0] * (points[k][1] - points[i][1]) +
+                                            points[k][0] * (points[i][1] - points[j][1]));
 
-        auto cmp = [](const auto& e1, const auto& e2) { return e1.second > e2.second; };
-        priority_queue<pair<int, int>, vector<pair<int, int>>, decltype(cmp)> pq;
-        auto eventsTimesIter = eventsTimes.begin();
-        int ans = 0;
-
-        for (int day = eventsTimes[0].first; !pq.empty() || eventsTimesIter != eventsTimes.end(); ++day) {
-            while (!pq.empty() && pq.top().second < day) { pq.pop(); }
-
-            while (eventsTimesIter != eventsTimes.end() && eventsTimesIter->first == day) {
-                pq.push(std::move(*eventsTimesIter++));
-            }
-
-            if (!pq.empty()) {
-                ++ans;
-                pq.pop();
+                    ans = max(ans, area);
+                }
             }
         }
 
