@@ -7,22 +7,20 @@ using namespace std;
 
 class Solution {
 public:
-    double largestTriangleArea(vector<vector<int>>& points) {
-        double ans = 0;
+    vector<int> relativeSortArray(vector<int>& arr1, vector<int>& arr2) {
+        vector<int16_t> positions(1001, 1000);
 
-        for (int i = 0; i < points.size(); ++i) {
-            for (int j = i + 1; j < points.size(); ++j) {
-                for (int k = j + 1; k < points.size(); ++k) {
-                    double area = 0.5 * abs(points[i][0] * (points[j][1] - points[k][1]) +
-                                            points[j][0] * (points[k][1] - points[i][1]) +
-                                            points[k][0] * (points[i][1] - points[j][1]));
+        for (int i = 0; i < arr2.size(); ++i) { positions[arr2[i]] = i; }
 
-                    ans = max(ans, area);
-                }
-            }
-        }
+        auto cmp = [&positions](int a, int b) {
+            if (positions[a] == positions[b]) { return a < b; }
 
-        return ans;
+            return positions[a] < positions[b];
+        };
+
+        sort(arr1.begin(), arr1.end(), cmp);
+
+        return arr1;
     }
 };
 
