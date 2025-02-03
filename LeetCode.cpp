@@ -7,30 +7,28 @@ using namespace std;
 
 class Solution {
 public:
-    int sumSubarrayMins(vector<int>& arr) {
-        const int sz = arr.size();
-        constexpr int modulo = 1e9 + 7;
-        stack<int> monoStack;
-        vector<int> dp(sz);
-        int ans = 0;
+    vector<int> nextGreaterElements(vector<int>& nums) {
+        const int sz = nums.size();
+        vector<int> result(sz, -1);
+        vector<uint16_t> monoStack;
 
         for (int i = 0; i < sz; ++i) {
-            while (!monoStack.empty() && arr[monoStack.top()] >= arr[i]) {
-                monoStack.pop();
+            while (!monoStack.empty() && nums[monoStack.back()] < nums[i]) {
+                result[monoStack.back()] = nums[i];
+                monoStack.pop_back();
             }
 
-            if (monoStack.empty()) {
-                dp[i] = arr[i] * (i + 1) % modulo;
-            } else {
-                int j = monoStack.top();
-                dp[i] = (dp[j] + (i - j) * arr[i]) % modulo;
-            }
-
-            monoStack.push(i);
-            ans = (ans + dp[i]) % modulo;
+            monoStack.push_back(i);
         }
 
-        return ans;
+        for (int i = 0; i < monoStack.back(); ++i) {
+            while (nums[monoStack.back()] < nums[i]) {
+                result[monoStack.back()] = nums[i];
+                monoStack.pop_back();
+            }
+        }
+
+        return result;
     }
 };
 
