@@ -7,20 +7,30 @@ using namespace std;
 
 class Solution {
 public:
-    vector<int> relativeSortArray(vector<int>& arr1, vector<int>& arr2) {
-        vector<int16_t> positions(1001, 1000);
+    int sumSubarrayMins(vector<int>& arr) {
+        const int sz = arr.size();
+        constexpr int modulo = 1e9 + 7;
+        stack<int> monoStack;
+        vector<int> dp(sz);
+        int ans = 0;
 
-        for (int i = 0; i < arr2.size(); ++i) { positions[arr2[i]] = i; }
+        for (int i = 0; i < sz; ++i) {
+            while (!monoStack.empty() && arr[monoStack.top()] >= arr[i]) {
+                monoStack.pop();
+            }
 
-        auto cmp = [&positions](int a, int b) {
-            if (positions[a] == positions[b]) { return a < b; }
+            if (monoStack.empty()) {
+                dp[i] = arr[i] * (i + 1) % modulo;
+            } else {
+                int j = monoStack.top();
+                dp[i] = (dp[j] + (i - j) * arr[i]) % modulo;
+            }
 
-            return positions[a] < positions[b];
-        };
+            monoStack.push(i);
+            ans = (ans + dp[i]) % modulo;
+        }
 
-        sort(arr1.begin(), arr1.end(), cmp);
-
-        return arr1;
+        return ans;
     }
 };
 
