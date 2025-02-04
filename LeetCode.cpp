@@ -7,30 +7,42 @@ using namespace std;
 
 class Solution {
 public:
-    int largestSubmatrix(vector<vector<int>>& matrix) {
-        const int rows = matrix.size();
-        const int cols = matrix.front().size();
-        int ans = 0;
+    string discountPrices(string sentence, int discount) {
+        string result;
+        int from = 0;
+        int to = 0;
 
-        if (rows == 1) { return count(matrix[0].begin(), matrix[0].end(), 1); }
+        while ((to = sentence.find(' ', from)) != string::npos) {
+            auto val = parsePrice(sentence, from, to);
 
-        for (int row = 1; row < rows; ++row) {
-            for (int col = 0; col < cols; ++col) {
-                if (matrix[row][col] == 1) {
-                    matrix[row][col] = 1 + matrix[row - 1][col];
-                }
+            if (val && val.value() > 0) {
+                result.append(format("${:.2f} ", val.value() * (100 - discount) / 100));
+            } else {
+                result.append(sentence.data() + from, to - from + 1);
             }
+
+            from = to + 1;
         }
 
-        for (auto& row : matrix) {
-            sort(row.begin(), row.end(), greater<>());
-
-            for (int i = 0; i < cols; ++i) {
-                ans = max(ans, row[i] * (i + 1));
-            }
+        auto val = parsePrice(sentence, from, sentence.size());
+        if (val && val.value() > 0) {
+            result.append(format("${:.2f}", val.value() * (100 - discount) / 100));
+        } else {
+            result.append(sentence.data() + from, sentence.size() - from);
         }
 
-        return ans;
+        return result;
+    }
+private:
+    std::optional<double> parsePrice(const string& str, int from, int to) {
+        if (str.empty() || str[from] != '$') { return nullopt; }
+
+        double result = 0;
+        if (from_chars(1 + str.data() + from, str.data() + to, result, std::chars_format::fixed).ptr == &str[to]) {
+            return result;
+        }
+
+        return nullopt;
     }
 };
 
