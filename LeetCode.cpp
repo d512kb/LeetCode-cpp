@@ -7,28 +7,30 @@ using namespace std;
 
 class Solution {
 public:
-    vector<int> nextGreaterElements(vector<int>& nums) {
-        const int sz = nums.size();
-        vector<int> result(sz, -1);
-        vector<uint16_t> monoStack;
+    int largestSubmatrix(vector<vector<int>>& matrix) {
+        const int rows = matrix.size();
+        const int cols = matrix.front().size();
+        int ans = 0;
 
-        for (int i = 0; i < sz; ++i) {
-            while (!monoStack.empty() && nums[monoStack.back()] < nums[i]) {
-                result[monoStack.back()] = nums[i];
-                monoStack.pop_back();
-            }
+        if (rows == 1) { return count(matrix[0].begin(), matrix[0].end(), 1); }
 
-            monoStack.push_back(i);
-        }
-
-        for (int i = 0; i < monoStack.back(); ++i) {
-            while (nums[monoStack.back()] < nums[i]) {
-                result[monoStack.back()] = nums[i];
-                monoStack.pop_back();
+        for (int row = 1; row < rows; ++row) {
+            for (int col = 0; col < cols; ++col) {
+                if (matrix[row][col] == 1) {
+                    matrix[row][col] = 1 + matrix[row - 1][col];
+                }
             }
         }
 
-        return result;
+        for (auto& row : matrix) {
+            sort(row.begin(), row.end(), greater<>());
+
+            for (int i = 0; i < cols; ++i) {
+                ans = max(ans, row[i] * (i + 1));
+            }
+        }
+
+        return ans;
     }
 };
 
