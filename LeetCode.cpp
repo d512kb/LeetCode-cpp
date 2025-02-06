@@ -6,44 +6,43 @@
 using namespace std;
 
 class Solution {
+    using Tree = pair<int, int>;
 public:
-    string discountPrices(string sentence, int discount) {
-        string result;
-        int from = 0;
-        int to = 0;
+    vector<vector<int>> outerTrees(vector<vector<int>>& trees) {
+        const int sz = trees.size();
 
-        while ((to = sentence.find(' ', from)) != string::npos) {
-            auto val = parsePrice(sentence, from, to);
+        sort(trees.begin(), trees.end());
+        vector<Tree> upperFence;
+        vector<Tree> bottomFence;
 
-            if (val && val.value() > 0) {
-                result.append(format("${:.2f} ", val.value() * (100 - discount) / 100));
-            } else {
-                result.append(sentence.data() + from, to - from + 1);
+        for (const auto& tr : trees) {
+            auto tree = make_pair(tr[0], tr[1]);
+
+            while (upperFence.size() >= 2 && calcAngle(upperFence[upperFence.size() - 2], upperFence.back(), tree) > 0) {
+                upperFence.pop_back();
             }
 
-            from = to + 1;
+            while (bottomFence.size() >= 2 && calcAngle(bottomFence[bottomFence.size() - 2], bottomFence.back(), tree) < 0) {
+                bottomFence.pop_back();
+            }
+
+            upperFence.push_back(tree);
+            bottomFence.push_back(tree);
         }
 
-        auto val = parsePrice(sentence, from, sentence.size());
-        if (val && val.value() > 0) {
-            result.append(format("${:.2f}", val.value() * (100 - discount) / 100));
-        } else {
-            result.append(sentence.data() + from, sentence.size() - from);
-        }
+        move(bottomFence.begin(), bottomFence.end(), back_inserter(upperFence));
+        sort(upperFence.begin(), upperFence.end());
+        auto upperFenceEnd = unique(upperFence.begin(), upperFence.end());
+
+        vector<vector<int>> result;
+        transform(upperFence.begin(), upperFenceEnd, back_inserter(result), [](const auto& p) { return vector<int>{p.first, p.second}; });
 
         return result;
     }
 private:
-    std::optional<double> parsePrice(const string& str, int from, int to) {
-        if (str.empty() || str[from] != '$') { return nullopt; }
-
-        double result = 0;
-        if (from_chars(1 + str.data() + from, str.data() + to, result, std::chars_format::fixed).ptr == &str[to]) {
-            return result;
-        }
-
-        return nullopt;
-    }
+    int calcAngle(const Tree& a, const Tree& b, const Tree& c) {
+        return (c.second - a.second) * (b.first - a.first) - (b.second - a.second) * (c.first - a.first);
+    };
 };
 
 int main()
