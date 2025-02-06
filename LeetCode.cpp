@@ -6,43 +6,22 @@
 using namespace std;
 
 class Solution {
-    using Tree = pair<int, int>;
 public:
-    vector<vector<int>> outerTrees(vector<vector<int>>& trees) {
-        const int sz = trees.size();
+    bool isPossibleDivide(vector<int>& nums, int k) {
+        if (nums.size() % k) { return false; }
 
-        sort(trees.begin(), trees.end());
-        vector<Tree> upperFence;
-        vector<Tree> bottomFence;
+        multiset<int> st(nums.begin(), nums.end());
 
-        for (const auto& tr : trees) {
-            auto tree = make_pair(tr[0], tr[1]);
+        while (!st.empty()) {
+            int min = st.extract(st.begin()).value();
 
-            while (upperFence.size() >= 2 && calcAngle(upperFence[upperFence.size() - 2], upperFence.back(), tree) > 0) {
-                upperFence.pop_back();
+            for (int i = 1; i < k; ++i) {
+                if (!st.extract(++min)) { return false; }
             }
-
-            while (bottomFence.size() >= 2 && calcAngle(bottomFence[bottomFence.size() - 2], bottomFence.back(), tree) < 0) {
-                bottomFence.pop_back();
-            }
-
-            upperFence.push_back(tree);
-            bottomFence.push_back(tree);
         }
 
-        move(bottomFence.begin(), bottomFence.end(), back_inserter(upperFence));
-        sort(upperFence.begin(), upperFence.end());
-        auto upperFenceEnd = unique(upperFence.begin(), upperFence.end());
-
-        vector<vector<int>> result;
-        transform(upperFence.begin(), upperFenceEnd, back_inserter(result), [](const auto& p) { return vector<int>{p.first, p.second}; });
-
-        return result;
+        return true;
     }
-private:
-    int calcAngle(const Tree& a, const Tree& b, const Tree& c) {
-        return (c.second - a.second) * (b.first - a.first) - (b.second - a.second) * (c.first - a.first);
-    };
 };
 
 int main()
