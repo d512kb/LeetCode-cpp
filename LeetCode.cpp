@@ -7,16 +7,26 @@ using namespace std;
 
 class Solution {
 public:
-    bool isPossibleDivide(vector<int>& nums, int k) {
-        if (nums.size() % k) { return false; }
+    bool isPossible(vector<int>& nums) {
+        unordered_map<int, int> countOfNums;
+        unordered_map<int, int> availableNums;
 
-        multiset<int> st(nums.begin(), nums.end());
+        for (int n : nums) { ++countOfNums[n]; }
 
-        while (!st.empty()) {
-            int min = st.extract(st.begin()).value();
+        for (int n : nums) {
+            if (countOfNums[n] == 0) { continue; }
 
-            for (int i = 1; i < k; ++i) {
-                if (!st.extract(++min)) { return false; }
+            if (availableNums[n] > 0) {
+                --countOfNums[n];
+                --availableNums[n];
+                ++availableNums[n + 1];
+            } else {
+                if (countOfNums[n + 1] == 0 || countOfNums[n + 2] == 0) { return false; }
+
+                --countOfNums[n];
+                --countOfNums[n + 1];
+                --countOfNums[n + 2];
+                ++availableNums[n + 3];
             }
         }
 
