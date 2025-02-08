@@ -7,27 +7,14 @@ using namespace std;
 
 class Solution {
 public:
-    bool validateStackSequences(vector<int>& pushed, vector<int>& popped) {
-        stack<int> st;
-        st.push(-1);
+    bool flipEquiv(TreeNode* root1, TreeNode* root2) {
+        if (!root1 && !root2) { return true; }
+        if (!root1 || !root2) { return false; }
 
-        auto pushIter = pushed.begin();
-        auto popIter = popped.begin();
+        if (root1->val != root2->val) { return false; }
 
-        while (popIter != popped.end()) {
-            while (st.top() != *popIter && pushIter != pushed.end()) {
-                st.push(*pushIter++);
-            }
-
-            if (st.top() == *popIter) {
-                st.pop();
-                ++popIter;
-            } else {
-                return false;
-            }
-        }
-
-        return true;
+        return (flipEquiv(root1->left, root2->left) && flipEquiv(root1->right, root2->right)) || 
+            (flipEquiv(root1->left, root2->right) && flipEquiv(root1->right, root2->left));
     }
 };
 
