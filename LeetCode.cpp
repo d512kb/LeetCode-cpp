@@ -6,31 +6,80 @@
 using namespace std;
 
 class Solution {
-public:
-    bool isPossible(vector<int>& nums) {
-        unordered_map<int, int> countOfNums;
-        unordered_map<int, int> availableNums;
+    class DSet {
+    public:
+        explicit DSet(size_t size) : m_parent(size, -1) {
 
-        for (int n : nums) { ++countOfNums[n]; }
+        }
 
-        for (int n : nums) {
-            if (countOfNums[n] == 0) { continue; }
+        int find(int value) {
+            if (m_parent[value] < 0) { return value; }
+            return m_parent[value] = find(m_parent[value]);
+        }
 
-            if (availableNums[n] > 0) {
-                --countOfNums[n];
-                --availableNums[n];
-                ++availableNums[n + 1];
+        void erase(int value) {
+            m_parent[value] = -1;
+        }
+
+        void join(int a, int b) {
+            a = find(a);
+            b = find(b);
+
+            if (a == b) { return; }
+
+            auto& parentA = m_parent[a];
+            auto& parentB = m_parent[b];
+
+            if (parentA < parentB) { // size, negative
+                parentA += parentB;
+                parentB = a;
             } else {
-                if (countOfNums[n + 1] == 0 || countOfNums[n + 2] == 0) { return false; }
+                parentB += parentA;
+                parentA = b;
+            }
+        }
+    private:
+        vector<int> m_parent;
+    };
+public:
+    vector<int> findAllPeople(int n, vector<vector<int>>& meetings, int firstPerson) {
+        auto cmp = [](const auto& m1, const auto& m2) { return m1[2] < m2[2]; };
+        sort(meetings.begin(), meetings.end(), cmp);
 
-                --countOfNums[n];
-                --countOfNums[n + 1];
-                --countOfNums[n + 2];
-                ++availableNums[n + 3];
+        DSet dset(n);
+        dset.join(0, firstPerson);
+
+        auto startTime = meetings.begin();
+        while (startTime != meetings.end()) {
+            int currentTime = (*startTime)[2];
+            auto endTime = startTime;
+
+            for (endTime; endTime != meetings.end() && (*endTime)[2] == currentTime; ++endTime) {
+                const auto& met = *endTime;
+                dset.join(met[0], met[1]);
+            }
+
+            int secretKeeper = dset.find(0);
+
+            for (startTime; startTime != endTime; ++startTime) {
+                int part1 = (*startTime)[0];
+                int part2 = (*startTime)[1];
+
+                if (dset.find(part1) != secretKeeper) {
+                    dset.erase(part1);
+                    dset.erase(part2);
+                }
             }
         }
 
-        return true;
+        int secretKeeper = dset.find(0);
+        vector<int> result;
+
+        while (--n >= 0) {
+            if (dset.find(n) == secretKeeper) { result.push_back(n); }
+        }
+
+        return result;
     }
 };
 
