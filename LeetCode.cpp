@@ -7,38 +7,31 @@ using namespace std;
 
 class Solution {
 public:
-    vector<vector<int>> sortMatrix(vector<vector<int>>& grid) {
-        int sz = grid.size();
+    vector<vector<string>> printTree(TreeNode* root) {
+        int rows = calcHeight(root);
+        int cols = (1 << rows) - 1;
 
-        for (int colInit = sz - 1; colInit > 0; --colInit) {
-            vector<int> values;
+        vector<vector<string>> result(rows, vector<string>(cols));
 
-            for (int row = 0, col = colInit; col < sz; ++row, ++col) {
-                values.push_back(grid[row][col]);
-            }
+        printTree(root, 0, 0, cols, result);
 
-            sort(values.begin(), values.end());
+        return result;
+    }
+private:
+    int calcHeight(TreeNode* node) {
+        if (!node) { return 0; }
 
-            for (int row = 0, col = colInit; col < sz; ++row, ++col) {
-                grid[row][col] = values[row];
-            }
-        }
+        return 1 + max(calcHeight(node->left), calcHeight(node->right));
+    }
 
-        for (int rowInit = 0; rowInit < sz; ++rowInit) {
-            vector<int> values;
+    void printTree(TreeNode* node, int level, int begin, int end, vector<vector<string>>& output) {
+        if (!node) { return; }
+        int midPoint = (begin + end) / 2;
 
-            for (int row = rowInit, col = 0; row < sz; ++row, ++col) {
-                values.push_back(grid[row][col]);
-            }
+        output[level][midPoint] = to_string(node->val);
 
-            sort(values.begin(), values.end(), greater<>{});
-
-            for (int row = rowInit, col = 0; row < sz; ++row, ++col) {
-                grid[row][col] = values[col];
-            }
-        }
-
-        return grid;
+        printTree(node->left, level + 1, begin, midPoint, output);
+        printTree(node->right, level + 1, midPoint, end, output);
     }
 };
 
