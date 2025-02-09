@@ -5,25 +5,37 @@
 
 using namespace std;
 
+
+// Definition for Employee.
+class Employee {
+public:
+    int id;
+    int importance;
+    vector<int> subordinates;
+};
+
 class Solution {
 public:
-    int countPalindromicSubsequence(string s) {
-        int ans = 0;
+    int getImportance(vector<Employee*> employees, int id) {
+        vector<Employee*> graph(2001);
 
-        for (char c = 'a'; c <= 'z'; ++c) {
-            auto from = s.find(c);
-            auto to = s.find_last_of(c);
-
-            if (from == string::npos) { continue; }
-            array<char, 26> diffChars{};
-
-            for (auto k = from + 1; k < to; ++k) {
-                diffChars[s[k] - 'a'] = 1;
-            }
-            ans += count(diffChars.begin(), diffChars.end(), 1);
+        for (auto empl : employees) {
+            graph[empl->id] = empl;
         }
 
-        return ans;
+        return calcImportance(graph, id);
+    }
+private:
+    int calcImportance(const vector<Employee*>& employees, int id) {
+        if (!employees[id]) { return 0; }
+
+        int importance = employees[id]->importance;
+
+        for (int subId : employees[id]->subordinates) {
+            importance += calcImportance(employees, subId);
+        }
+
+        return importance;
     }
 };
 
