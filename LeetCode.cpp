@@ -5,11 +5,24 @@
 
 using namespace std;
 
-class Solution {
+class MyCalendar {
 public:
-    int sum(int num1, int num2) {
-        return num1 + num2;
+    MyCalendar() {
+
     }
+
+    bool book(int startTime, int endTime) {
+        auto nextEvent = m_events.lower_bound(endTime);
+
+        if (nextEvent == m_events.begin() || prev(nextEvent)->second <= startTime) {
+            m_events[startTime] = endTime;
+            return true;
+        }
+
+        return false;
+    }
+private:
+    map<int, int> m_events;
 };
 
 int main()
