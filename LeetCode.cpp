@@ -7,24 +7,25 @@ using namespace std;
 
 class Solution {
 public:
-    int minDominoRotations(vector<int>& tops, vector<int>& bottoms) {
-        const int sz = tops.size();
-        array<int, 7> top{}, bottom{}, both{};
+    vector<int> assignElements(vector<int>& groups, vector<int>& elements) {
+        const int divSz = *max_element(groups.begin(), groups.end()) + 1;
+        vector<int> divisors(divSz, -1);
 
-        for (int i = 0; i < sz; ++i) {
-            if (tops[i] != bottoms[i]) {
-                ++top[tops[i]];
-                ++bottom[bottoms[i]];
-            } else {
-                ++both[tops[i]];
+        for (int i = 0; i < elements.size(); ++i) {
+            int elem = elements[i];
+            if (elem < divSz && divisors[elem] != -1) { continue; }
+            for (int el = elem; el < divSz; el += elem) {
+                if (divisors[el] == -1) {
+                    divisors[el] = i;
+                }
             }
         }
 
-        for (int i = 1; i <= 6; ++i) {
-            if (top[i] + bottom[i] == sz - both[i]) { return min(top[i], bottom[i]); }
+        for (int& gr : groups) {
+            gr = divisors[gr];
         }
 
-        return -1;
+        return groups;
     }
 };
 
