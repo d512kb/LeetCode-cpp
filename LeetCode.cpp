@@ -7,31 +7,26 @@ using namespace std;
 
 class Solution {
 public:
-    vector<vector<string>> printTree(TreeNode* root) {
-        int rows = calcHeight(root);
-        int cols = (1 << rows) - 1;
+    vector<int> kthSmallestPrimeFraction(vector<int>& arr, int k) {
+        const int last = arr.size() - 1;
 
-        vector<vector<string>> result(rows, vector<string>(cols));
+        using FractionState = pair<double, pair<int, int>>;
+        priority_queue<FractionState, vector<FractionState>, greater<>> pq;
 
-        printTree(root, 0, 0, cols, result);
+        for (int i = 0; i < last; ++i) {
+            pq.emplace(1. * arr[i] / arr[last], make_pair(i, last));
+        }
 
-        return result;
-    }
-private:
-    int calcHeight(TreeNode* node) {
-        if (!node) { return 0; }
+        while (--k) {
+            auto state = pq.top();
+            pq.pop();
 
-        return 1 + max(calcHeight(node->left), calcHeight(node->right));
-    }
+            state.first = 1. * arr[state.second.first] / arr[--state.second.second];
 
-    void printTree(TreeNode* node, int level, int begin, int end, vector<vector<string>>& output) {
-        if (!node) { return; }
-        int midPoint = (begin + end) / 2;
+            if (state.first < 1) { pq.push(state); }
+        }
 
-        output[level][midPoint] = to_string(node->val);
-
-        printTree(node->left, level + 1, begin, midPoint, output);
-        printTree(node->right, level + 1, midPoint, end, output);
+        return { arr[pq.top().second.first], arr[pq.top().second.second] };
     }
 };
 
