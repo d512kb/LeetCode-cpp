@@ -7,26 +7,16 @@ using namespace std;
 
 class Solution {
 public:
-    vector<int> kthSmallestPrimeFraction(vector<int>& arr, int k) {
-        const int last = arr.size() - 1;
+    int countTime(string time) {
+        int ans = 1;
 
-        using FractionState = pair<double, pair<int, int>>;
-        priority_queue<FractionState, vector<FractionState>, greater<>> pq;
+        if (time[0] == '?' && time[1] == '?') { ans *= 24; }
+        else if (time[0] == '?') { ans *= 2 + (time[1] - '0' < 4); }
+        else if (time[1] == '?') { if (time[0] == '2') ans *= 4; else ans *= 10; }
+        if (time[3] == '?') { ans *= 6; }
+        if (time[4] == '?') { ans *= 10; }
 
-        for (int i = 0; i < last; ++i) {
-            pq.emplace(1. * arr[i] / arr[last], make_pair(i, last));
-        }
-
-        while (--k) {
-            auto state = pq.top();
-            pq.pop();
-
-            state.first = 1. * arr[state.second.first] / arr[--state.second.second];
-
-            if (state.first < 1) { pq.push(state); }
-        }
-
-        return { arr[pq.top().second.first], arr[pq.top().second.second] };
+        return ans;
     }
 };
 
