@@ -7,26 +7,23 @@ using namespace std;
 
 class Solution {
 public:
-    int averageOfSubtree(TreeNode* root) {
+    int countPalindromicSubsequence(string s) {
         int ans = 0;
 
-        subtreeSize(root, ans);
+        for (char c = 'a'; c <= 'z'; ++c) {
+            auto from = s.find(c);
+            auto to = s.find_last_of(c);
+
+            if (from == string::npos) { continue; }
+            array<char, 26> diffChars{};
+
+            for (auto k = from + 1; k < to; ++k) {
+                diffChars[s[k] - 'a'] = 1;
+            }
+            ans += count(diffChars.begin(), diffChars.end(), 1);
+        }
 
         return ans;
-    }
-private:
-    pair<int, int> subtreeSize(TreeNode* node, int& equalNodesNumber) {
-        if (!node) { return {}; }
-
-        auto leftTree = subtreeSize(node->left, equalNodesNumber);
-        auto rightTree = subtreeSize(node->right, equalNodesNumber);
-
-        leftTree.first += node->val + rightTree.first;
-        leftTree.second += 1 + rightTree.second;
-
-        if (leftTree.first / leftTree.second == node->val) { ++equalNodesNumber; }
-
-        return leftTree;
     }
 };
 
