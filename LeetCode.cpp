@@ -7,25 +7,38 @@ using namespace std;
 
 class Solution {
 public:
-    vector<int> assignElements(vector<int>& groups, vector<int>& elements) {
-        const int divSz = *max_element(groups.begin(), groups.end()) + 1;
-        vector<int> divisors(divSz, -1);
+    vector<vector<int>> sortMatrix(vector<vector<int>>& grid) {
+        int sz = grid.size();
 
-        for (int i = 0; i < elements.size(); ++i) {
-            int elem = elements[i];
-            if (elem < divSz && divisors[elem] != -1) { continue; }
-            for (int el = elem; el < divSz; el += elem) {
-                if (divisors[el] == -1) {
-                    divisors[el] = i;
-                }
+        for (int colInit = sz - 1; colInit > 0; --colInit) {
+            vector<int> values;
+
+            for (int row = 0, col = colInit; col < sz; ++row, ++col) {
+                values.push_back(grid[row][col]);
+            }
+
+            sort(values.begin(), values.end());
+
+            for (int row = 0, col = colInit; col < sz; ++row, ++col) {
+                grid[row][col] = values[row];
             }
         }
 
-        for (int& gr : groups) {
-            gr = divisors[gr];
+        for (int rowInit = 0; rowInit < sz; ++rowInit) {
+            vector<int> values;
+
+            for (int row = rowInit, col = 0; row < sz; ++row, ++col) {
+                values.push_back(grid[row][col]);
+            }
+
+            sort(values.begin(), values.end(), greater<>{});
+
+            for (int row = rowInit, col = 0; row < sz; ++row, ++col) {
+                grid[row][col] = values[col];
+            }
         }
 
-        return groups;
+        return grid;
     }
 };
 
