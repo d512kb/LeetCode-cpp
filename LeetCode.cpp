@@ -5,24 +5,29 @@
 
 using namespace std;
 
-class MyCalendar {
+class Solution {
 public:
-    MyCalendar() {
+    int averageOfSubtree(TreeNode* root) {
+        int ans = 0;
 
-    }
+        subtreeSize(root, ans);
 
-    bool book(int startTime, int endTime) {
-        auto nextEvent = m_events.lower_bound(endTime);
-
-        if (nextEvent == m_events.begin() || prev(nextEvent)->second <= startTime) {
-            m_events[startTime] = endTime;
-            return true;
-        }
-
-        return false;
+        return ans;
     }
 private:
-    map<int, int> m_events;
+    pair<int, int> subtreeSize(TreeNode* node, int& equalNodesNumber) {
+        if (!node) { return {}; }
+
+        auto leftTree = subtreeSize(node->left, equalNodesNumber);
+        auto rightTree = subtreeSize(node->right, equalNodesNumber);
+
+        leftTree.first += node->val + rightTree.first;
+        leftTree.second += 1 + rightTree.second;
+
+        if (leftTree.first / leftTree.second == node->val) { ++equalNodesNumber; }
+
+        return leftTree;
+    }
 };
 
 int main()
