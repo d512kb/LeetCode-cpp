@@ -6,41 +6,42 @@
 using namespace std;
 
 class Solution {
-    struct CellVisit {
+    struct Cell {
         int row{};
         int col{};
-        int visitCost{};
+        int cost{};
+
+        bool operator>(const Cell& other) const {
+            return cost > other.cost;
+        }
     };
 public:
-    int minimumObstacles(vector<vector<int>>& grid) {
-        const int rows = grid.size();
-        const int cols = grid.front().size();
+    int minimumEffortPath(vector<vector<int>>& heights) {
+        const int rows = heights.size();
+        const int cols = heights.front().size();
         const char dirs[]{ 1, 0, -1, 0, 1 };
 
         vector<vector<int>> visited(rows, vector<int>(cols, numeric_limits<int>::max()));
         visited[0][0] = 0;
-        deque<CellVisit> dq;
-        dq.emplace_front(0, 0, 0);
+        priority_queue<Cell, vector<Cell>, greater<>> pq;
+        pq.emplace(0, 0, 0);
 
-        while (!dq.empty()) {
-            auto [row, col, visitCost] = dq.front();
-            dq.pop_front();
+        while (!pq.empty()) {
+            const auto [row, col, cost] = pq.top();
+            pq.pop();
+
+            if (row == rows - 1 && col == cols - 1) { return cost; }
 
             for (int i = 0; i < 4; ++i) {
-                int newRow = row + dirs[i];
-                int newCol = col + dirs[i + 1];
+                const int newRow = row + dirs[i];
+                const int newCol = col + dirs[i + 1];
 
                 if (newRow >= 0 && newRow < rows && newCol >= 0 && newCol < cols) {
-                    int moveCost = visitCost + grid[newRow][newCol];
+                    const int effort = max(cost, abs(heights[row][col] - heights[newRow][newCol]));
 
-                    if (moveCost < visited[newRow][newCol]) {
-                        visited[newRow][newCol] = moveCost;
-
-                        if (grid[newRow][newCol] == 1) {
-                            dq.emplace_back(newRow, newCol, moveCost);
-                        } else {
-                            dq.emplace_front(newRow, newCol, moveCost);
-                        }
+                    if (effort < visited[newRow][newCol]) {
+                        visited[newRow][newCol] = effort;
+                        pq.emplace(newRow, newCol, effort);
                     }
                 }
             }
