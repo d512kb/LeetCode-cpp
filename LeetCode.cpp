@@ -5,37 +5,48 @@
 
 using namespace std;
 
-
-// Definition for Employee.
-class Employee {
-public:
-    int id;
-    int importance;
-    vector<int> subordinates;
-};
-
 class Solution {
+    struct CellVisit {
+        int row{};
+        int col{};
+        int visitCost{};
+    };
 public:
-    int getImportance(vector<Employee*> employees, int id) {
-        vector<Employee*> graph(2001);
+    int minimumObstacles(vector<vector<int>>& grid) {
+        const int rows = grid.size();
+        const int cols = grid.front().size();
+        const char dirs[]{ 1, 0, -1, 0, 1 };
 
-        for (auto empl : employees) {
-            graph[empl->id] = empl;
+        vector<vector<int>> visited(rows, vector<int>(cols, numeric_limits<int>::max()));
+        visited[0][0] = 0;
+        deque<CellVisit> dq;
+        dq.emplace_front(0, 0, 0);
+
+        while (!dq.empty()) {
+            auto [row, col, visitCost] = dq.front();
+            dq.pop_front();
+
+            for (int i = 0; i < 4; ++i) {
+                int newRow = row + dirs[i];
+                int newCol = col + dirs[i + 1];
+
+                if (newRow >= 0 && newRow < rows && newCol >= 0 && newCol < cols) {
+                    int moveCost = visitCost + grid[newRow][newCol];
+
+                    if (moveCost < visited[newRow][newCol]) {
+                        visited[newRow][newCol] = moveCost;
+
+                        if (grid[newRow][newCol] == 1) {
+                            dq.emplace_back(newRow, newCol, moveCost);
+                        } else {
+                            dq.emplace_front(newRow, newCol, moveCost);
+                        }
+                    }
+                }
+            }
         }
 
-        return calcImportance(graph, id);
-    }
-private:
-    int calcImportance(const vector<Employee*>& employees, int id) {
-        if (!employees[id]) { return 0; }
-
-        int importance = employees[id]->importance;
-
-        for (int subId : employees[id]->subordinates) {
-            importance += calcImportance(employees, subId);
-        }
-
-        return importance;
+        return visited.back().back();
     }
 };
 
