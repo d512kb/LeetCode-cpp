@@ -5,51 +5,30 @@
 
 using namespace std;
 
-class Solution {
-    struct Cell {
-        int row{};
-        int col{};
-        int cost{};
-    };
+class RLEIterator {
 public:
-    bool findSafeWalk(vector<vector<int>>& grid, int health) {
-        const int rows = grid.size();
-        const int cols = grid.front().size();
-        const char dirs[]{ 1, 0, -1, 0, 1 };
+    RLEIterator(vector<int>& encoding) :
+        m_encodedData(encoding),
+        m_currentIter(m_encodedData.begin()) {
 
-        vector<vector<int>> visited(rows, vector<int>(cols, numeric_limits<int>::max()));
-        visited[0][0] = grid[0][0];
-        deque<Cell> dq;
-        dq.emplace_front(0, 0, grid[0][0]);
+    }
 
-        while (!dq.empty()) {
-            const auto [row, col, cost] = dq.front();
-            dq.pop_front();
-
-            if (row == rows - 1 && col == cols - 1) { return cost < health; }
-
-            for (int i = 0; i < 4; ++i) {
-                const int newRow = row + dirs[i];
-                const int newCol = col + dirs[i + 1];
-
-                if (newRow >= 0 && newRow < rows && newCol >= 0 && newCol < cols) {
-                    int travelCost = cost + grid[newRow][newCol];
-
-                    if (travelCost < visited[newRow][newCol]) {
-                        visited[newRow][newCol] = travelCost;
-
-                        if (grid[newRow][newCol] == 1) {
-                            dq.emplace_back(newRow, newCol, travelCost);
-                        } else {
-                            dq.emplace_front(newRow, newCol, travelCost);
-                        }
-                    }
-                }
+    int next(int n) {
+        while (m_currentIter != m_encodedData.end()) {
+            if (*m_currentIter >= n) {
+                *m_currentIter -= n;
+                return *(m_currentIter + 1);
             }
+
+            n -= *m_currentIter;
+            m_currentIter += 2;
         }
 
-        return false;
+        return -1;
     }
+private:
+    vector<int> m_encodedData;
+    vector<int>::iterator m_currentIter;
 };
 
 int main()
