@@ -5,30 +5,40 @@
 
 using namespace std;
 
-class RLEIterator {
+class Solution {
 public:
-    RLEIterator(vector<int>& encoding) :
-        m_encodedData(encoding),
-        m_currentIter(m_encodedData.begin()) {
+    string findReplaceString(string s, vector<int>& indices, vector<string>& sources, vector<string>& targets) {
+        const int k = indices.size();
+        const int sz = s.size();
+        map<int, int> replaces;
 
-    }
+        for (int ind = 0; ind < k; ++ind) {
+            int targetIndex = indices[ind];
+            auto newReplace = replaces.emplace(targetIndex, ind);
 
-    int next(int n) {
-        while (m_currentIter != m_encodedData.end()) {
-            if (*m_currentIter >= n) {
-                *m_currentIter -= n;
-                return *(m_currentIter + 1);
+            if (newReplace.second) {
+                for (char sourceChar : sources[ind]) {
+                    if (targetIndex == sz || s[targetIndex] != sourceChar) {
+                        replaces.erase(newReplace.first);
+                        break;
+                    }
+                    ++targetIndex;
+                }
             }
-
-            n -= *m_currentIter;
-            m_currentIter += 2;
         }
 
-        return -1;
+        string result;
+        int sourceIndex = 0;
+
+        for (auto& replace : replaces) {
+            result.append(s, sourceIndex, replace.first - sourceIndex);
+            result.append(targets[replace.second]);
+            sourceIndex = replace.first + sources[replace.second].size();
+        }
+
+        result.append(s, sourceIndex);
+        return result;
     }
-private:
-    vector<int> m_encodedData;
-    vector<int>::iterator m_currentIter;
 };
 
 int main()
