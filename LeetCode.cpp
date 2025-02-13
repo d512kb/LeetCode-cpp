@@ -7,42 +7,56 @@ using namespace std;
 
 class Solution {
 public:
-    long long countPairs(int n, vector<vector<int>>& edges) {
-        vector<int> parent(n, -1);
+    bool canBeValid(string s, string locked) {
+        const int sz = s.size();
 
-        for (auto& edge : edges) {
-            join(parent, edge[0], edge[1]);
-        }
+        if (sz % 2) { return false; }
 
-        int64_t allPairs = static_cast<int64_t>(n) * (n - 1) / 2;
-        for (int par : parent) {
-            if (par < 0) {
-                allPairs -= static_cast<int64_t>(par) * (par + 1) / 2; // par is negative, so +
+        int freePars = 0;
+        int lockedPars = 0;
+
+        for (int i = 0; i < sz; ++i) {
+            if (locked[i] == '0') {
+                ++freePars;
+            } else {
+                if (s[i] == ')') {
+                    if (lockedPars > 0) {
+                        --lockedPars;
+                    } else if (freePars > 0) {
+                        --freePars;
+                    } else {
+                        return false;
+                    }
+                } else {
+                    ++lockedPars;
+                }
             }
         }
 
-        return allPairs;
-    }
-private:
-    void join(vector<int>& parent, int a, int b) {
-        a = find(parent, a);
-        b = find(parent, b);
+        if (lockedPars == 0) { return true; }
 
-        if (a == b) { return; }
-        if (a < b) {
-            parent[a] += parent[b];
-            parent[b] = a;
-        } else {
-            parent[b] += parent[a];
-            parent[a] = b;
+        freePars = 0;
+        lockedPars = 0;
+
+        for (int i = sz - 1; i >= 0; --i) {
+            if (locked[i] == '0') {
+                ++freePars;
+            } else {
+                if (s[i] == '(') {
+                    if (lockedPars > 0) {
+                        --lockedPars;
+                    } else if (freePars > 0) {
+                        --freePars;
+                    } else {
+                        return false;
+                    }
+                } else {
+                    ++lockedPars;
+                }
+            }
         }
-    }
 
-    int find(vector<int>& parent, int value) {
-        auto& par = parent[value];
-        if (par < 0) { return value; }
-
-        return par = find(parent, par);
+        return true;
     }
 };
 
