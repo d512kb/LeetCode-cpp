@@ -9,54 +9,28 @@ class Solution {
 public:
     bool canBeValid(string s, string locked) {
         const int sz = s.size();
-
-        if (sz % 2) { return false; }
-
-        int freePars = 0;
-        int lockedPars = 0;
+        int minOpenPars = 0;
+        int maxOpenPars = 0;
 
         for (int i = 0; i < sz; ++i) {
             if (locked[i] == '0') {
-                ++freePars;
+                --minOpenPars; // for the case when it's a closed parenthesis
+                ++maxOpenPars; // for the case when it's an open parenthesis
             } else {
                 if (s[i] == ')') {
-                    if (lockedPars > 0) {
-                        --lockedPars;
-                    } else if (freePars > 0) {
-                        --freePars;
-                    } else {
-                        return false;
-                    }
+                    --minOpenPars;
+                    --maxOpenPars;
                 } else {
-                    ++lockedPars;
+                    ++minOpenPars;
+                    ++maxOpenPars;
                 }
             }
+
+            if (minOpenPars < 0) { minOpenPars = 0; } // should've been one more open parentheses back then, let's correct it
+            if (maxOpenPars < 0) { return false; } // there is no more spare open parentheses for one more closed parenthesis
         }
 
-        if (lockedPars == 0) { return true; }
-
-        freePars = 0;
-        lockedPars = 0;
-
-        for (int i = sz - 1; i >= 0; --i) {
-            if (locked[i] == '0') {
-                ++freePars;
-            } else {
-                if (s[i] == '(') {
-                    if (lockedPars > 0) {
-                        --lockedPars;
-                    } else if (freePars > 0) {
-                        --freePars;
-                    } else {
-                        return false;
-                    }
-                } else {
-                    ++lockedPars;
-                }
-            }
-        }
-
-        return true;
+        return minOpenPars == 0 && maxOpenPars % 2 == 0; // all closed parentheses are matched and the rest can match together
     }
 };
 
