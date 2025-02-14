@@ -7,37 +7,39 @@ using namespace std;
 
 class Solution {
 public:
-    vector<int> loudAndRich(vector<vector<int>>& richer, vector<int>& quiet) {
-        const int sz = quiet.size();
+    int maximumDetonation(vector<vector<int>>& bombs) {
+        const int sz = bombs.size();
         vector<vector<int>> graph(sz);
-        vector<int> deps(sz);
-
-        for (auto& rich : richer) {
-            graph[rich[0]].push_back(rich[1]);
-            ++deps[rich[1]];
-        }
-
-        queue<int> q;
 
         for (int i = 0; i < sz; ++i) {
-            if (deps[i] == 0) {
-                q.push(i);
+            const auto& bombA = bombs[i];
+
+            for (int j = i + 1; j < sz; ++j) {
+                const auto& bombB = bombs[j];
+                double centersDistance = sqrt(pow(bombA[0] - bombB[0], 2) + pow(bombA[1] - bombB[1], 2));
+
+                if (bombA[2] >= centersDistance) { graph[i].push_back(j); }
+                if (bombB[2] >= centersDistance) { graph[j].push_back(i); }
             }
         }
 
-        vector<int> result(sz);
-        iota(result.begin(), result.end(), 0);
+        int ans = 0;
 
-        while (!q.empty()) {
-            int id = q.front();
-            int quietness = quiet[result[id]];
-            q.pop();
+        for (int i = 0; i < sz; ++i) {
+            vector<char> detonated(sz);
+            ans = max(ans, dfs(graph, detonated, i));
+        }
 
-            for (int sub : graph[id]) {
-                if (quietness < quiet[result[sub]]) { result[sub] = result[id]; }
-                if (--deps[sub] == 0) {
-                    q.push(sub);
-                }
+        return ans;
+    }
+private:
+    int dfs(const vector<vector<int>>& graph, vector<char>& detonated, int bomb) {
+        detonated[bomb] = 1;
+        int result = 1;
+
+        for (int b : graph[bomb]) {
+            if (detonated[b] == 0) {
+                result += dfs(graph, detonated, b);
             }
         }
 
