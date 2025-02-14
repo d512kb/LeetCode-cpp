@@ -7,30 +7,23 @@ using namespace std;
 
 class Solution {
 public:
-    bool canBeValid(string s, string locked) {
-        const int sz = s.size();
-        int minOpenPars = 0;
-        int maxOpenPars = 0;
+    bool canMeasureWater(int x, int y, int target) {
+        unordered_set<int> checked;
 
-        for (int i = 0; i < sz; ++i) {
-            if (locked[i] == '0') {
-                --minOpenPars; // for the case when it's a closed parenthesis
-                ++maxOpenPars; // for the case when it's an open parenthesis
-            } else {
-                if (s[i] == ')') {
-                    --minOpenPars;
-                    --maxOpenPars;
-                } else {
-                    ++minOpenPars;
-                    ++maxOpenPars;
-                }
-            }
+        auto pourWater = [&](auto&& self, int xJug, int yJug) -> bool {
+            if (!checked.insert((xJug << 10) + yJug).second) { return false; }
+            if (xJug == target || yJug == target || xJug + yJug == target) { return true; }
 
-            if (minOpenPars < 0) { minOpenPars = 0; } // should've been one more open parentheses back then, let's correct it
-            if (maxOpenPars < 0) { return false; } // there is no more spare open parentheses for one more closed parenthesis
-        }
+            int smallToLarge = min(xJug, y - yJug);
+            int largeToSmall = min(yJug, x - xJug);
 
-        return minOpenPars == 0 && maxOpenPars % 2 == 0; // all closed parentheses are matched and the rest can match together
+            return self(self, x, yJug) || self(self, xJug, y) ||
+                self(self, 0, yJug) || self(self, xJug, 0) ||
+                self(self, xJug - smallToLarge, yJug + smallToLarge) ||
+                self(self, xJug + largeToSmall, yJug - largeToSmall);
+        };
+
+        return pourWater(pourWater, 0, 0);
     }
 };
 
