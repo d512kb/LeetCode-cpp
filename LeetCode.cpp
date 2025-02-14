@@ -5,46 +5,25 @@
 
 using namespace std;
 
-class Solution {
+class NumMatrix {
 public:
-    int maximumDetonation(vector<vector<int>>& bombs) {
-        const int sz = bombs.size();
-        vector<vector<int>> graph(sz);
+    NumMatrix(vector<vector<int>>& matrix) : m_matrix(1 + matrix.size(), vector<int>(1 + matrix[0].size())) {
+        const int rows = m_matrix.size();
+        const int cols = m_matrix[0].size();
 
-        for (int i = 0; i < sz; ++i) {
-            const auto& bombA = bombs[i];
-
-            for (int j = i + 1; j < sz; ++j) {
-                const auto& bombB = bombs[j];
-                double centersDistance = sqrt(pow(bombA[0] - bombB[0], 2) + pow(bombA[1] - bombB[1], 2));
-
-                if (bombA[2] >= centersDistance) { graph[i].push_back(j); }
-                if (bombB[2] >= centersDistance) { graph[j].push_back(i); }
+        for (int row = 1; row < rows; ++row) {
+            for (int col = 1; col < cols; ++col) {
+                m_matrix[row][col] = matrix[row - 1][col - 1] + m_matrix[row - 1][col] + m_matrix[row][col - 1] - m_matrix[row - 1][col - 1];
             }
         }
+    }
 
-        int ans = 0;
-
-        for (int i = 0; i < sz; ++i) {
-            vector<char> detonated(sz);
-            ans = max(ans, dfs(graph, detonated, i));
-        }
-
-        return ans;
+    int sumRegion(int row1, int col1, int row2, int col2) {
+        // our coords are shifted so [original coords - 1] will be just row1, col1 etc
+        return m_matrix[1 + row2][1 + col2] - m_matrix[row1][1 + col2] - m_matrix[1 + row2][col1] + m_matrix[row1][col1];
     }
 private:
-    int dfs(const vector<vector<int>>& graph, vector<char>& detonated, int bomb) {
-        detonated[bomb] = 1;
-        int result = 1;
-
-        for (int b : graph[bomb]) {
-            if (detonated[b] == 0) {
-                result += dfs(graph, detonated, b);
-            }
-        }
-
-        return result;
-    }
+    vector<vector<int>> m_matrix;
 };
 
 int main()
