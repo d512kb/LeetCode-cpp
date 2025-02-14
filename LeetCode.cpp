@@ -7,23 +7,41 @@ using namespace std;
 
 class Solution {
 public:
-    bool canMeasureWater(int x, int y, int target) {
-        unordered_set<int> checked;
+    vector<int> loudAndRich(vector<vector<int>>& richer, vector<int>& quiet) {
+        const int sz = quiet.size();
+        vector<vector<int>> graph(sz);
+        vector<int> deps(sz);
 
-        auto pourWater = [&](auto&& self, int xJug, int yJug) -> bool {
-            if (!checked.insert((xJug << 10) + yJug).second) { return false; }
-            if (xJug == target || yJug == target || xJug + yJug == target) { return true; }
+        for (auto& rich : richer) {
+            graph[rich[0]].push_back(rich[1]);
+            ++deps[rich[1]];
+        }
 
-            int smallToLarge = min(xJug, y - yJug);
-            int largeToSmall = min(yJug, x - xJug);
+        queue<int> q;
 
-            return self(self, x, yJug) || self(self, xJug, y) ||
-                self(self, 0, yJug) || self(self, xJug, 0) ||
-                self(self, xJug - smallToLarge, yJug + smallToLarge) ||
-                self(self, xJug + largeToSmall, yJug - largeToSmall);
-        };
+        for (int i = 0; i < sz; ++i) {
+            if (deps[i] == 0) {
+                q.push(i);
+            }
+        }
 
-        return pourWater(pourWater, 0, 0);
+        vector<int> result(sz);
+        iota(result.begin(), result.end(), 0);
+
+        while (!q.empty()) {
+            int id = q.front();
+            int quietness = quiet[result[id]];
+            q.pop();
+
+            for (int sub : graph[id]) {
+                if (quietness < quiet[result[sub]]) { result[sub] = result[id]; }
+                if (--deps[sub] == 0) {
+                    q.push(sub);
+                }
+            }
+        }
+
+        return result;
     }
 };
 
