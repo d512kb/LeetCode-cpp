@@ -5,25 +5,51 @@
 
 using namespace std;
 
-class NumMatrix {
+class Solution {
+    struct Task {
+        int id{};
+        int startTime{};
+        int processingTime{};
+    };
 public:
-    NumMatrix(vector<vector<int>>& matrix) : m_matrix(1 + matrix.size(), vector<int>(1 + matrix[0].size())) {
-        const int rows = m_matrix.size();
-        const int cols = m_matrix[0].size();
+    vector<int> getOrder(vector<vector<int>>& tasks) {
+        const int sz = tasks.size();
+        vector<Task> tasksToDo;
 
-        for (int row = 1; row < rows; ++row) {
-            for (int col = 1; col < cols; ++col) {
-                m_matrix[row][col] = matrix[row - 1][col - 1] + m_matrix[row - 1][col] + m_matrix[row][col - 1] - m_matrix[row - 1][col - 1];
+        for (int i = 0; i < sz; ++i) { tasksToDo.emplace_back(i, tasks[i][0], tasks[i][1]); }
+        sort(tasksToDo.begin(), tasksToDo.end(), [](const Task& a, const Task& b) { return a.startTime < b.startTime; });
+
+        auto pqCompare = [](const Task& a, const Task& b) {
+            if (a.processingTime == b.processingTime) { return a.id > b.id; }
+            return a.processingTime > b.processingTime;
+        };
+
+        priority_queue<Task, vector<Task>, decltype(pqCompare)> pq;
+
+        size_t currentTime = 0;
+        auto iter = tasksToDo.begin();
+        vector<int> result;
+
+        while (iter != tasksToDo.end()) {
+            if (pq.empty() && currentTime < iter->startTime) { currentTime = iter->startTime; }
+
+            while (iter != tasksToDo.end() && currentTime >= iter->startTime) {
+                pq.emplace(iter->id, iter->startTime, iter->processingTime);
+                ++iter;
             }
-        }
-    }
 
-    int sumRegion(int row1, int col1, int row2, int col2) {
-        // our coords are shifted so [original coords - 1] will be just row1, col1 etc
-        return m_matrix[1 + row2][1 + col2] - m_matrix[row1][1 + col2] - m_matrix[1 + row2][col1] + m_matrix[row1][col1];
+            result.push_back(pq.top().id);
+            currentTime += pq.top().processingTime;
+            pq.pop();
+        }
+
+        while (!pq.empty()) {
+            result.push_back(pq.top().id);
+            pq.pop();
+        }
+
+        return result;
     }
-private:
-    vector<vector<int>> m_matrix;
 };
 
 int main()
