@@ -6,13 +6,21 @@
 using namespace std;
 
 class Solution {
-    int rand7() { return 0; }
 public:
-    int rand10() {
-        int val = 40;
-        while (val >= 40) { val = (rand7() - 1) * 7 + rand7() - 1; }
+    int maximumJumps(vector<int>& nums, int target) {
+        const int sz = nums.size();
+        vector<int> dp(sz, -1);
+        dp[0] = 0;
 
-        return val % 10 + 1;
+        for (int to = 1; to < sz; ++to) {
+            for (int from = 0; from < to; ++from) {
+                if (dp[from] >= 0 && abs(nums[to] - nums[from]) <= target) {
+                    dp[to] = max(dp[to], 1 + dp[from]);
+                }
+            }
+        }
+
+        return dp.back();
     }
 };
 
