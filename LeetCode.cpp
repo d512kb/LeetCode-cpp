@@ -7,39 +7,30 @@ using namespace std;
 
 class Solution {
 public:
-    int findLUSlength(vector<string>& strs) {
-        int ans = -1;
+    int minAreaRect(vector<vector<int>>& points) {
+        const int sz = points.size();
+        unordered_set<size_t> availablePoints;
 
-        for (int i = 0; i < strs.size(); ++i) {
-            bool unique = true;
-            const auto& str = strs[i];
+        for (const auto& p : points) {
+            availablePoints.insert(p[0] << 16 | p[1]);
+        }
 
-            for (int j = 0; j < strs.size(); ++j) {
-                if (i != j && isSubsequence(str, strs[j])) {
-                    unique = false;
-                    break;
+        int ans = numeric_limits<int>::max();
+
+        for (int i = 0; i < sz; ++i) {
+            for (int j = i + 1; j < sz; ++j) {
+                const auto& p1 = points[i];
+                const auto& p2 = points[j];
+
+                if (p1[0] == p2[0] || p1[1] == p2[1]) { continue; }
+
+                if (availablePoints.contains(p1[0] << 16 | p2[1]) && availablePoints.contains(p2[0] << 16 | p1[1])) {
+                    ans = min(ans, abs(p1[0] - p2[0]) * abs(p1[1] - p2[1]));
                 }
             }
-
-            if (unique) {
-                ans = max<int>(ans, str.size());
-            }
         }
 
-        return ans;
-    }
-private:
-    bool isSubsequence(const string& str1, const string& str2) {
-        if (str1.size() > str2.size()) { return false; }
-
-        size_t pos = -1;
-
-        for (char c : str1) {
-            pos = str2.find(c, pos + 1);
-            if (pos == string::npos) { return false; }
-        }
-
-        return true;
+        return ans == numeric_limits<int>::max() ? 0 : ans;
     }
 };
 
