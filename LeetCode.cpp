@@ -7,20 +7,49 @@ using namespace std;
 
 class Solution {
 public:
-    int maximumJumps(vector<int>& nums, int target) {
-        const int sz = nums.size();
-        vector<int> dp(sz, -1);
-        dp[0] = 0;
+    int maximumLength(string s) {
+        const int sz = s.size();
+        using MaxLengths = priority_queue<int, vector<int>, greater<>>;
+        const MaxLengths defaultLengths(MaxLengths::value_compare(), { 0, 0, 0 });
+        vector<MaxLengths> lengths(26, defaultLengths);
 
-        for (int to = 1; to < sz; ++to) {
-            for (int from = 0; from < to; ++from) {
-                if (dp[from] >= 0 && abs(nums[to] - nums[from]) <= target) {
-                    dp[to] = max(dp[to], 1 + dp[from]);
+        int currLen = 1;
+        for (int i = 1; i < sz; ++i) {
+            if (s[i] == s[i - 1]) {
+                ++currLen;
+            } else {
+                auto& maxLengths = lengths[s[i - 1] - 'a'];
+                if (maxLengths.top() < currLen) {
+                    maxLengths.pop();
+                    maxLengths.push(currLen);
                 }
+                currLen = 1;
             }
         }
 
-        return dp.back();
+        auto& maxLengths = lengths[s.back() - 'a'];
+        if (maxLengths.top() < currLen) {
+            maxLengths.pop();
+            maxLengths.push(currLen);
+        }
+
+        int result = 0;
+        for (auto& len : lengths) {
+            result = max(result, len.top());
+            len.pop();
+
+            int a = len.top();
+            len.pop();
+            int b = len.top();
+
+            if (a == b) {
+                result = max(result, a - 1);
+            } else {
+                result = max(result, max(a, b - 2));
+            };
+        }
+
+        return result == 0 ? -1 : result;
     }
 };
 
