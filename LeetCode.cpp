@@ -7,49 +7,39 @@ using namespace std;
 
 class Solution {
 public:
-    int maximumLength(string s) {
-        const int sz = s.size();
-        using MaxLengths = priority_queue<int, vector<int>, greater<>>;
-        const MaxLengths defaultLengths(MaxLengths::value_compare(), { 0, 0, 0 });
-        vector<MaxLengths> lengths(26, defaultLengths);
+    int findLUSlength(vector<string>& strs) {
+        int ans = -1;
 
-        int currLen = 1;
-        for (int i = 1; i < sz; ++i) {
-            if (s[i] == s[i - 1]) {
-                ++currLen;
-            } else {
-                auto& maxLengths = lengths[s[i - 1] - 'a'];
-                if (maxLengths.top() < currLen) {
-                    maxLengths.pop();
-                    maxLengths.push(currLen);
+        for (int i = 0; i < strs.size(); ++i) {
+            bool unique = true;
+            const auto& str = strs[i];
+
+            for (int j = 0; j < strs.size(); ++j) {
+                if (i != j && isSubsequence(str, strs[j])) {
+                    unique = false;
+                    break;
                 }
-                currLen = 1;
+            }
+
+            if (unique) {
+                ans = max<int>(ans, str.size());
             }
         }
 
-        auto& maxLengths = lengths[s.back() - 'a'];
-        if (maxLengths.top() < currLen) {
-            maxLengths.pop();
-            maxLengths.push(currLen);
+        return ans;
+    }
+private:
+    bool isSubsequence(const string& str1, const string& str2) {
+        if (str1.size() > str2.size()) { return false; }
+
+        size_t pos = -1;
+
+        for (char c : str1) {
+            pos = str2.find(c, pos + 1);
+            if (pos == string::npos) { return false; }
         }
 
-        int result = 0;
-        for (auto& len : lengths) {
-            result = max(result, len.top());
-            len.pop();
-
-            int a = len.top();
-            len.pop();
-            int b = len.top();
-
-            if (a == b) {
-                result = max(result, a - 1);
-            } else {
-                result = max(result, max(a, b - 2));
-            };
-        }
-
-        return result == 0 ? -1 : result;
+        return true;
     }
 };
 
