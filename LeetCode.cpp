@@ -7,19 +7,37 @@ using namespace std;
 
 class Solution {
 public:
-    int maxScore(vector<int>& cardPoints, int k) {
-        int leftSum = accumulate(cardPoints.begin(), cardPoints.begin() + k, 0);
-        int ans = leftSum;
-        int rightSum = 0;
+    bool placeWordInCrossword(vector<vector<char>>& board, string word) {
+        const int rows = board.size();
+        const int cols = board.front().size();
 
-        for (int i = k - 1, j = cardPoints.size() - 1; i >= 0; --i, --j) {
-            leftSum -= cardPoints[i];
-            rightSum += cardPoints[j];
+        for (int row = 0; row < rows; ++row) {
+            for (int col = 0; col < cols; ++col) {
+                if (board[row][col] == '#') { continue; }
 
-            ans = max(ans, leftSum + rightSum);
+                if ((col == 0 || board[row][col - 1] == '#') && canPlaceWord(board, word, row, col, 0, 1)) { return true; }
+                if ((col == cols - 1 || board[row][col + 1] == '#') && canPlaceWord(board, word, row, col, 0, -1)) { return true; }
+                if ((row == 0 || board[row - 1][col] == '#') && canPlaceWord(board, word, row, col, 1, 0)) { return true; }
+                if ((row == rows - 1 || board[row + 1][col] == '#') && canPlaceWord(board, word, row, col, -1, 0)) { return true; }
+            }
         }
 
-        return ans;
+        return false;
+    }
+private:
+    bool canPlaceWord(const vector<vector<char>>& board, const string& word, int row, int col, int rowChange, int colChange) {
+        const int rows = board.size();
+        const int cols = board.front().size();
+
+        for (char c : word) {
+            if (row < 0 || row == rows || col < 0 || col == cols) { return false; }
+            if (board[row][col] != c && board[row][col] != ' ') { return false; }
+
+            row += rowChange;
+            col += colChange;
+        }
+
+        return row == rows || row == -1 || col == cols || col == -1 || board[row][col] == '#';
     }
 };
 
