@@ -7,21 +7,19 @@ using namespace std;
 
 class Solution {
 public:
-    int findSecondMinimumValue(TreeNode* root) {
-        int secondMin = findSecondMin(root, root->val);
+    int maxScore(vector<int>& cardPoints, int k) {
+        int leftSum = accumulate(cardPoints.begin(), cardPoints.begin() + k, 0);
+        int ans = leftSum;
+        int rightSum = 0;
 
-        return secondMin != 0 ? secondMin : -1;
-    }
-private:
-    int findSecondMin(TreeNode* node, int firstMin) {
-        if (!node) { return 0; }
-        if (node->val > firstMin) { return node->val; }
+        for (int i = k - 1, j = cardPoints.size() - 1; i >= 0; --i, --j) {
+            leftSum -= cardPoints[i];
+            rightSum += cardPoints[j];
 
-        int a = findSecondMin(node->left, firstMin);
-        int b = findSecondMin(node->right, firstMin);
+            ans = max(ans, leftSum + rightSum);
+        }
 
-        if (a == 0 || b == 0) { return a + b; }
-        return min(a, b);
+        return ans;
     }
 };
 
