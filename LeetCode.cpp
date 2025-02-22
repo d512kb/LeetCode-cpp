@@ -5,33 +5,56 @@
 
 using namespace std;
 
-class Solution {
+class RangeModule {
 public:
-    int minAreaRect(vector<vector<int>>& points) {
-        const int sz = points.size();
-        unordered_set<size_t> availablePoints;
+    RangeModule() {
 
-        for (const auto& p : points) {
-            availablePoints.insert(p[0] << 16 | p[1]);
-        }
-
-        int ans = numeric_limits<int>::max();
-
-        for (int i = 0; i < sz; ++i) {
-            for (int j = i + 1; j < sz; ++j) {
-                const auto& p1 = points[i];
-                const auto& p2 = points[j];
-
-                if (p1[0] == p2[0] || p1[1] == p2[1]) { continue; }
-
-                if (availablePoints.contains(p1[0] << 16 | p2[1]) && availablePoints.contains(p2[0] << 16 | p1[1])) {
-                    ans = min(ans, abs(p1[0] - p2[0]) * abs(p1[1] - p2[1]));
-                }
-            }
-        }
-
-        return ans == numeric_limits<int>::max() ? 0 : ans;
     }
+
+    void addRange(int left, int right) {
+        auto insertPos = m_ranges.lower_bound(left);
+
+        if (insertPos != m_ranges.end()) {
+            left = min(left, insertPos->second);
+        }
+
+        while (insertPos != m_ranges.end() && insertPos->first <= right) {
+            insertPos = m_ranges.erase(insertPos);
+        }
+
+        if (insertPos != m_ranges.end() && insertPos->second <= right) {
+            right = insertPos->first;
+            m_ranges.erase(insertPos);
+        }
+
+        m_ranges[right] = left; // key is right, value is left
+    }
+
+    bool queryRange(int left, int right) {
+        auto iter = m_ranges.lower_bound(right);
+
+        if (iter == m_ranges.end()) { return false; }
+
+        return iter->second <= left;
+    }
+
+    void removeRange(int left, int right) {
+        auto erasePos = m_ranges.upper_bound(left);
+
+        if (erasePos != m_ranges.end() && erasePos->second < left) {
+            m_ranges.emplace(left, erasePos->second); // leave left cut
+        }
+
+        while (erasePos != m_ranges.end() && erasePos->first <= right) {
+            erasePos = m_ranges.erase(erasePos);
+        }
+
+        if (erasePos != m_ranges.end() && erasePos->second < right) {
+            erasePos->second = right;
+        }
+    }
+private:
+    map<int, int> m_ranges; // key is right, value is left
 };
 
 int main()
