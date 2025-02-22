@@ -7,24 +7,49 @@ using namespace std;
 
 class Solution {
 public:
-    int numSplits(string s) {
-        array<int, 26> leftChars{};
-        array<int, 26> rightChars{};
+    int longestStrChain(vector<string>& words) {
+        const int sz = words.size();
+        vector<int> chainLengths(sz);
 
-        for (char c : s) { ++rightChars[c - 'a']; }
+        sort(words.begin(), words.end(), [](const string& a, const string& b) { return a.size() < b.size(); });
 
-        int rightCount = 26 - count(rightChars.begin(), rightChars.end(), 0);
-        int leftCount = 0;
-        int ans = 0;
+        auto calcLengths = [&](auto&& self, int wordIndex) {
+            int& result = chainLengths[wordIndex];
+            if (result > 0) { return result; }
 
-        for (char c : s) {
-            if (--rightChars[c - 'a'] == 0) { --rightCount; };
-            if (++leftChars[c - 'a'] == 1) { ++leftCount; };
+            const auto& word = words[wordIndex];
+            result = 1;
 
-            if (leftCount == rightCount) { ++ans; }
+            for (int i = wordIndex + 1; i < sz; ++i) {
+                const auto& nextWord = words[i];
+                if (nextWord.size() == word.size()) { continue; }
+                if (nextWord.size() - word.size() > 1) { break; }
+
+                int ai = 0;
+                int bi = 0;
+
+                while (ai < word.size() && bi < nextWord.size()) {
+                    if (word[ai] != nextWord[bi]) {
+                        ++bi;
+                    } else {
+                        ++ai;
+                        ++bi;
+                    }
+                }
+
+                if (bi - ai <= 1) {
+                    result = max(result, 1 + self(self, i));
+                }
+            }
+
+            return result;
+        };
+
+        for (int i = 0; i < sz; ++i) {
+            calcLengths(calcLengths, i);
         }
 
-        return ans;
+        return *max_element(chainLengths.begin(), chainLengths.end());
     }
 };
 
