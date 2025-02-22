@@ -7,24 +7,24 @@ using namespace std;
 
 class Solution {
 public:
-    bool validSquare(vector<int>& p1, vector<int>& p2, vector<int>& p3, vector<int>& p4) {
-        vector<vector<int>> points{ p1, p2, p3, p4 };
-        unordered_set<double> distances;
+    int numSplits(string s) {
+        array<int, 26> leftChars{};
+        array<int, 26> rightChars{};
 
-        for (int i = 0; i < 4; ++i) {
-            for (int j = i + 1; j < 4; ++j) {
-                int dist = calcDistance(points[i], points[j]);
-                if (dist == 0) { return false; }
-                distances.insert(dist);
-            }
+        for (char c : s) { ++rightChars[c - 'a']; }
+
+        int rightCount = 26 - count(rightChars.begin(), rightChars.end(), 0);
+        int leftCount = 0;
+        int ans = 0;
+
+        for (char c : s) {
+            if (--rightChars[c - 'a'] == 0) { --rightCount; };
+            if (++leftChars[c - 'a'] == 1) { ++leftCount; };
+
+            if (leftCount == rightCount) { ++ans; }
         }
 
-        return distances.size() == 2;
-    }
-
-private:
-    int calcDistance(const vector<int>& p1, const vector<int>& p2) {
-        return pow(abs(p1[0] - p2[0]), 2) + pow(abs(p1[1] - p2[1]), 2);
+        return ans;
     }
 };
 
