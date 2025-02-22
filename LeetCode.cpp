@@ -7,49 +7,22 @@ using namespace std;
 
 class Solution {
 public:
-    int longestStrChain(vector<string>& words) {
-        const int sz = words.size();
-        vector<int> chainLengths(sz);
+    int countBattleships(vector<vector<char>>& board) {
+        const int rows = board.size();
+        const int cols = board.front().size();
+        int ans = 0;
 
-        sort(words.begin(), words.end(), [](const string& a, const string& b) { return a.size() < b.size(); });
-
-        auto calcLengths = [&](auto&& self, int wordIndex) {
-            int& result = chainLengths[wordIndex];
-            if (result > 0) { return result; }
-
-            const auto& word = words[wordIndex];
-            result = 1;
-
-            for (int i = wordIndex + 1; i < sz; ++i) {
-                const auto& nextWord = words[i];
-                if (nextWord.size() == word.size()) { continue; }
-                if (nextWord.size() - word.size() > 1) { break; }
-
-                int ai = 0;
-                int bi = 0;
-
-                while (ai < word.size() && bi < nextWord.size()) {
-                    if (word[ai] != nextWord[bi]) {
-                        ++bi;
-                    } else {
-                        ++ai;
-                        ++bi;
+        for (int row = 0; row < rows; ++row) {
+            for (int col = 0; col < cols; ++col) {
+                if (board[row][col] == 'X') {
+                    if ((row == 0 || board[row - 1][col] == '.') && (col == 0 || board[row][col - 1] == '.')) {
+                        ++ans;
                     }
                 }
-
-                if (bi - ai <= 1) {
-                    result = max(result, 1 + self(self, i));
-                }
             }
-
-            return result;
-        };
-
-        for (int i = 0; i < sz; ++i) {
-            calcLengths(calcLengths, i);
         }
 
-        return *max_element(chainLengths.begin(), chainLengths.end());
+        return ans;
     }
 };
 
