@@ -5,56 +5,24 @@
 
 using namespace std;
 
-class RangeModule {
+class Solution {
 public:
-    RangeModule() {
+    int findSecondMinimumValue(TreeNode* root) {
+        int secondMin = findSecondMin(root, root->val);
 
-    }
-
-    void addRange(int left, int right) {
-        auto insertPos = m_ranges.lower_bound(left);
-
-        if (insertPos != m_ranges.end()) {
-            left = min(left, insertPos->second);
-        }
-
-        while (insertPos != m_ranges.end() && insertPos->first <= right) {
-            insertPos = m_ranges.erase(insertPos);
-        }
-
-        if (insertPos != m_ranges.end() && insertPos->second <= right) {
-            right = insertPos->first;
-            m_ranges.erase(insertPos);
-        }
-
-        m_ranges[right] = left; // key is right, value is left
-    }
-
-    bool queryRange(int left, int right) {
-        auto iter = m_ranges.lower_bound(right);
-
-        if (iter == m_ranges.end()) { return false; }
-
-        return iter->second <= left;
-    }
-
-    void removeRange(int left, int right) {
-        auto erasePos = m_ranges.upper_bound(left);
-
-        if (erasePos != m_ranges.end() && erasePos->second < left) {
-            m_ranges.emplace(left, erasePos->second); // leave left cut
-        }
-
-        while (erasePos != m_ranges.end() && erasePos->first <= right) {
-            erasePos = m_ranges.erase(erasePos);
-        }
-
-        if (erasePos != m_ranges.end() && erasePos->second < right) {
-            erasePos->second = right;
-        }
+        return secondMin != 0 ? secondMin : -1;
     }
 private:
-    map<int, int> m_ranges; // key is right, value is left
+    int findSecondMin(TreeNode* node, int firstMin) {
+        if (!node) { return 0; }
+        if (node->val > firstMin) { return node->val; }
+
+        int a = findSecondMin(node->left, firstMin);
+        int b = findSecondMin(node->right, firstMin);
+
+        if (a == 0 || b == 0) { return a + b; }
+        return min(a, b);
+    }
 };
 
 int main()
