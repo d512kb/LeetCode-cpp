@@ -7,27 +7,25 @@ using namespace std;
 
 class Solution {
 public:
-    int findMinDifference(vector<string>& timePoints) {
-        sort(timePoints.begin(), timePoints.end());
-        int diff = numeric_limits<int>::max();
+    int numberOfWeakCharacters(vector<vector<int>>& properties) {
+        auto cmp = [](const auto& prop1, const auto& prop2) {
+            if (prop1[0] == prop2[0]) { return prop1[1] < prop2[1]; }
+            return prop1[0] > prop2[0];
+        };
 
-        for (int i = 1; i < timePoints.size(); ++i) {
-            diff = min(diff, getMinutes(timePoints[i]) - getMinutes(timePoints[i - 1]));
+        sort(properties.begin(), properties.end(), cmp);
+        int result = 0;
+        int maxDefense = properties.front()[1];
+
+        for (int i = 1; i < properties.size(); ++i) {
+            if (properties[i][1] < maxDefense) {
+                ++result;
+            } else if (properties[i][1] > maxDefense) {
+                maxDefense = properties[i][1];
+            }
         }
 
-        diff = min(diff, (getMinutes(timePoints.front()) + 24 * 60) - getMinutes(timePoints.back()));
-
-        return diff;
-    }
-private:
-    int getMinutes(const string& str) {
-        int hours;
-        int minutes;
-
-        from_chars(&str[0], &str[2], hours);
-        from_chars(&str[3], &str[5], minutes);
-
-        return hours * 60 + minutes;
+        return result;
     }
 };
 
