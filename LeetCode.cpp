@@ -7,18 +7,33 @@ using namespace std;
 
 class Solution {
 public:
-    long long maxSum(vector<vector<int>>& grid, vector<int>& limits, int k) {
-        const int rows = grid.size();
-        vector<int> allItems;
+    int getKth(int lo, int hi, int k) {
+        vector<int> powers(1001);
 
-        for (int row = 0; row < rows; ++row) {
-            auto& gridRow = grid[row];
-            partial_sort(gridRow.begin(), gridRow.begin() + limits[row], gridRow.end(), greater<>{});
-            copy(gridRow.begin(), gridRow.begin() + limits[row], back_inserter(allItems));
+        // for higher numbers it't better to use recursion + map to avoid recomputations
+        for (int i = 0; i <= 1000; ++i) {
+            int p = 0;
+            int val = i;
+
+            while (val > 1) {
+                ++p;
+
+                if (val % 2) { val = val * 3 + 1; } else { val /= 2; }
+            }
+
+            powers[i] = p;
         }
 
-        sort(allItems.begin(), allItems.end(), greater<>{});
-        return accumulate(allItems.begin(), allItems.begin() + k, 0l);
+        vector<int> values(hi - lo + 1);
+        iota(values.begin(), values.end(), lo);
+
+        auto cmp = [&powers](int a, int b) {
+            if (powers[a] == powers[b]) { return a < b; }
+            return powers[a] < powers[b];
+        };
+
+        nth_element(values.begin(), values.begin() + k - 1, values.end(), cmp);
+        return values[k - 1];
     }
 };
 
