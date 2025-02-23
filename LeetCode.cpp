@@ -5,28 +5,37 @@
 
 using namespace std;
 
-class Solution {
+class StockPrice {
+    using PriceIterator = multiset<int>::iterator;
 public:
-    int numberOfWeakCharacters(vector<vector<int>>& properties) {
-        auto cmp = [](const auto& prop1, const auto& prop2) {
-            if (prop1[0] == prop2[0]) { return prop1[1] < prop2[1]; }
-            return prop1[0] > prop2[0];
-        };
+    StockPrice() : m_latestTimestamp(0) {
 
-        sort(properties.begin(), properties.end(), cmp);
-        int result = 0;
-        int maxDefense = properties.front()[1];
-
-        for (int i = 1; i < properties.size(); ++i) {
-            if (properties[i][1] < maxDefense) {
-                ++result;
-            } else if (properties[i][1] > maxDefense) {
-                maxDefense = properties[i][1];
-            }
-        }
-
-        return result;
     }
+
+    void update(int timestamp, int price) {
+        auto updateStatus = m_timeToPrice.emplace(timestamp, PriceIterator{});
+
+        if (!updateStatus.second) { m_prices.erase(updateStatus.first->second); }
+        updateStatus.first->second = m_prices.insert(price);
+
+        if (timestamp > m_latestTimestamp) { m_latestTimestamp = timestamp; }
+    }
+
+    int current() {
+        return *m_timeToPrice[m_latestTimestamp];
+    }
+
+    int maximum() {
+        return *m_prices.rbegin();
+    }
+
+    int minimum() {
+        return *m_prices.begin();
+    }
+private:
+    unordered_map<int, PriceIterator> m_timeToPrice;
+    multiset<int> m_prices;
+    int m_latestTimestamp;
 };
 
 int main()
