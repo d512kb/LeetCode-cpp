@@ -7,17 +7,27 @@ using namespace std;
 
 class Solution {
 public:
-    int maxScoreSightseeingPair(vector<int>& values) {
-        const int sz = values.size();
-        int currMax = values.front();
-        int ans = 0;
+    int findMinDifference(vector<string>& timePoints) {
+        sort(timePoints.begin(), timePoints.end());
+        int diff = numeric_limits<int>::max();
 
-        for (int i = 1; i < sz; ++i) {
-            currMax = max(currMax, values[i - 1]) - 1;
-            ans = max(ans, currMax + values[i]);
+        for (int i = 1; i < timePoints.size(); ++i) {
+            diff = min(diff, getMinutes(timePoints[i]) - getMinutes(timePoints[i - 1]));
         }
 
-        return ans;
+        diff = min(diff, (getMinutes(timePoints.front()) + 24 * 60) - getMinutes(timePoints.back()));
+
+        return diff;
+    }
+private:
+    int getMinutes(const string& str) {
+        int hours;
+        int minutes;
+
+        from_chars(&str[0], &str[2], hours);
+        from_chars(&str[3], &str[5], minutes);
+
+        return hours * 60 + minutes;
     }
 };
 
