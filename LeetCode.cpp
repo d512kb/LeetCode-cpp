@@ -7,22 +7,16 @@ using namespace std;
 
 class Solution {
 public:
-    int countBattleships(vector<vector<char>>& board) {
-        const int rows = board.size();
-        const int cols = board.front().size();
-        int ans = 0;
-
-        for (int row = 0; row < rows; ++row) {
-            for (int col = 0; col < cols; ++col) {
-                if (board[row][col] == 'X') {
-                    if ((row == 0 || board[row - 1][col] == '.') && (col == 0 || board[row][col - 1] == '.')) {
-                        ++ans;
-                    }
-                }
+    bool hasSameDigits(string s) {
+        while (s.size() > 2) {
+            string sChanged;
+            for (int i = 0; i < s.size() - 1; ++i) {
+                sChanged.push_back((s[i] - 'a' + s[i + 1] - 'a') % 10 + 'a');
             }
+            s = sChanged;
         }
 
-        return ans;
+        return s[0] == s[1];
     }
 };
 
