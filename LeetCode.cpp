@@ -6,37 +6,51 @@
 using namespace std;
 
 class Solution {
+    struct Node {
+        bool w{ false };
+        array<unique_ptr<Node>, 26> nodes{};
+    };
 public:
-    string getDirections(TreeNode* root, int startValue, int destValue) {
-        auto commonParent = findCommonParent(root, startValue, destValue);
+    Solution() : m_root(new Node()) {};
 
-        string path, startPath, destPath;
-        buildPath(commonParent, startValue, path, startPath);
-        buildPath(commonParent, destValue, path, destPath);
+    string longestWord(vector<string>& words) {
+        for (const string& word : words) { addWord(word); }
 
-        return string(startPath.size(), 'U') + destPath;
+        string word;
+        string longestWord;
+
+        findLongestWords(m_root.get(), word, longestWord);
+
+        return longestWord;
     }
 private:
-    TreeNode* findCommonParent(TreeNode* node, int startValue, int destValue) {
-        if (!node) { return nullptr; }
-        if (node->val == startValue || node->val == destValue) { return node; }
+    unique_ptr<Node> m_root;
 
-        auto leftPart = findCommonParent(node->left, startValue, destValue);
-        auto rightPart = findCommonParent(node->right, startValue, destValue);
+    void addWord(const string& word) {
+        auto node = m_root.get();
 
-        if (leftPart && rightPart) { return node; }
-        return leftPart ? leftPart : rightPart ? rightPart : nullptr;
+        for (char c : word) {
+            int idx = c - 'a';
+
+            if (!node->nodes[idx]) { node->nodes[idx] = make_unique<Node>(); }
+            node = node->nodes[idx].get();
+        }
+
+        node->w = true;
     }
 
-    void buildPath(TreeNode* node, int value, string& path, string& finalPath) {
-        if (!node) { return; }
-        if (node->val == value) { finalPath = path; return; }
+    void findLongestWords(Node* node, string& word, string& longestWord) {
+        for (int i = 0; i < 26; ++i) {
+            if (node->nodes[i] && node->nodes[i]->w) {
+                word.push_back(i + 'a');
+                findLongestWords(node->nodes[i].get(), word, longestWord);
+                word.pop_back();
+            }
+        }
 
-        path.push_back('L');
-        buildPath(node->left, value, path, finalPath);
-        path.back() = 'R';
-        buildPath(node->right, value, path, finalPath);
-        path.pop_back();
+        if (word.size() > longestWord.size() || (word.size() == longestWord.size() && word < longestWord)) {
+            longestWord = word;
+        }
     }
 };
 
