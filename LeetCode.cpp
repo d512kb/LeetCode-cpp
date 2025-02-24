@@ -6,28 +6,37 @@
 using namespace std;
 
 class Solution {
-    using TreeHash = string;
 public:
-    vector<TreeNode*> findDuplicateSubtrees(TreeNode* root) {
-        unordered_map<TreeHash, int> hashCount;
-        vector<TreeNode*> result;
+    string getDirections(TreeNode* root, int startValue, int destValue) {
+        auto commonParent = findCommonParent(root, startValue, destValue);
 
-        calcTreeHashes(root, hashCount, result);
-        return result;
+        string path, startPath, destPath;
+        buildPath(commonParent, startValue, path, startPath);
+        buildPath(commonParent, destValue, path, destPath);
+
+        return string(startPath.size(), 'U') + destPath;
     }
 private:
-    TreeHash calcTreeHashes(TreeNode* node, unordered_map<TreeHash, int>& hashCount, vector<TreeNode*>& result) {
-        if (!node) { return "#"; }
+    TreeNode* findCommonParent(TreeNode* node, int startValue, int destValue) {
+        if (!node) { return nullptr; }
+        if (node->val == startValue || node->val == destValue) { return node; }
 
-        auto leftSubtree(std::move(calcTreeHashes(node->left, hashCount, result)));
-        auto rightSubtree(std::move(calcTreeHashes(node->right, hashCount, result)));
+        auto leftPart = findCommonParent(node->left, startValue, destValue);
+        auto rightPart = findCommonParent(node->right, startValue, destValue);
 
-        auto treeHash = to_string(node->val) + ',' + leftSubtree + ',' + rightSubtree;
-        if (++hashCount[treeHash] == 2) {
-            result.push_back(node);
-        }
+        if (leftPart && rightPart) { return node; }
+        return leftPart ? leftPart : rightPart ? rightPart : nullptr;
+    }
 
-        return treeHash;
+    void buildPath(TreeNode* node, int value, string& path, string& finalPath) {
+        if (!node) { return; }
+        if (node->val == value) { finalPath = path; return; }
+
+        path.push_back('L');
+        buildPath(node->left, value, path, finalPath);
+        path.back() = 'R';
+        buildPath(node->right, value, path, finalPath);
+        path.pop_back();
     }
 };
 
