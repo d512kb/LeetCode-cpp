@@ -7,35 +7,16 @@ using namespace std;
 
 class Solution {
 public:
-    bool validPalindrome(string s) {
-        int left = 0;
-        int right = s.size() - 1;
-        int diffs = 0;
+    vector<int> intersection(vector<int>& nums1, vector<int>& nums2) {
+        sort(nums1.begin(), nums1.end());
+        sort(nums2.begin(), nums2.end());
 
-        while (left < right) {
-            if (s[left] != s[right]) {
-                for (int l = left + 1, r = right; l < r; ++l, --r) {
-                    if (s[l] != s[r]) {
-                        ++diffs;
-                        break;
-                    }
-                }
+        vector<int> result;
 
-                for (int l = left, r = right - 1; l < r; ++l, --r) {
-                    if (s[l] != s[r]) {
-                        ++diffs;
-                        break;
-                    }
-                }
+        set_intersection(nums1.begin(), nums1.end(), nums2.begin(), nums2.end(), back_inserter(result));
+        result.erase(unique(result.begin(), result.end()), result.end());
 
-                break;
-            }
-
-            ++left;
-            --right;
-        }
-
-        return diffs < 2;
+        return result;
     }
 };
 
