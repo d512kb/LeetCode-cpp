@@ -7,21 +7,38 @@ using namespace std;
 
 class Solution {
 public:
-    int maximumUnits(vector<vector<int>>& boxTypes, int truckSize) {
-        sort(boxTypes.begin(), boxTypes.end(), [](const auto& boxInfo1, const auto& boxInfo2) { return boxInfo1[1] > boxInfo2[1]; });
+    int wordCount(vector<string>& startWords, vector<string>& targetWords) {
+        unordered_set<size_t> possibleWords;
+        for (const auto& word : startWords) { possibleWords.insert(calcHash(word)); }
 
-        int ans = 0;
+        int result = 0;
 
-        for (const auto& boxInfo : boxTypes) {
-            int load = min(boxInfo[0], truckSize);
+        for (auto& word : targetWords) {
+            auto wordHash = calcHash(word);
 
-            truckSize -= load;
-            ans += load * boxInfo[1];
+            for (char c : word) {
+                wordHash &= ~(1 << (c - 'a'));
 
-            if (truckSize == 0) { break; }
+                if (possibleWords.contains(wordHash)) {
+                    ++result;
+                    break;
+                }
+
+                wordHash |= static_cast<size_t>(1) << (c - 'a');
+            }
         }
 
-        return ans;
+        return result;
+    }
+private:
+    size_t calcHash(const string& str) {
+        size_t hash = 0;
+
+        for (char c : str) {
+            hash |= static_cast<size_t>(1) << (c - 'a');
+        }
+
+        return hash;
     }
 };
 
