@@ -7,16 +7,16 @@ using namespace std;
 
 class Solution {
 public:
-    vector<int> intersection(vector<int>& nums1, vector<int>& nums2) {
-        sort(nums1.begin(), nums1.end());
-        sort(nums2.begin(), nums2.end());
+    bool isAlienSorted(vector<string>& words, string order) {
+        vector<char> charPositions(26);
 
-        vector<int> result;
+        for (int i = 0; i < 26; ++i) {
+            charPositions[order[i] - 'a'] = i;
+        }
 
-        set_intersection(nums1.begin(), nums1.end(), nums2.begin(), nums2.end(), back_inserter(result));
-        result.erase(unique(result.begin(), result.end()), result.end());
-
-        return result;
+        return is_sorted(words.begin(), words.end(), [&charPositions](const string& a, const string& b) {
+            return lexicographical_compare(a.begin(), a.end(), b.begin(), b.end(), [&charPositions](char a, char b) { return charPositions[a - 'a'] < charPositions[b - 'a']; });
+        });
     }
 };
 
