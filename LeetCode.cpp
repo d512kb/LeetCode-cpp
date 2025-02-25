@@ -7,18 +7,16 @@ using namespace std;
 
 class Solution {
 public:
-    int mostFrequent(vector<int>& nums, int key) {
-        unordered_map<int, int> counts;
-        int result = 0;
-        int maxCount = 0;
+    vector<int> mostVisited(int n, vector<int>& rounds) {
+        vector<int> result;
 
-        for (int i = 0; i < nums.size() - 1; ++i) {
-            if (nums[i] == key) {
-                if (++counts[nums[i + 1]] > maxCount) {
-                    maxCount = counts[nums[i + 1]];
-                    result = nums[i + 1];
-                };
+        if (rounds.front() <= rounds.back()) {
+            for (int i = rounds.front(); i <= rounds.back(); ++i) {
+                result.push_back(i);
             }
+        } else {
+            for (int i = 1; i <= rounds.back(); ++i) { result.push_back(i); }
+            for (int i = rounds.front(); i <= n; ++i) { result.push_back(i); }
         }
 
         return result;
