@@ -7,14 +7,16 @@ using namespace std;
 
 class Solution {
 public:
-    char findTheDifference(string s, string t) {
-        int diffChar = 0;
+    int countElements(vector<int>& nums) {
+        sort(nums.begin(), nums.end());
+        auto firstNum = upper_bound(nums.begin(), nums.end(), nums.front());
+        auto lastNum = upper_bound(nums.rbegin(), nums.rend(), nums.back(), greater<>{}).base();
 
-        for (int i = 0; i < s.size(); ++i) {
-            diffChar += t[i] - s[i];
-        }
+        int result = nums.size();
+        result -= distance(nums.begin(), firstNum);
+        result -= distance(lastNum, nums.end());
 
-        return diffChar + t.back();
+        return max(result, 0);
     }
 };
 
