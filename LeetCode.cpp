@@ -7,16 +7,33 @@ using namespace std;
 
 class Solution {
 public:
-    bool isAlienSorted(vector<string>& words, string order) {
-        vector<char> charPositions(26);
+    string mostCommonWord(string paragraph, vector<string>& banned) {
+        regex reg("\\w+");
+        sregex_iterator regIter(paragraph.begin(), paragraph.end(), reg);
+        auto endIter = sregex_iterator();
+        unordered_map<string, int> wordCount;
 
-        for (int i = 0; i < 26; ++i) {
-            charPositions[order[i] - 'a'] = i;
+        for (; regIter != endIter; ++regIter) {
+            const string& sourceStr = regIter->str();
+            string lowered;
+            transform(sourceStr.begin(), sourceStr.end(), back_inserter(lowered), [](char c) { return tolower(c); });
+
+            ++wordCount[lowered];
         }
 
-        return is_sorted(words.begin(), words.end(), [&charPositions](const string& a, const string& b) {
-            return lexicographical_compare(a.begin(), a.end(), b.begin(), b.end(), [&charPositions](char a, char b) { return charPositions[a - 'a'] < charPositions[b - 'a']; });
-        });
+        unordered_set<string> bannedWords(banned.begin(), banned.end());
+
+        string result;
+        int maxCount = 0;
+
+        for (const auto& [word, count] : wordCount) {
+            if (!bannedWords.contains(word) && count > maxCount) {
+                maxCount = count;
+                result = word;
+            }
+        }
+
+        return result;
     }
 };
 
