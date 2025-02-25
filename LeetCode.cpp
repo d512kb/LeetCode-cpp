@@ -5,19 +5,24 @@
 
 using namespace std;
 
-class ParkingSystem {
+class Solution {
 public:
-    ParkingSystem(int big, int medium, int small) : m_carPlaces{ 0, big, medium, small } {
-    }
+    int maximumUnits(vector<vector<int>>& boxTypes, int truckSize) {
+        sort(boxTypes.begin(), boxTypes.end(), [](const auto& boxInfo1, const auto& boxInfo2) { return boxInfo1[1] > boxInfo2[1]; });
 
-    bool addCar(int carType) {
-        if (m_carPlaces[carType] == 0) { return false; }
-        --m_carPlaces[carType];
-        return true;
-    }
+        int ans = 0;
 
-private:
-    array<int, 4> m_carPlaces;
+        for (const auto& boxInfo : boxTypes) {
+            int load = min(boxInfo[0], truckSize);
+
+            truckSize -= load;
+            ans += load * boxInfo[1];
+
+            if (truckSize == 0) { break; }
+        }
+
+        return ans;
+    }
 };
 
 int main()
