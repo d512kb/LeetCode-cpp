@@ -5,36 +5,19 @@
 
 using namespace std;
 
-class Solution {
+class ParkingSystem {
 public:
-    string mostCommonWord(string paragraph, vector<string>& banned) {
-        regex reg("\\w+");
-        sregex_iterator regIter(paragraph.begin(), paragraph.end(), reg);
-        auto endIter = sregex_iterator();
-        unordered_map<string, int> wordCount;
-
-        for (; regIter != endIter; ++regIter) {
-            const string& sourceStr = regIter->str();
-            string lowered;
-            transform(sourceStr.begin(), sourceStr.end(), back_inserter(lowered), [](char c) { return tolower(c); });
-
-            ++wordCount[lowered];
-        }
-
-        unordered_set<string> bannedWords(banned.begin(), banned.end());
-
-        string result;
-        int maxCount = 0;
-
-        for (const auto& [word, count] : wordCount) {
-            if (!bannedWords.contains(word) && count > maxCount) {
-                maxCount = count;
-                result = word;
-            }
-        }
-
-        return result;
+    ParkingSystem(int big, int medium, int small) : m_carPlaces{ 0, big, medium, small } {
     }
+
+    bool addCar(int carType) {
+        if (m_carPlaces[carType] == 0) { return false; }
+        --m_carPlaces[carType];
+        return true;
+    }
+
+private:
+    array<int, 4> m_carPlaces;
 };
 
 int main()
