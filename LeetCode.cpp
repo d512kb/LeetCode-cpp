@@ -7,19 +7,14 @@ using namespace std;
 
 class Solution {
 public:
-    vector<int> mostVisited(int n, vector<int>& rounds) {
-        vector<int> result;
+    char findTheDifference(string s, string t) {
+        int diffChar = 0;
 
-        if (rounds.front() <= rounds.back()) {
-            for (int i = rounds.front(); i <= rounds.back(); ++i) {
-                result.push_back(i);
-            }
-        } else {
-            for (int i = 1; i <= rounds.back(); ++i) { result.push_back(i); }
-            for (int i = rounds.front(); i <= n; ++i) { result.push_back(i); }
+        for (int i = 0; i < s.size(); ++i) {
+            diffChar += t[i] - s[i];
         }
 
-        return result;
+        return diffChar + t.back();
     }
 };
 
