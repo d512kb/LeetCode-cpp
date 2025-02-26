@@ -7,22 +7,22 @@ using namespace std;
 
 class Solution {
 public:
-    vector<int> countRectangles(vector<vector<int>>& rectangles, vector<vector<int>>& points) {
-        vector<vector<int>> lengths(101);
+    int numMatchingSubseq(string s, vector<string>& words) {
+        array<vector<pair<reference_wrapper<string>, int>>, 26> buckets;
 
-        for (const auto& r : rectangles) { lengths[r[1]].push_back(r[0]); }
-        for (auto& len : lengths) { sort(len.begin(), len.end()); }
+        for (int i = 0; i < words.size(); ++i) {
+            buckets[words[i].front() - 'a'].emplace_back(words[i], 0);
+        }
 
-        vector<int> result;
+        int result = 0;
+        for (char c : s) {
+            auto currentBuckets(std::move(buckets[c - 'a']));
 
-        for (const auto& p : points) {
-            int rectNumber = 0;
-            for (int h = p[1]; h <= 100; ++h) {
-                const auto& len = lengths[h];
-                rectNumber += distance(lower_bound(len.begin(), len.end(), p[0]), len.end());
+            for (auto [word, wordCharIndex] : currentBuckets) {
+                if (++wordCharIndex == word.get().size()) { ++result; } else {
+                    buckets[word.get()[wordCharIndex] - 'a'].emplace_back(word, wordCharIndex);
+                }
             }
-
-            result.push_back(rectNumber);
         }
 
         return result;
