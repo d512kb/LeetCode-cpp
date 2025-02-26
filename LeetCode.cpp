@@ -7,21 +7,41 @@ using namespace std;
 
 class Solution {
 public:
-    vector<long long> maximumEvenSplit(long long finalSum) {
-        if (finalSum % 2) { return {}; }
+    bool canTransform(string start, string result) {
+        if (start.size() != result.size()) { return false; }
+        const int sz = start.size();
 
-        vector<long long> result;
-        int subtract = 2;
+        for (int i = 0, nextX = 0; i < sz; ++i) {
+            if (start[i] == result[i]) { continue; }
+            if (start[i] == 'R') {
+                if (result[i] == 'L') { return false; }
 
-        while (finalSum >= subtract) {
-            result.push_back(subtract);
-            finalSum -= subtract;
-            subtract += 2;
+                for (nextX = max(nextX, i + 1); nextX < sz; ++nextX) {
+                    if (start[nextX] == 'L') { return false; }
+                    if (start[nextX] == 'X') {
+                        swap(start[i], start[nextX]);
+                        break;
+                    }
+                }
+            }
         }
 
-        result.back() += finalSum;
+        for (int i = sz - 1, nextX = i; i >= 0; --i) {
+            if (start[i] == result[i]) { continue; }
+            if (start[i] == 'L') {
+                if (result[i] == 'R') { return false; }
 
-        return result;
+                for (nextX = min(nextX, i - 1); nextX >= 0; --nextX) {
+                    if (start[nextX] == 'R') { return false; }
+                    if (start[nextX] == 'X') {
+                        swap(start[i], start[nextX]);
+                        break;
+                    }
+                }
+            }
+        }
+
+        return start == result;
     }
 };
 
