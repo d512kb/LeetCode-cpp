@@ -7,21 +7,24 @@ using namespace std;
 
 class Solution {
 public:
-    int numMatchingSubseq(string s, vector<string>& words) {
-        array<vector<pair<reference_wrapper<string>, int>>, 26> buckets;
-
-        for (int i = 0; i < words.size(); ++i) {
-            buckets[words[i].front() - 'a'].emplace_back(words[i], 0);
-        }
-
+    int maximumWhiteTiles(vector<vector<int>>& tiles, int carpetLen) {
+        sort(tiles.begin(), tiles.end());
+        const int sz = tiles.size();
+        int tilesCovered = 0;
         int result = 0;
-        for (char c : s) {
-            auto currentBuckets(std::move(buckets[c - 'a']));
 
-            for (auto [word, wordCharIndex] : currentBuckets) {
-                if (++wordCharIndex == word.get().size()) { ++result; } else {
-                    buckets[word.get()[wordCharIndex] - 'a'].emplace_back(word, wordCharIndex);
-                }
+        for (int left = 0, right = 0; right < sz && result < carpetLen; ) {
+            int rightEdge = tiles[left][0] + carpetLen - 1;
+
+            if (rightEdge >= tiles[right][1]) {
+                tilesCovered += tiles[right][1] - tiles[right][0] + 1;
+                result = max(result, tilesCovered);
+                ++right;
+            } else {
+                int lastPiece = max(0, rightEdge - tiles[right][0] + 1);
+                result = max(result, tilesCovered + lastPiece);
+                tilesCovered -= tiles[left][1] - tiles[left][0] + 1;
+                ++left;
             }
         }
 
