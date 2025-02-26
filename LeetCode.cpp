@@ -7,38 +7,51 @@ using namespace std;
 
 class Solution {
 public:
-    int wordCount(vector<string>& startWords, vector<string>& targetWords) {
-        unordered_set<size_t> possibleWords;
-        for (const auto& word : startWords) { possibleWords.insert(calcHash(word)); }
+    int minCostSetTime(int startAt, int moveCost, int pushCost, int targetSeconds) {
+        int minutes = targetSeconds / 60;
+        int seconds = targetSeconds % 60;
 
-        int result = 0;
+        if (minutes == 100) {
+            --minutes;
+            seconds += 60;
+        }
 
-        for (auto& word : targetWords) {
-            auto wordHash = calcHash(word);
-
-            for (char c : word) {
-                wordHash &= ~(1 << (c - 'a'));
-
-                if (possibleWords.contains(wordHash)) {
-                    ++result;
-                    break;
-                }
-
-                wordHash |= static_cast<size_t>(1) << (c - 'a');
-            }
+        int result = calcCost(startAt, moveCost, pushCost, minutes, seconds);
+        if (seconds + 60 <= 99 && minutes > 0) {
+            result = min(result, calcCost(startAt, moveCost, pushCost, --minutes, seconds + 60));
         }
 
         return result;
     }
 private:
-    size_t calcHash(const string& str) {
-        size_t hash = 0;
+    int calcCost(int startAt, int moveCost, int pushCost, int minutes, int seconds) {
+        vector<int> digits;
 
-        for (char c : str) {
-            hash |= static_cast<size_t>(1) << (c - 'a');
+        while (seconds) {
+            digits.push_back(seconds % 10);
+            seconds /= 10;
         }
 
-        return hash;
+        while (minutes > 0 && digits.size() < 2) { digits.push_back(0); } // seconds are always 2 digits if we have minutes too
+
+        while (minutes) {
+            digits.push_back(minutes % 10);
+            minutes /= 10;
+        }
+
+        reverse(digits.begin(), digits.end());
+        int result = 0;
+
+        for (int n : digits) {
+            if (startAt != n) {
+                startAt = n;
+                result += moveCost;
+            }
+
+            result += pushCost;
+        }
+
+        return result;
     }
 };
 
