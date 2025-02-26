@@ -7,41 +7,25 @@ using namespace std;
 
 class Solution {
 public:
-    bool canTransform(string start, string result) {
-        if (start.size() != result.size()) { return false; }
-        const int sz = start.size();
+    vector<int> countRectangles(vector<vector<int>>& rectangles, vector<vector<int>>& points) {
+        vector<vector<int>> lengths(101);
 
-        for (int i = 0, nextX = 0; i < sz; ++i) {
-            if (start[i] == result[i]) { continue; }
-            if (start[i] == 'R') {
-                if (result[i] == 'L') { return false; }
+        for (const auto& r : rectangles) { lengths[r[1]].push_back(r[0]); }
+        for (auto& len : lengths) { sort(len.begin(), len.end()); }
 
-                for (nextX = max(nextX, i + 1); nextX < sz; ++nextX) {
-                    if (start[nextX] == 'L') { return false; }
-                    if (start[nextX] == 'X') {
-                        swap(start[i], start[nextX]);
-                        break;
-                    }
-                }
+        vector<int> result;
+
+        for (const auto& p : points) {
+            int rectNumber = 0;
+            for (int h = p[1]; h <= 100; ++h) {
+                const auto& len = lengths[h];
+                rectNumber += distance(lower_bound(len.begin(), len.end(), p[0]), len.end());
             }
+
+            result.push_back(rectNumber);
         }
 
-        for (int i = sz - 1, nextX = i; i >= 0; --i) {
-            if (start[i] == result[i]) { continue; }
-            if (start[i] == 'L') {
-                if (result[i] == 'R') { return false; }
-
-                for (nextX = min(nextX, i - 1); nextX >= 0; --nextX) {
-                    if (start[nextX] == 'R') { return false; }
-                    if (start[nextX] == 'X') {
-                        swap(start[i], start[nextX]);
-                        break;
-                    }
-                }
-            }
-        }
-
-        return start == result;
+        return result;
     }
 };
 
