@@ -7,24 +7,16 @@ using namespace std;
 
 class Solution {
 public:
-    int maximumWhiteTiles(vector<vector<int>>& tiles, int carpetLen) {
-        sort(tiles.begin(), tiles.end());
-        const int sz = tiles.size();
-        int tilesCovered = 0;
-        int result = 0;
+    int longestSubsequence(string s, int k) {
+        int result = count(s.begin(), s.end(), '0');
+        int val = 0;
 
-        for (int left = 0, right = 0; right < sz && result < carpetLen; ) {
-            int rightEdge = tiles[left][0] + carpetLen - 1;
+        for (int i = s.size() - 1, offset = 0; i >= 0; --i, ++offset) {
+            if (val > k - (1 << offset)) { break; }
 
-            if (rightEdge >= tiles[right][1]) {
-                tilesCovered += tiles[right][1] - tiles[right][0] + 1;
-                result = max(result, tilesCovered);
-                ++right;
-            } else {
-                int lastPiece = max(0, rightEdge - tiles[right][0] + 1);
-                result = max(result, tilesCovered + lastPiece);
-                tilesCovered -= tiles[left][1] - tiles[left][0] + 1;
-                ++left;
+            if (s[i] == '1') {
+                val += 1 << offset;
+                ++result;
             }
         }
 
