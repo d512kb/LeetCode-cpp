@@ -7,20 +7,53 @@ using namespace std;
 
 class Solution {
 public:
-    int longestSubsequence(string s, int k) {
-        int result = count(s.begin(), s.end(), '0');
-        int val = 0;
+    int lengthLongestPath(string input) {
+        int index = 0;
+        int targetLevel = 0;
+        int longestPath = 0;
 
-        for (int i = s.size() - 1, offset = 0; i >= 0; --i, ++offset) {
-            if (val > k - (1 << offset)) { break; }
+        traverse(input, index, 0, targetLevel, 0, longestPath);
 
-            if (s[i] == '1') {
-                val += 1 << offset;
-                ++result;
+        return longestPath;
+    }
+private:
+    void traverse(const string& path, int& index, int level, int& targetLevel, int pathLen, int& longestPath) {
+        const int sz = path.size();
+        int localNameLen = 0;
+
+
+        while (index < sz) {
+            if (level < targetLevel) {
+                traverse(path, index, level + 1, targetLevel, pathLen + 1 + localNameLen, longestPath);
+            }
+
+            while (level > targetLevel) {
+                return;
+            }
+
+            if (path[index] == '\n') {
+                index += 1; // skip \n
+                int nextLevel = 0;
+
+                while (index < sz && path[index] == '\t') { // count tabs
+                    index += 1;
+                    ++nextLevel;
+                }
+
+                targetLevel = nextLevel;
+            } else {
+                bool file = false;
+                localNameLen = 0;
+
+                for (index; index < sz && path[index] != '\n'; ++index, ++localNameLen) {
+                    if (path[index] == '.') { file = true; }
+                }
+
+                if (file) {
+                    longestPath = max(longestPath, pathLen + localNameLen);
+                }
             }
         }
-
-        return result;
     }
 };
 
