@@ -7,16 +7,15 @@ using namespace std;
 
 class Solution {
 public:
-    ListNode* insertGreatestCommonDivisors(ListNode* head) {
-        ListNode* node = head;
+    vector<int> findArray(vector<int>& pref) {
+        vector<int> result(pref.size());
+        result[0] = pref[0];
 
-        while (node->next) {
-            ListNode* gcdNode = new ListNode(gcd(node->val, node->next->val), node->next);
-            node->next = gcdNode;
-            node = gcdNode->next;
+        for (int i = 1; i < pref.size(); ++i) {
+            result[i] = pref[i] ^ pref[i - 1];
         }
 
-        return head;
+        return result;
     }
 };
 
