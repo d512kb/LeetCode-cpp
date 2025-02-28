@@ -7,32 +7,35 @@ using namespace std;
 
 class Solution {
 public:
-    vector<int> countPoints(vector<vector<int>>& points, vector<vector<int>>& queries) {
-        vector<array<int, 2>> sortedPoints;
+    vector<int> assignTasks(vector<int>& servers, vector<int>& tasks) {
+        priority_queue<pair<int, int>, vector<pair<int, int>>, greater<>> readyServersQueue;
+        priority_queue<pair<int, int>, vector<pair<int, int>>, greater<>> activeServersQueue;
 
-        for (const auto& p : points) { sortedPoints.push_back({ p[0], p[1] }); }
-        sort(sortedPoints.begin(), sortedPoints.end());
+        for (int i = 0; i < servers.size(); ++i) { readyServersQueue.emplace(servers[i], i); }
 
-        vector<int> result;
+        vector<int> result(tasks.size());
 
-        for (const auto& query : queries) {
-            auto from = lower_bound(sortedPoints.begin(), sortedPoints.end(), array<int, 2>{query[0] - query[2], 0});
-            int number = 0;
+        for (int taskIndex = 0, time = 0; taskIndex < tasks.size(); ) {
+            time = max(time, taskIndex);
 
-            for (from; from != sortedPoints.end() && (*from)[0] <= query[0] + query[2]; ++from) {
-                if (calcDistance(query, *from) <= query[2]) {
-                    ++number;
-                }
+            while (!activeServersQueue.empty() && activeServersQueue.top().first <= time) {
+                int serverId = activeServersQueue.top().second;
+                activeServersQueue.pop();
+                readyServersQueue.emplace(servers[serverId], serverId);
             }
 
-            result.push_back(number);
+            if (readyServersQueue.empty()) {
+                time = activeServersQueue.top().first;
+                continue;
+            }
+
+            result[taskIndex] = readyServersQueue.top().second;
+            activeServersQueue.emplace(time + tasks[taskIndex], readyServersQueue.top().second);
+            readyServersQueue.pop();
+            ++taskIndex;
         }
 
         return result;
-    }
-private:
-    inline double calcDistance(const auto& p1, const auto& p2) const {
-        return sqrt(pow(p1[0] - p2[0], 2) + pow(p1[1] - p2[1], 2));
     }
 };
 
