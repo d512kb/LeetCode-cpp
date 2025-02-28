@@ -7,39 +7,46 @@ using namespace std;
 
 class Solution {
 public:
-    vector<vector<int>> onesMinusZeros(vector<vector<int>>& grid) {
-        const int rows = grid.size();
-        const int cols = grid.front().size();
+    int getMaxLen(vector<int>& nums) {
+        const int sz = nums.size();
+        int ans = 0;
+        int count = 0;
+        int negativeCount = 0;
+        int preNegativeCount = sz;
+        int lastNegativePos = -1;
 
-        vector<vector<int>> result(rows, vector<int>(cols));
+        for (int i = 0; i < sz; ++i) {
+            if (nums[i] == 0) {
+                if (negativeCount % 2) {
+                    ans = max(ans, max(count - preNegativeCount, count - (i - lastNegativePos)));
+                } else {
+                    ans = max(ans, count);
+                }
 
-        for (int row = 0; row < rows; ++row) {
-            int onesRow = 0;
-            int zerosRow = 0;
+                count = 0;
+                negativeCount = 0;
+                preNegativeCount = sz;
+                lastNegativePos = -1;
 
-            for (int col = 0; col < cols; ++col) {
-                if (grid[row][col] == 1) { ++onesRow; } else { ++zerosRow; }
+                continue;
             }
 
-            for (int col = 0; col < cols; ++col) {
-                result[row][col] += onesRow - zerosRow;
+            ++count;
+
+            if (nums[i] < 0) {
+                ++negativeCount;
+                preNegativeCount = min(preNegativeCount, count);
+                lastNegativePos = max(lastNegativePos, i);
             }
         }
 
-        for (int col = 0; col < cols; ++col) {
-            int onesCol = 0;
-            int zerosCol = 0;
-
-            for (int row = 0; row < rows; ++row) {
-                if (grid[row][col] == 1) { ++onesCol; } else { ++zerosCol; }
-            }
-
-            for (int row = 0; row < rows; ++row) {
-                result[row][col] += onesCol - zerosCol;
-            }
+        if (negativeCount % 2) {
+            ans = max(ans, max(count - preNegativeCount, count - (sz - lastNegativePos)));
+        } else {
+            ans = max(ans, count);
         }
 
-        return result;
+        return ans;
     }
 };
 
