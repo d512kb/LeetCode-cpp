@@ -7,20 +7,39 @@ using namespace std;
 
 class Solution {
 public:
-    int numberOfBeams(vector<string>& bank) {
-        int previousRowDevices = 0;
-        int ans = 0;
+    vector<vector<int>> onesMinusZeros(vector<vector<int>>& grid) {
+        const int rows = grid.size();
+        const int cols = grid.front().size();
 
-        for (const auto& row : bank) {
-            int currentRowDevices = count(row.begin(), row.end(), '1');
+        vector<vector<int>> result(rows, vector<int>(cols));
 
-            if (currentRowDevices > 0) {
-                ans += previousRowDevices * currentRowDevices;
-                previousRowDevices = currentRowDevices;
+        for (int row = 0; row < rows; ++row) {
+            int onesRow = 0;
+            int zerosRow = 0;
+
+            for (int col = 0; col < cols; ++col) {
+                if (grid[row][col] == 1) { ++onesRow; } else { ++zerosRow; }
+            }
+
+            for (int col = 0; col < cols; ++col) {
+                result[row][col] += onesRow - zerosRow;
             }
         }
 
-        return ans;
+        for (int col = 0; col < cols; ++col) {
+            int onesCol = 0;
+            int zerosCol = 0;
+
+            for (int row = 0; row < rows; ++row) {
+                if (grid[row][col] == 1) { ++onesCol; } else { ++zerosCol; }
+            }
+
+            for (int row = 0; row < rows; ++row) {
+                result[row][col] += onesCol - zerosCol;
+            }
+        }
+
+        return result;
     }
 };
 
