@@ -7,46 +7,45 @@ using namespace std;
 
 class Solution {
 public:
-    int getMaxLen(vector<int>& nums) {
-        const int sz = nums.size();
-        int ans = 0;
-        int count = 0;
-        int negativeCount = 0;
-        int preNegativeCount = sz;
-        int lastNegativePos = -1;
+    int removeStones(vector<vector<int>>& stones) {
+        constexpr int yOffset = 1 + 1e4;
+        constexpr int maxCoord = 2 * yOffset;
+        const int sz = stones.size();
+        vector<int> parent(maxCoord);
+        vector<int> size(maxCoord, 0);
+        iota(parent.begin(), parent.end(), 0);
 
-        for (int i = 0; i < sz; ++i) {
-            if (nums[i] == 0) {
-                if (negativeCount % 2) {
-                    ans = max(ans, max(count - preNegativeCount, count - (i - lastNegativePos)));
-                } else {
-                    ans = max(ans, count);
-                }
-
-                count = 0;
-                negativeCount = 0;
-                preNegativeCount = sz;
-                lastNegativePos = -1;
-
-                continue;
-            }
-
-            ++count;
-
-            if (nums[i] < 0) {
-                ++negativeCount;
-                preNegativeCount = min(preNegativeCount, count);
-                lastNegativePos = max(lastNegativePos, i);
-            }
+        for (const auto& stone : stones) {
+            join(parent, size, stone[0], stone[1] + yOffset);
         }
 
-        if (negativeCount % 2) {
-            ans = max(ans, max(count - preNegativeCount, count - (sz - lastNegativePos)));
-        } else {
-            ans = max(ans, count);
+        int ans = 0;
+        for (int s : size) {
+            if (s > 1) {
+                ans += s - 1;
+            }
         }
 
         return ans;
+    }
+private:
+    int find(vector<int>& parent, int id) {
+        if (parent[id] == id) return id;
+        return parent[id] = find(parent, parent[id]);
+    }
+
+    void join(vector<int>& parent, vector<int>& size, int a, int b) {
+        a = find(parent, a);
+        b = find(parent, b);
+
+        if (a == b) { ++size[a]; return; }
+        if (size[a] > size[b]) {
+            size[a] += exchange(size[b], 0) + 1;
+            parent[b] = a;
+        } else {
+            size[b] += exchange(size[a], 0) + 1;
+            parent[a] = b;
+        }
     }
 };
 
