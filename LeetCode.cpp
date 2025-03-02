@@ -7,45 +7,33 @@ using namespace std;
 
 class Solution {
 public:
-    int removeStones(vector<vector<int>>& stones) {
-        constexpr int yOffset = 1 + 1e4;
-        constexpr int maxCoord = 2 * yOffset;
-        const int sz = stones.size();
-        vector<int> parent(maxCoord);
-        vector<int> size(maxCoord, 0);
-        iota(parent.begin(), parent.end(), 0);
+    int largestInteger(vector<int>& nums, int k) {
+        constexpr int endVal = 51;
+        vector<int> count(endVal);
+        int ans = -1;
 
-        for (const auto& stone : stones) {
-            join(parent, size, stone[0], stone[1] + yOffset);
+        for (int num : nums) {
+            ++count[num];
         }
 
-        int ans = 0;
-        for (int s : size) {
-            if (s > 1) {
-                ans += s - 1;
+        if (k == 1) {
+            for (int i = 0; i < endVal; ++i) {
+                if (count[i] == 1 && i > ans) {
+                    ans = i;
+                }
             }
+
+            return ans;
+        } else if (k < nums.size()) {
+            if (count[nums.front()] == 1) { ans = nums.front(); }
+            if (count[nums.back()] == 1 && nums.back() > ans) {
+                ans = nums.back();
+            }
+        } else {
+            return *max_element(nums.begin(), nums.end());
         }
 
         return ans;
-    }
-private:
-    int find(vector<int>& parent, int id) {
-        if (parent[id] == id) return id;
-        return parent[id] = find(parent, parent[id]);
-    }
-
-    void join(vector<int>& parent, vector<int>& size, int a, int b) {
-        a = find(parent, a);
-        b = find(parent, b);
-
-        if (a == b) { ++size[a]; return; }
-        if (size[a] > size[b]) {
-            size[a] += exchange(size[b], 0) + 1;
-            parent[b] = a;
-        } else {
-            size[b] += exchange(size[a], 0) + 1;
-            parent[a] = b;
-        }
     }
 };
 
