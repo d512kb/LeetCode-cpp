@@ -7,33 +7,25 @@ using namespace std;
 
 class Solution {
 public:
-    int largestInteger(vector<int>& nums, int k) {
-        constexpr int endVal = 51;
-        vector<int> count(endVal);
-        int ans = -1;
+    int minHeightShelves(vector<vector<int>>& books, int shelfWidth) {
+        const int sz = books.size();
+        vector<int> dp(sz + 1, numeric_limits<int>::max());
+        dp.front() = 0;
 
-        for (int num : nums) {
-            ++count[num];
+        for (int i = 0; i < sz; ++i) {
+            int availableWidth = shelfWidth;
+            int maxHeight = 0;
+            int& ans = dp[i + 1];
+
+            for (int j = i; j >= 0; --j) {
+                if (availableWidth < books[j][0]) { break; }
+                availableWidth -= books[j][0];
+                maxHeight = max(maxHeight, books[j][1]);
+                ans = min(ans, maxHeight + dp[j]);
+            }
         }
 
-        if (k == 1) {
-            for (int i = 0; i < endVal; ++i) {
-                if (count[i] == 1 && i > ans) {
-                    ans = i;
-                }
-            }
-
-            return ans;
-        } else if (k < nums.size()) {
-            if (count[nums.front()] == 1) { ans = nums.front(); }
-            if (count[nums.back()] == 1 && nums.back() > ans) {
-                ans = nums.back();
-            }
-        } else {
-            return *max_element(nums.begin(), nums.end());
-        }
-
-        return ans;
+        return dp.back();
     }
 };
 
