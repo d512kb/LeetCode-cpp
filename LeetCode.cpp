@@ -7,25 +7,29 @@ using namespace std;
 
 class Solution {
 public:
-    int minHeightShelves(vector<vector<int>>& books, int shelfWidth) {
-        const int sz = books.size();
-        vector<int> dp(sz + 1, numeric_limits<int>::max());
-        dp.front() = 0;
+    string sortVowels(string s) {
+        vector<char> vowelsToSort;
 
-        for (int i = 0; i < sz; ++i) {
-            int availableWidth = shelfWidth;
-            int maxHeight = 0;
-            int& ans = dp[i + 1];
-
-            for (int j = i; j >= 0; --j) {
-                if (availableWidth < books[j][0]) { break; }
-                availableWidth -= books[j][0];
-                maxHeight = max(maxHeight, books[j][1]);
-                ans = min(ans, maxHeight + dp[j]);
+        for (int i = 0; i < s.size(); ++i) {
+            if (isVowel(s[i])) {
+                vowelsToSort.push_back(s[i]);
             }
         }
 
-        return dp.back();
+        sort(vowelsToSort.begin(), vowelsToSort.end());
+
+        for (int i = 0, vi = 0; i < s.size(); ++i) {
+            if (isVowel(s[i])) {
+                s[i] = vowelsToSort[vi++];
+            }
+        }
+
+        return s;
+    }
+private:
+    bool isVowel(char c) {
+        return c == 'A' || c == 'E' || c == 'I' || c == 'O' || c == 'U' ||
+            c == 'a' || c == 'e' || c == 'i' || c == 'o' || c == 'u';
     }
 };
 
