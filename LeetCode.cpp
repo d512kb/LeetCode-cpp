@@ -7,18 +7,23 @@ using namespace std;
 
 class Solution {
 public:
-    int wateringPlants(vector<int>& plants, int capacity) {
-        int can = capacity;
+    int numOfPairs(vector<string>& nums, string target) {
+        const int targetSize = target.size();
+        unordered_map<int, int> prefixCount, suffixCount;
+
+        for (const auto& str : nums) {
+            if (target.starts_with(str)) { ++prefixCount[str.size()]; }
+            if (target.ends_with(str)) { ++suffixCount[str.size()]; }
+        }
+
         int ans = 0;
+        for (const auto [prefixSize, count] : prefixCount) {
+            ans += count * suffixCount[target.size() - prefixSize];
+        }
 
-        for (int i = 0; i < plants.size(); ++i) {
-            if (can < plants[i]) {
-                ans += 2 * i;
-                can = capacity;
-            }
-
-            can -= plants[i];
-            ++ans;
+        // if prefix can be suffix we should remove half of the amount
+        if (targetSize % 2 == 0 && target.ends_with(target.substr(0, targetSize / 2))) {
+            ans -= suffixCount[targetSize / 2];
         }
 
         return ans;
