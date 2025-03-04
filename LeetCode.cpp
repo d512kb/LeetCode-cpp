@@ -7,26 +7,21 @@ using namespace std;
 
 class Solution {
 public:
-    int countDistinctIntegers(vector<int>& nums) {
-        unordered_set<int> numbers;
+    int wateringPlants(vector<int>& plants, int capacity) {
+        int can = capacity;
+        int ans = 0;
 
-        for (int num : nums) {
-            numbers.insert(num);
-            numbers.insert(reverseInt(num));
+        for (int i = 0; i < plants.size(); ++i) {
+            if (can < plants[i]) {
+                ans += 2 * i;
+                can = capacity;
+            }
+
+            can -= plants[i];
+            ++ans;
         }
 
-        return numbers.size();
-    }
-private:
-    inline int reverseInt(int val) {
-        int result = 0;
-
-        while (val) {
-            result = (result * 10) + val % 10;
-            val /= 10;
-        }
-
-        return result;
+        return ans;
     }
 };
 
