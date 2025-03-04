@@ -7,23 +7,25 @@ using namespace std;
 
 class Solution {
 public:
-    int numOfPairs(vector<string>& nums, string target) {
-        const int targetSize = target.size();
-        unordered_map<int, int> prefixCount, suffixCount;
+    int maxIceCream(vector<int>& costs, int coins) {
+        int maxCost = *max_element(costs.begin(), costs.end());
+        vector<int> counts(maxCost + 1);
 
-        for (const auto& str : nums) {
-            if (target.starts_with(str)) { ++prefixCount[str.size()]; }
-            if (target.ends_with(str)) { ++suffixCount[str.size()]; }
+        // counting sort
+        for (int cost : costs) { ++counts[cost]; }
+        partial_sum(counts.begin(), counts.end(), counts.begin());
+
+        vector<int> sortedCosts(costs.size());
+
+        for (int i = costs.size() - 1; i >= 0; --i) {
+            sortedCosts[counts[costs[i]]-- - 1] = costs[i];
         }
 
         int ans = 0;
-        for (const auto [prefixSize, count] : prefixCount) {
-            ans += count * suffixCount[target.size() - prefixSize];
-        }
-
-        // if prefix can be suffix we should remove half of the amount
-        if (targetSize % 2 == 0 && target.ends_with(target.substr(0, targetSize / 2))) {
-            ans -= suffixCount[targetSize / 2];
+        for (int cost : sortedCosts) {
+            coins -= cost;
+            if (coins < 0) { break; }
+            ++ans;
         }
 
         return ans;
