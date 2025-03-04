@@ -7,29 +7,26 @@ using namespace std;
 
 class Solution {
 public:
-    string sortVowels(string s) {
-        vector<char> vowelsToSort;
+    int countDistinctIntegers(vector<int>& nums) {
+        unordered_set<int> numbers;
 
-        for (int i = 0; i < s.size(); ++i) {
-            if (isVowel(s[i])) {
-                vowelsToSort.push_back(s[i]);
-            }
+        for (int num : nums) {
+            numbers.insert(num);
+            numbers.insert(reverseInt(num));
         }
 
-        sort(vowelsToSort.begin(), vowelsToSort.end());
-
-        for (int i = 0, vi = 0; i < s.size(); ++i) {
-            if (isVowel(s[i])) {
-                s[i] = vowelsToSort[vi++];
-            }
-        }
-
-        return s;
+        return numbers.size();
     }
 private:
-    bool isVowel(char c) {
-        return c == 'A' || c == 'E' || c == 'I' || c == 'O' || c == 'U' ||
-            c == 'a' || c == 'e' || c == 'i' || c == 'o' || c == 'u';
+    inline int reverseInt(int val) {
+        int result = 0;
+
+        while (val) {
+            result = (result * 10) + val % 10;
+            val /= 10;
+        }
+
+        return result;
     }
 };
 
