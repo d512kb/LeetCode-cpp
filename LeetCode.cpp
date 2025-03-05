@@ -7,20 +7,19 @@ using namespace std;
 
 class Solution {
 public:
-    vector<vector<int>> divideArray(vector<int>& nums, int k) {
-        sort(nums.begin(), nums.end());
+    long long maximumTripletValue(vector<int>& nums) {
+        const int sz = nums.size();
+        int64_t prefixMax = nums.front();
+        int64_t maxDiff = -1;
+        int64_t ans = -1;
 
-        for (int i = 0; i < nums.size(); i += 3) {
-            if (nums[i + 2] - nums[i] > k) { return {}; }
+        for (int j = 1; j < sz - 1; ++j) {
+            maxDiff = max(maxDiff, prefixMax - nums[j]);
+            ans = max(ans, maxDiff * nums[j + 1]);
+            prefixMax = max<int64_t>(prefixMax, nums[j]);
         }
 
-        vector<vector<int>> result;
-        for (int i = 0; i < nums.size(); i += 3) {
-            result.push_back({ nums[i], nums[i + 1], nums[i + 2] });
-        }
-
-
-        return result;
+        return ans < 0 ? 0 : ans;
     }
 };
 
