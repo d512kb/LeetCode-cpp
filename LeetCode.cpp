@@ -7,19 +7,39 @@ using namespace std;
 
 class Solution {
 public:
-    long long maximumTripletValue(vector<int>& nums) {
-        const int sz = nums.size();
-        int64_t prefixMax = nums.front();
-        int64_t maxDiff = -1;
-        int64_t ans = -1;
+    int longestCommonPrefix(vector<int>& arr1, vector<int>& arr2) {
+        unordered_set<int> prefixes;
 
-        for (int j = 1; j < sz - 1; ++j) {
-            maxDiff = max(maxDiff, prefixMax - nums[j]);
-            ans = max(ans, maxDiff * nums[j + 1]);
-            prefixMax = max<int64_t>(prefixMax, nums[j]);
+        for (int val : arr1) {
+            while (val) {
+                prefixes.insert(val);
+                val /= 10;
+            }
         }
 
-        return ans < 0 ? 0 : ans;
+        int ans = 0;
+        for (int val : arr2) {
+            while (val) {
+                if (prefixes.contains(val)) {
+                    ans = max<int>(ans, countDigits(val));
+                    break;
+                }
+                val /= 10;
+            }
+        }
+
+        return ans;
+    }
+private:
+    inline int countDigits(int n) const {
+        int ans = 0;
+
+        while (n) {
+            ++ans;
+            n /= 10;
+        }
+
+        return ans;
     }
 };
 
