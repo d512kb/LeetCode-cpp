@@ -7,39 +7,19 @@ using namespace std;
 
 class Solution {
 public:
-    int longestCommonPrefix(vector<int>& arr1, vector<int>& arr2) {
-        unordered_set<int> prefixes;
-
-        for (int val : arr1) {
-            while (val) {
-                prefixes.insert(val);
-                val /= 10;
-            }
-        }
-
-        int ans = 0;
-        for (int val : arr2) {
-            while (val) {
-                if (prefixes.contains(val)) {
-                    ans = max<int>(ans, countDigits(val));
-                    break;
-                }
-                val /= 10;
-            }
-        }
-
-        return ans;
+    TreeNode* subtreeWithAllDeepest(TreeNode* root) {
+        return getBranchLen(root, 1).first;
     }
 private:
-    inline int countDigits(int n) const {
-        int ans = 0;
+    pair<TreeNode*, int> getBranchLen(TreeNode* node, int len) {
+        if (!node) { return { nullptr, len }; }
 
-        while (n) {
-            ++ans;
-            n /= 10;
-        }
+        auto left = getBranchLen(node->left, len + 1);
+        auto right = getBranchLen(node->right, len + 1);
 
-        return ans;
+        if (left.second == right.second) { return { node, left.second }; }
+        if (left.second > right.second) { return left; }
+        return right;
     }
 };
 
