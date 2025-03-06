@@ -7,16 +7,19 @@ using namespace std;
 
 class Solution {
 public:
-    long long maxKelements(vector<int>& nums, int k) {
-        priority_queue<int> pq(nums.begin(), nums.end());
+    int bestClosingTime(string customers) {
+        int wastedCustomers = count(customers.begin(), customers.end(), 'Y');
+        int wastedHours = 0;
+        int penalty = wastedCustomers;
+        int result = 0;
 
-        int64_t result = 0;
+        for (int i = 1; i <= customers.size(); ++i) {
+            if (customers[i - 1] == 'Y') { --wastedCustomers; } else { ++wastedHours; }
 
-        while (k--) {
-            if (pq.top() == 0) { return result; }
-            result += pq.top();
-            pq.push(ceil(pq.top() / 3.));
-            pq.pop();
+            if (wastedHours + wastedCustomers < penalty) {
+                penalty = wastedHours + wastedCustomers;
+                result = i;
+            }
         }
 
         return result;
