@@ -5,38 +5,22 @@
 
 using namespace std;
 
-class ATM {
-    static constexpr char s_banknotesCount = 5;
+class Solution {
 public:
-    ATM() : m_cash(s_banknotesCount), m_banknotes{ 20, 50, 100, 200, 500 } {
+    long long maxKelements(vector<int>& nums, int k) {
+        priority_queue<int> pq(nums.begin(), nums.end());
 
-    }
+        int64_t result = 0;
 
-    void deposit(vector<int> banknotesCount) {
-        for (int i = 0; i < s_banknotesCount; ++i) {
-            m_cash[i] += banknotesCount[i];
-        }
-    }
-
-    vector<int> withdraw(int amount) {
-        vector<int> withdrewCash(5);
-
-        for (int i = s_banknotesCount - 1; i >= 0 && amount > 0; --i) {
-            withdrewCash[i] += min(m_cash[i], amount / m_banknotes[i]);
-            amount -= withdrewCash[i] * m_banknotes[i];
+        while (k--) {
+            if (pq.top() == 0) { return result; }
+            result += pq.top();
+            pq.push(ceil(pq.top() / 3.));
+            pq.pop();
         }
 
-        if (amount) { return { -1 }; }
-
-        for (int i = 0; i < s_banknotesCount; ++i) {
-            m_cash[i] -= withdrewCash[i];
-        }
-
-        return withdrewCash;
+        return result;
     }
-private:
-    vector<int> m_cash;
-    array<int, s_banknotesCount> m_banknotes;
 };
 
 int main()
