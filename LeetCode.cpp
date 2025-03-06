@@ -5,26 +5,28 @@
 
 using namespace std;
 
-class Solution {
+class SeatManager {
 public:
-    int eliminateMaximum(vector<int>& dist, vector<int>& speed) {
-        const int sz = dist.size();
-        vector<float> appearance(sz);
+    SeatManager(int n) : m_maxReserved(0) {
 
-        for (int i = 0; i < sz; ++i) {
-            appearance[i] = static_cast<float>(dist[i]) / speed[i];
-        }
-
-        sort(appearance.begin(), appearance.end());
-
-        int ans = 1;
-        for (int i = 1; i < sz; ++i) {
-            if (appearance[i] <= i) { return ans; }
-            ++ans;
-        }
-
-        return ans;
     }
+
+    int reserve() {
+        if (!m_returned.empty()) {
+            int seat = m_returned.top();
+            m_returned.pop();
+            return seat;
+        }
+
+        return ++m_maxReserved;
+    }
+
+    void unreserve(int seatNumber) {
+        m_returned.push(seatNumber);
+    }
+private:
+    int m_maxReserved;
+    priority_queue<int, vector<int>, greater<>> m_returned;
 };
 
 int main()
