@@ -7,19 +7,17 @@ using namespace std;
 
 class Solution {
 public:
-    TreeNode* subtreeWithAllDeepest(TreeNode* root) {
-        return getBranchLen(root, 1).first;
-    }
-private:
-    pair<TreeNode*, int> getBranchLen(TreeNode* node, int len) {
-        if (!node) { return { nullptr, len }; }
+    int countHomogenous(string s) {
+        const int modulo = 1e9 + 7;
+        int ans = 1;
+        int currentStreak = 1;
 
-        auto left = getBranchLen(node->left, len + 1);
-        auto right = getBranchLen(node->right, len + 1);
+        for (int i = 1, sz = s.size(); i < sz; ++i) {
+            if (s[i] != s[i - 1]) { currentStreak = 0; }
+            ans = (ans + ++currentStreak) % modulo;
+        }
 
-        if (left.second == right.second) { return { node, left.second }; }
-        if (left.second > right.second) { return left; }
-        return right;
+        return ans;
     }
 };
 
