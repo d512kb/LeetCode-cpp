@@ -7,14 +7,20 @@ using namespace std;
 
 class Solution {
 public:
-    int countHomogenous(string s) {
-        const int modulo = 1e9 + 7;
-        int ans = 1;
-        int currentStreak = 1;
+    int eliminateMaximum(vector<int>& dist, vector<int>& speed) {
+        const int sz = dist.size();
+        vector<float> appearance(sz);
 
-        for (int i = 1, sz = s.size(); i < sz; ++i) {
-            if (s[i] != s[i - 1]) { currentStreak = 0; }
-            ans = (ans + ++currentStreak) % modulo;
+        for (int i = 0; i < sz; ++i) {
+            appearance[i] = static_cast<float>(dist[i]) / speed[i];
+        }
+
+        sort(appearance.begin(), appearance.end());
+
+        int ans = 1;
+        for (int i = 1; i < sz; ++i) {
+            if (appearance[i] <= i) { return ans; }
+            ++ans;
         }
 
         return ans;
