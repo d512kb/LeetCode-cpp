@@ -5,28 +5,38 @@
 
 using namespace std;
 
-class SeatManager {
+class ATM {
+    static constexpr char s_banknotesCount = 5;
 public:
-    SeatManager(int n) : m_maxReserved(0) {
+    ATM() : m_cash(s_banknotesCount), m_banknotes{ 20, 50, 100, 200, 500 } {
 
     }
 
-    int reserve() {
-        if (!m_returned.empty()) {
-            int seat = m_returned.top();
-            m_returned.pop();
-            return seat;
+    void deposit(vector<int> banknotesCount) {
+        for (int i = 0; i < s_banknotesCount; ++i) {
+            m_cash[i] += banknotesCount[i];
+        }
+    }
+
+    vector<int> withdraw(int amount) {
+        vector<int> withdrewCash(5);
+
+        for (int i = s_banknotesCount - 1; i >= 0 && amount > 0; --i) {
+            withdrewCash[i] += min(m_cash[i], amount / m_banknotes[i]);
+            amount -= withdrewCash[i] * m_banknotes[i];
         }
 
-        return ++m_maxReserved;
-    }
+        if (amount) { return { -1 }; }
 
-    void unreserve(int seatNumber) {
-        m_returned.push(seatNumber);
+        for (int i = 0; i < s_banknotesCount; ++i) {
+            m_cash[i] -= withdrewCash[i];
+        }
+
+        return withdrewCash;
     }
 private:
-    int m_maxReserved;
-    priority_queue<int, vector<int>, greater<>> m_returned;
+    vector<int> m_cash;
+    array<int, s_banknotesCount> m_banknotes;
 };
 
 int main()
