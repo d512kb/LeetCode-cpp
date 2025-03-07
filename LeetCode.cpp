@@ -7,16 +7,20 @@ using namespace std;
 
 class Solution {
 public:
-    ListNode* middleNode(ListNode* head) {
-        ListNode* fast = head;
-        ListNode* slow = head;
+    int longestPalindrome(string s) {
+        array<int, 'z' + 1> charCount;
 
-        while (fast && fast->next) {
-            fast = fast->next->next;
-            slow = slow->next;
+        for (char c : s) {
+            ++charCount[c];
         }
 
-        return slow;
+        int ans = 0;
+        for (int count : charCount) {
+            ans += count & 0xfffffffe;
+        }
+
+        if (ans < s.size()) { ++ans; }
+        return ans;
     }
 };
 
