@@ -7,9 +7,20 @@ using namespace std;
 
 class Solution {
 public:
-    int maximumGroups(vector<int>& grades) {
-        int D = sqrt(1 + 8 * grades.size()); // quadratic equation x*x + x == 2*n, where x is group size
-        return (-1 + D) / 2;
+    bool sumOfNumberAndReverse(int num) {
+        for (int n = num / 2; n <= num; ++n) {
+            int val = n;
+            int nRev = 0;
+
+            while (val) {
+                nRev = nRev * 10 + val % 10;
+                val /= 10;
+            }
+
+            if (n + nRev == num) { return true; }
+        }
+
+        return false;
     }
 };
 
