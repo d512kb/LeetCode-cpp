@@ -7,20 +7,16 @@ using namespace std;
 
 class Solution {
 public:
-    bool sumOfNumberAndReverse(int num) {
-        for (int n = num / 2; n <= num; ++n) {
-            int val = n;
-            int nRev = 0;
+    ListNode* middleNode(ListNode* head) {
+        ListNode* fast = head;
+        ListNode* slow = head;
 
-            while (val) {
-                nRev = nRev * 10 + val % 10;
-                val /= 10;
-            }
-
-            if (n + nRev == num) { return true; }
+        while (fast && fast->next) {
+            fast = fast->next->next;
+            slow = slow->next;
         }
 
-        return false;
+        return slow;
     }
 };
 
