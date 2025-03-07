@@ -7,22 +7,9 @@ using namespace std;
 
 class Solution {
 public:
-    int bestClosingTime(string customers) {
-        int wastedCustomers = count(customers.begin(), customers.end(), 'Y');
-        int wastedHours = 0;
-        int penalty = wastedCustomers;
-        int result = 0;
-
-        for (int i = 1; i <= customers.size(); ++i) {
-            if (customers[i - 1] == 'Y') { --wastedCustomers; } else { ++wastedHours; }
-
-            if (wastedHours + wastedCustomers < penalty) {
-                penalty = wastedHours + wastedCustomers;
-                result = i;
-            }
-        }
-
-        return result;
+    int maximumGroups(vector<int>& grades) {
+        int D = sqrt(1 + 8 * grades.size()); // quadratic equation x*x + x == 2*n, where x is group size
+        return (-1 + D) / 2;
     }
 };
 
