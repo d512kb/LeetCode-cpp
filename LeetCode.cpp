@@ -7,20 +7,22 @@ using namespace std;
 
 class Solution {
 public:
-    int longestPalindrome(string s) {
-        array<int, 'z' + 1> charCount;
+    vector<vector<int>> floodFill(vector<vector<int>>& image, int sr, int sc, int color) {
+        fill(image, sr, sc, image[sr][sc], color);
 
-        for (char c : s) {
-            ++charCount[c];
-        }
+        return image;
+    }
+private:
+    void fill(vector<vector<int>>& image, int row, int col, int sourceColor, int color) {
+        if (row < 0 || row == image.size() || col < 0 || col == image.front().size()) { return; }
+        if (image[row][col] != sourceColor || image[row][col] == color) { return; }
 
-        int ans = 0;
-        for (int count : charCount) {
-            ans += count & 0xfffffffe;
-        }
+        image[row][col] = color;
 
-        if (ans < s.size()) { ++ans; }
-        return ans;
+        fill(image, row, col + 1, sourceColor, color);
+        fill(image, row + 1, col, sourceColor, color);
+        fill(image, row, col - 1, sourceColor, color);
+        fill(image, row - 1, col, sourceColor, color);
     }
 };
 
