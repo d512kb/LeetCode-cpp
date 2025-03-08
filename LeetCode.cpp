@@ -5,24 +5,46 @@
 
 using namespace std;
 
-class Solution {
+class MyQueue {
 public:
-    vector<vector<int>> floodFill(vector<vector<int>>& image, int sr, int sc, int color) {
-        fill(image, sr, sc, image[sr][sc], color);
+    MyQueue() {
 
-        return image;
+    }
+
+    void push(int x) {
+        input.push(x);
+    }
+
+    int pop() {
+        refillOutput();
+
+        int val = output.top();
+        output.pop();
+        return val;
+    }
+
+    int peek() {
+        refillOutput();
+
+        return output.top();
+    }
+
+    bool empty() {
+        refillOutput();
+
+        return output.empty();
     }
 private:
-    void fill(vector<vector<int>>& image, int row, int col, int sourceColor, int color) {
-        if (row < 0 || row == image.size() || col < 0 || col == image.front().size()) { return; }
-        if (image[row][col] != sourceColor || image[row][col] == color) { return; }
+    stack<int> input;
+    stack<int> output;
 
-        image[row][col] = color;
-
-        fill(image, row, col + 1, sourceColor, color);
-        fill(image, row + 1, col, sourceColor, color);
-        fill(image, row, col - 1, sourceColor, color);
-        fill(image, row - 1, col, sourceColor, color);
+    void refillOutput() {
+        if (output.empty()) {
+            while (!input.empty()) {
+                output.push(input.top());
+                input.pop();
+            }
+        }
     }
 };
 
