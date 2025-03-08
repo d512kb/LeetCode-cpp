@@ -5,46 +5,34 @@
 
 using namespace std;
 
-class MyQueue {
+class Solution {
 public:
-    MyQueue() {
+    vector<string> reorderLogFiles(vector<string>& logs) {
+        unordered_map<string, int> digLogsOrder;
 
-    }
-
-    void push(int x) {
-        input.push(x);
-    }
-
-    int pop() {
-        refillOutput();
-
-        int val = output.top();
-        output.pop();
-        return val;
-    }
-
-    int peek() {
-        refillOutput();
-
-        return output.top();
-    }
-
-    bool empty() {
-        refillOutput();
-
-        return output.empty();
-    }
-private:
-    stack<int> input;
-    stack<int> output;
-
-    void refillOutput() {
-        if (output.empty()) {
-            while (!input.empty()) {
-                output.push(input.top());
-                input.pop();
+        for (int i = 0; i < logs.size(); ++i) {
+            if (isdigit(logs[i].back())) {
+                digLogsOrder[logs[i]] = i;
             }
         }
+
+        auto sortPred = [&digLogsOrder](const string& log1, const string& log2) {
+            bool dig1 = isdigit(log1.back());
+            bool dig2 = isdigit(log2.back());
+
+            if (dig1 && dig2) { return digLogsOrder[log1] < digLogsOrder[log2]; }
+            if (dig1 || dig2) { return dig2; }
+
+            auto log1ContentPos = 1 + log1.find(' ');
+            auto log2ContentPos = 1 + log2.find(' ');
+
+            auto contentCompare = log1.compare(log1ContentPos, log1.size(), log2, log2ContentPos, log2.size());
+            if (contentCompare != 0) { return contentCompare < 0; }
+            return log1.compare(0, log1ContentPos - 1, log2, 0, log2ContentPos - 1) < 0;
+        };
+
+        sort(logs.begin(), logs.end(), sortPred);
+        return logs;
     }
 };
 
