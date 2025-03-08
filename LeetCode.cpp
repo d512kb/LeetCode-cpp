@@ -7,32 +7,40 @@ using namespace std;
 
 class Solution {
 public:
-    vector<string> reorderLogFiles(vector<string>& logs) {
-        unordered_map<string, int> digLogsOrder;
+    vector<int> prisonAfterNDays(vector<int>& cells, int n) {
+        array<uint8_t, 256> trans{};
+        for (uint16_t from = 0; from < 256; ++from) {
+            uint8_t to = 0;
 
-        for (int i = 0; i < logs.size(); ++i) {
-            if (isdigit(logs[i].back())) {
-                digLogsOrder[logs[i]] = i;
+            for (int k = 1; k < 7; ++k) {
+                to |= (~(((from >> (k - 1)) & 1) ^ ((from >> (k + 1)) & 1)) & 1) << k;
             }
+
+            trans[from] = to;
         }
 
-        auto sortPred = [&digLogsOrder](const string& log1, const string& log2) {
-            bool dig1 = isdigit(log1.back());
-            bool dig2 = isdigit(log2.back());
+        uint8_t cellsRow = 0;
+        for (int i = 0; i < 8; ++i) { cellsRow |= cells[i] << (7 - i); }
 
-            if (dig1 && dig2) { return digLogsOrder[log1] < digLogsOrder[log2]; }
-            if (dig1 || dig2) { return dig2; }
+        array<int, 256> seen{};
+        vector<uint8_t> chain;
 
-            auto log1ContentPos = 1 + log1.find(' ');
-            auto log2ContentPos = 1 + log2.find(' ');
+        while (n--) {
+            cellsRow = trans[cellsRow];
 
-            auto contentCompare = log1.compare(log1ContentPos, log1.size(), log2, log2ContentPos, log2.size());
-            if (contentCompare != 0) { return contentCompare < 0; }
-            return log1.compare(0, log1ContentPos - 1, log2, 0, log2ContentPos - 1) < 0;
-        };
+            if (seen[cellsRow] > 0) {
+                int cycleSize = chain.size() - seen[cellsRow];
+                cellsRow = chain[seen[cellsRow] + n % cycleSize];
+                break;
+            }
 
-        sort(logs.begin(), logs.end(), sortPred);
-        return logs;
+            chain.push_back(cellsRow);
+            seen[cellsRow] = chain.size() - 1;
+        }
+
+        for (int i = 0; i < 8; ++i) { cells[i] = (cellsRow >> 7 - i) & 1; }
+
+        return cells;
     }
 };
 
