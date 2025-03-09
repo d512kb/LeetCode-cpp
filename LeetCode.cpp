@@ -7,40 +7,59 @@ using namespace std;
 
 class Solution {
 public:
-    vector<int> prisonAfterNDays(vector<int>& cells, int n) {
-        array<uint8_t, 256> trans{};
-        for (uint16_t from = 0; from < 256; ++from) {
-            uint8_t to = 0;
+    vector<vector<char>> updateBoard(vector<vector<char>>& board, vector<int>& click) {
+        for (const auto& c : click) {
+            int row = click[0];
+            int col = click[1];
 
-            for (int k = 1; k < 7; ++k) {
-                to |= (~(((from >> (k - 1)) & 1) ^ ((from >> (k + 1)) & 1)) & 1) << k;
-            }
-
-            trans[from] = to;
-        }
-
-        uint8_t cellsRow = 0;
-        for (int i = 0; i < 8; ++i) { cellsRow |= cells[i] << (7 - i); }
-
-        array<int, 256> seen{};
-        vector<uint8_t> chain;
-
-        while (n--) {
-            cellsRow = trans[cellsRow];
-
-            if (seen[cellsRow] > 0) {
-                int cycleSize = chain.size() - seen[cellsRow];
-                cellsRow = chain[seen[cellsRow] + n % cycleSize];
+            if (board[row][col] == 'M') {
+                board[row][col] = 'X';
                 break;
             }
 
-            chain.push_back(cellsRow);
-            seen[cellsRow] = chain.size() - 1;
+            reveal(board, row, col);
         }
 
-        for (int i = 0; i < 8; ++i) { cells[i] = (cellsRow >> 7 - i) & 1; }
+        return board;
+    }
+private:
+    void reveal(vector<vector<char>>& board, int row, int col) {
+        if (row < 0 || row == board.size() || col < 0 || col == board.front().size()) { return; }
+        char& currCell = board[row][col];
+        if (currCell == 'B' || (currCell >= '1' && currCell <= '8')) { return; }
 
-        return cells;
+        int minesAround = countMinesAround(board, row, col);
+
+        if (minesAround) {
+            currCell = '0' + minesAround;
+        } else {
+            currCell = 'B';
+
+            for (int i = -1; i <= 1; ++i) {
+                for (int j = -1; j <= 1; ++j) {
+                    if (i == 0 && j == 0) { continue; }
+
+                    reveal(board, row + i, col + j);
+                }
+            }
+        }
+    }
+
+    int countMinesAround(const vector<vector<char>>& board, int row, int col) {
+        int result = 0;
+
+        for (int i = -1; i <= 1; ++i) {
+            for (int j = -1; j <= 1; ++j) {
+                int newRow = row + i;
+                int newCol = col + j;
+
+                if (newRow >= 0 && newRow < board.size() && newCol >= 0 && newCol < board.front().size()) {
+                    result += board[newRow][newCol] == 'M';
+                }
+            }
+        }
+
+        return result;
     }
 };
 
