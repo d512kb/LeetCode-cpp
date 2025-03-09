@@ -7,18 +7,38 @@ using namespace std;
 
 class Solution {
 public:
-    int numOfUnplacedFruits(vector<int>& fruits, vector<int>& baskets) {
-        for (int i = 0; i < fruits.size(); ++i) {
-            for (int j = 0; j < baskets.size(); ++j) {
-                if (fruits[i] <= baskets[j]) {
-                    fruits[i] = 0;
-                    baskets[j] = 0;
-                    break;
-                }
+    vector<long long> findMaxSum(vector<int>& nums1, vector<int>& nums2, int k) {
+        const int sz = nums1.size();
+
+        vector<pair<int, int>> values;
+        for (int i = 0; i < sz; ++i) { values.emplace_back(nums1[i], i); }
+
+        sort(values.begin(), values.end());
+
+        priority_queue<int, vector<int>, greater<>> pq;
+        long long sum = 0;
+
+        vector<long long> result(sz);
+
+        for (int i = 0; i < sz; ) {
+            auto currSum = sum;
+            int val = values[i].first;
+
+            for (; i < sz && values[i].first == val; ++i) {
+                int idx = values[i].second;
+                result[idx] = currSum;
+
+                sum += nums2[idx];
+                pq.push(nums2[idx]);
+            }
+
+            while (pq.size() > k) {
+                sum -= pq.top();
+                pq.pop();
             }
         }
 
-        return count_if(fruits.begin(), fruits.end(), [](int val) { return val > 0; });
+        return result;
     }
 };
 
