@@ -7,38 +7,37 @@ using namespace std;
 
 class Solution {
 public:
-    vector<long long> findMaxSum(vector<int>& nums1, vector<int>& nums2, int k) {
-        const int sz = nums1.size();
+    int numOfUnplacedFruits(vector<int>& fruits, vector<int>& baskets) {
+        int sz = 1;
+        while (sz < baskets.size()) { sz *= 2; }
 
-        vector<pair<int, int>> values;
-        for (int i = 0; i < sz; ++i) { values.emplace_back(nums1[i], i); }
+        vector<int> segmentTree(2 * sz);
+        copy(baskets.begin(), baskets.end(), segmentTree.begin() + sz);
+        for (int i = sz - 1; i > 0; --i) { segmentTree[i] = max(segmentTree[2 * i], segmentTree[2 * i + 1]); }
 
-        sort(values.begin(), values.end());
-
-        priority_queue<int, vector<int>, greater<>> pq;
-        long long sum = 0;
-
-        vector<long long> result(sz);
-
-        for (int i = 0; i < sz; ) {
-            auto currSum = sum;
-            int val = values[i].first;
-
-            for (; i < sz && values[i].first == val; ++i) {
-                int idx = values[i].second;
-                result[idx] = currSum;
-
-                sum += nums2[idx];
-                pq.push(nums2[idx]);
+        int ans = 0;
+        for (int f : fruits) {
+            if (segmentTree[1] < f) {
+                ++ans;
+                continue;
             }
 
-            while (pq.size() > k) {
-                sum -= pq.top();
-                pq.pop();
+            int index = 1;
+            while (index < sz) {
+                if (segmentTree[2 * index] >= f) { index *= 2; } else { index = 2 * index + 1; }
+            }
+
+            segmentTree[index] = 0;
+
+            while (index > 1) {
+                index /= 2;
+                int newVal = max(segmentTree[2 * index], segmentTree[2 * index + 1]);
+
+                if (newVal != segmentTree[index]) { segmentTree[index] = newVal; } else { break; }
             }
         }
 
-        return result;
+        return ans;
     }
 };
 
