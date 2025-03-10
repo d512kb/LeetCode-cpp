@@ -7,28 +7,41 @@ using namespace std;
 
 class Solution {
 public:
-    vector<vector<int>> pathSum(TreeNode* root, int targetSum) {
-        vector<vector<int>> paths;
-        vector<int> path;
+    TreeNode* sortedListToBST(ListNode* head) {
+        TreeNode* root = buildTreeStructure(head);
 
-        buildPathSum(root, paths, path, 0, targetSum);
+        ListNode* node = head;
+        fillTree(root, node);
 
-        return paths;
+        return root;
     }
 private:
-    void buildPathSum(TreeNode* node, vector<vector<int>>& paths, vector<int>& path, int currentSum, int targetSum) {
-        if (!node) { return; }
+    TreeNode* buildTreeStructure(ListNode* head) {
+        if (!head) { return nullptr; }
 
-        currentSum += node->val;
-        path.push_back(node->val);
-        buildPathSum(node->left, paths, path, currentSum, targetSum);
-        buildPathSum(node->right, paths, path, currentSum, targetSum);
+        TreeNode* tree = new TreeNode();
+        queue<TreeNode**> q{ {&tree->left, &tree->right} };
 
-        if (!node->left && !node->right && currentSum == targetSum) {
-            paths.push_back(path);
+        head = head->next;
+        while (head) {
+            TreeNode* newNode = new TreeNode();
+            *q.front() = newNode;
+            q.pop();
+            q.push(&newNode->left);
+            q.push(&newNode->right);
+            head = head->next;
         }
 
-        path.pop_back();
+        return tree;
+    }
+
+    void fillTree(TreeNode* root, ListNode*& node) {
+        if (!root || !node) { return; }
+
+        fillTree(root->left, node);
+        root->val = node->val;
+        node = node->next;
+        fillTree(root->right, node);
     }
 };
 
