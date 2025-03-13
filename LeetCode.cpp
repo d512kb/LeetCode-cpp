@@ -7,41 +7,41 @@ using namespace std;
 
 class Solution {
 public:
-    TreeNode* sortedListToBST(ListNode* head) {
-        TreeNode* root = buildTreeStructure(head);
+    vector<string> restoreIpAddresses(string s) {
+        string ipAddress;
+        vector<string> result;
 
-        ListNode* node = head;
-        fillTree(root, node);
+        parseOctets(s, 0, 0, ipAddress, result);
 
-        return root;
+        return result;
     }
 private:
-    TreeNode* buildTreeStructure(ListNode* head) {
-        if (!head) { return nullptr; }
+    void parseOctets(const string& s, int pos, int octetIndex, string& ipAddress, vector<string>& ipAddresses) {
+        if (pos == s.size()) {
+            if (octetIndex == 4) { // fifth octet means we've built some valid address
+                ipAddresses.push_back(ipAddress);
+                ipAddresses.back().pop_back(); // remove extra dot
+            }
 
-        TreeNode* tree = new TreeNode();
-        queue<TreeNode**> q{ {&tree->left, &tree->right} };
-
-        head = head->next;
-        while (head) {
-            TreeNode* newNode = new TreeNode();
-            *q.front() = newNode;
-            q.pop();
-            q.push(&newNode->left);
-            q.push(&newNode->right);
-            head = head->next;
+            return;
         }
 
-        return tree;
-    }
+        int currentOctetValue = 0;
+        string currentOctetString;
 
-    void fillTree(TreeNode* root, ListNode*& node) {
-        if (!root || !node) { return; }
+        for (; pos < s.size(); ++pos) {
+            currentOctetValue = currentOctetValue * 10 + (s[pos] - '0');
+            currentOctetString.push_back(s[pos]);
 
-        fillTree(root->left, node);
-        root->val = node->val;
-        node = node->next;
-        fillTree(root->right, node);
+            if (currentOctetValue > 255 || (currentOctetString.size() > 1 && currentOctetString[0] == '0')) { break; }
+
+            ipAddress.append(currentOctetString);
+            ipAddress.push_back('.');
+
+            parseOctets(s, pos + 1, octetIndex + 1, ipAddress, ipAddresses);
+
+            ipAddress.erase(ipAddress.size() - currentOctetString.size() - 1);
+        }
     }
 };
 
