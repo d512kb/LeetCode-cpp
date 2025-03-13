@@ -7,41 +7,30 @@ using namespace std;
 
 class Solution {
 public:
-    vector<string> restoreIpAddresses(string s) {
-        string ipAddress;
-        vector<string> result;
+    vector<int> goodDaysToRobBank(vector<int>& security, int time) {
+        const int sz = security.size();
+        vector<int> leftMono(sz);
+        vector<int> rightMono(sz);
 
-        parseOctets(s, 0, 0, ipAddress, result);
+        for (int i = 1; i < sz; ++i) {
+            if (security[i - 1] >= security[i]) {
+                leftMono[i] = 1 + leftMono[i - 1];
+            }
+        }
+
+        for (int i = sz - 2; i >= 0; --i) {
+            if (security[i] <= security[i + 1]) {
+                rightMono[i] = 1 + rightMono[i + 1];
+            }
+        }
+
+        vector<int> result;
+
+        for (int i = 0; i < sz; ++i) {
+            if (leftMono[i] >= time && rightMono[i] >= time) { result.push_back(i); }
+        }
 
         return result;
-    }
-private:
-    void parseOctets(const string& s, int pos, int octetIndex, string& ipAddress, vector<string>& ipAddresses) {
-        if (pos == s.size()) {
-            if (octetIndex == 4) { // fifth octet means we've built some valid address
-                ipAddresses.push_back(ipAddress);
-                ipAddresses.back().pop_back(); // remove extra dot
-            }
-
-            return;
-        }
-
-        int currentOctetValue = 0;
-        string currentOctetString;
-
-        for (; pos < s.size(); ++pos) {
-            currentOctetValue = currentOctetValue * 10 + (s[pos] - '0');
-            currentOctetString.push_back(s[pos]);
-
-            if (currentOctetValue > 255 || (currentOctetString.size() > 1 && currentOctetString[0] == '0')) { break; }
-
-            ipAddress.append(currentOctetString);
-            ipAddress.push_back('.');
-
-            parseOctets(s, pos + 1, octetIndex + 1, ipAddress, ipAddresses);
-
-            ipAddress.erase(ipAddress.size() - currentOctetString.size() - 1);
-        }
     }
 };
 
