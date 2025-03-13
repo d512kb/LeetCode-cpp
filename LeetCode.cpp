@@ -7,30 +7,47 @@ using namespace std;
 
 class Solution {
 public:
-    vector<int> goodDaysToRobBank(vector<int>& security, int time) {
-        const int sz = security.size();
-        vector<int> leftMono(sz);
-        vector<int> rightMono(sz);
-
-        for (int i = 1; i < sz; ++i) {
-            if (security[i - 1] >= security[i]) {
-                leftMono[i] = 1 + leftMono[i - 1];
-            }
-        }
-
-        for (int i = sz - 2; i >= 0; --i) {
-            if (security[i] <= security[i + 1]) {
-                rightMono[i] = 1 + rightMono[i + 1];
-            }
-        }
-
-        vector<int> result;
+    long long subArrayRanges(vector<int>& nums) {
+        const int sz = nums.size();
+        vector<int64_t> dp(sz);
+        vector<int> monoStack;
+        int64_t sumMin = 0, sumMax = 0;
 
         for (int i = 0; i < sz; ++i) {
-            if (leftMono[i] >= time && rightMono[i] >= time) { result.push_back(i); }
+            while (!monoStack.empty() && nums[monoStack.back()] >= nums[i]) {
+                monoStack.pop_back();
+            }
+
+            if (monoStack.empty()) {
+                dp[i] = static_cast<int64_t>(i + 1) * nums[i];
+            } else {
+                int j = monoStack.back();
+                dp[i] = dp[j] + static_cast<int64_t>(i - j) * nums[i];
+            }
+
+            monoStack.push_back(i);
+            sumMin += dp[i];
         }
 
-        return result;
+        monoStack.clear();
+
+        for (int i = 0; i < sz; ++i) {
+            while (!monoStack.empty() && nums[monoStack.back()] <= nums[i]) {
+                monoStack.pop_back();
+            }
+
+            if (monoStack.empty()) {
+                dp[i] = static_cast<int64_t>(i + 1) * nums[i];
+            } else {
+                int j = monoStack.back();
+                dp[i] = dp[j] + static_cast<int64_t>(i - j) * nums[i];
+            }
+
+            monoStack.push_back(i);
+            sumMax += dp[i];
+        }
+
+        return sumMax - sumMin;
     }
 };
 
