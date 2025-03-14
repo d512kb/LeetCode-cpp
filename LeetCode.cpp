@@ -7,27 +7,29 @@ using namespace std;
 
 class Solution {
 public:
-    long long numberOfWays(string s) {
-        long long ans = 0;
+    int partitionArray(vector<int>& nums, int k) {
+        const int maxSz = 1 + *max_element(nums.begin(), nums.end());
+        vector<int> counts(maxSz);
 
-        int zeroesBefore = 0;
-        int onesBefore = 0;
-        long long zeroChains = 0;
-        long long oneChains = 0;
-
-        for (char c : s) {
-            if (c == '1') {
-                ans += zeroChains;
-                oneChains += zeroesBefore;
-                ++onesBefore;
-            } else {
-                ans += oneChains;
-                zeroChains += onesBefore;
-                ++zeroesBefore;
+        for (int n : nums) { ++counts[n]; }
+        for (int i = 0, pos = 0; i < maxSz; ++i) {
+            while (counts[i] > 0) {
+                nums[pos++] = i;
+                --counts[i];
             }
         }
 
-        return ans;
+        int min = nums.front();
+        int ans = 0;
+
+        for (int n : nums) {
+            if (n - min > k) {
+                min = n;
+                ++ans;
+            }
+        }
+
+        return 1 + ans;
     }
 };
 
