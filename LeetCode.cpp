@@ -7,29 +7,41 @@ using namespace std;
 
 class Solution {
 public:
-    int partitionArray(vector<int>& nums, int k) {
-        const int maxSz = 1 + *max_element(nums.begin(), nums.end());
-        vector<int> counts(maxSz);
+    int minSwaps(string s) {
+        int zeroCount = 0;
+        int oneCount = 0;
 
-        for (int n : nums) { ++counts[n]; }
-        for (int i = 0, pos = 0; i < maxSz; ++i) {
-            while (counts[i] > 0) {
-                nums[pos++] = i;
-                --counts[i];
-            }
+        for (char c : s) {
+            if (c == '0') { ++zeroCount; } else { ++oneCount; }
         }
 
-        int min = nums.front();
-        int ans = 0;
+        if (abs(zeroCount - oneCount) > 1) { return -1; }
+        int ans = s.size();
 
-        for (int n : nums) {
-            if (n - min > k) {
-                min = n;
-                ++ans;
-            }
+        if (zeroCount == oneCount) {
+            // start with 0
+            ans = min(ans, calcWrongChars(s, '0') / 2);
+
+            // start with 1
+            ans = min(ans, calcWrongChars(s, '1') / 2);
+        } else if (zeroCount > oneCount) {
+            ans = min(ans, calcWrongChars(s, '0') / 2);
+        } else {
+            ans = min(ans, calcWrongChars(s, '1') / 2);
         }
 
-        return 1 + ans;
+        return ans;
+    }
+private:
+    int calcWrongChars(const string& s, char startChar) {
+        int wrongCharsCount = 0;
+
+        for (char c : s) {
+            if (c != startChar) { ++wrongCharsCount; }
+            startChar = (startChar - '0' + 1) % 2 + '0';
+        }
+
+        return wrongCharsCount;
     }
 };
 
