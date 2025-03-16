@@ -7,41 +7,23 @@ using namespace std;
 
 class Solution {
 public:
-    int minSwaps(string s) {
-        int zeroCount = 0;
-        int oneCount = 0;
+    int oddCells(int m, int n, vector<vector<int>>& indices) {
+        vector<char> rowsIncremented(m), colsIncremented(n);
 
-        for (char c : s) {
-            if (c == '0') { ++zeroCount; } else { ++oneCount; }
+        for (const auto& ind : indices) {
+            ++rowsIncremented[ind[0]];
+            ++colsIncremented[ind[1]];
         }
 
-        if (abs(zeroCount - oneCount) > 1) { return -1; }
-        int ans = s.size();
+        int ans = 0;
 
-        if (zeroCount == oneCount) {
-            // start with 0
-            ans = min(ans, calcWrongChars(s, '0') / 2);
-
-            // start with 1
-            ans = min(ans, calcWrongChars(s, '1') / 2);
-        } else if (zeroCount > oneCount) {
-            ans = min(ans, calcWrongChars(s, '0') / 2);
-        } else {
-            ans = min(ans, calcWrongChars(s, '1') / 2);
+        for (int i = 0; i < m; ++i) {
+            for (int j = 0; j < n; ++j) {
+                ans += (rowsIncremented[i] + colsIncremented[j]) & 1;
+            }
         }
 
         return ans;
-    }
-private:
-    int calcWrongChars(const string& s, char startChar) {
-        int wrongCharsCount = 0;
-
-        for (char c : s) {
-            if (c != startChar) { ++wrongCharsCount; }
-            startChar = (startChar - '0' + 1) % 2 + '0';
-        }
-
-        return wrongCharsCount;
     }
 };
 
