@@ -7,21 +7,18 @@ using namespace std;
 
 class Solution {
 public:
-    string licenseKeyFormatting(string s, int k) {
-        string result;
+    int repeatedStringMatch(string a, string b) {
+        string text = a + a;
 
-        int groupLen = 0;
-        for (int i = s.size() - 1; i >= 0; --i) {
-            if (s[i] == '-') { continue; }
-            if (groupLen == k) { result.push_back('-'); groupLen = 0; }
-
-            result.push_back(toupper(s[i]));
-            ++groupLen;
+        while (text.size() < b.size() * 2) {
+            text += text;
         }
 
-        reverse(result.begin(), result.end());
+        int pos = text.find(b);
+        if (pos == string::npos) { return -1; }
 
-        return result;
+        float len = pos + b.size();
+        return ceil(len / a.size());
     }
 };
 
