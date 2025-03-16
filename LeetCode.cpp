@@ -7,28 +7,43 @@ using namespace std;
 
 class Solution {
 public:
-    vector<int> sortedSquares(vector<int>& nums) {
-        const int sz = nums.size();
-        int pos = distance(nums.begin(), lower_bound(nums.begin(), nums.end(), 0));
-        int neg = pos - 1;
+    int numRookCaptures(vector<vector<char>>& board) {
+        int ans = 0;
 
-        vector<int> result(sz);
+        for (int i = 0; i < board.size(); ++i) {
+            for (int j = 0; j < board[0].size(); ++j) {
+                if (board[i][j] == 'R') {
+                    for (int c = j + 1; c < board[0].size(); ++c) {
+                        if (board[i][c] != '.') {
+                            ans += board[i][c] == 'p';
+                            break;
+                        }
+                    }
+                    for (int c = j - 1; c >= 0; --c) {
+                        if (board[i][c] != '.') {
+                            ans += board[i][c] == 'p';
+                            break;
+                        }
+                    }
+                    for (int r = i + 1; r < board.size(); ++r) {
+                        if (board[r][j] != '.') {
+                            ans += board[r][j] == 'p';
+                            break;
+                        }
+                    }
+                    for (int r = i - 1; r >= 0; --r) {
+                        if (board[r][j] != '.') {
+                            ans += board[r][j] == 'p';
+                            break;
+                        }
+                    }
 
-        for (int i = 0; i < sz; ++i) {
-            int idx = 0;
-
-            if (pos == sz) { idx = neg--; } else if (neg < 0) { idx = pos++; } else {
-                if (abs(nums[neg]) < nums[pos]) {
-                    idx = neg--;
-                } else {
-                    idx = pos++;
+                    return ans;
                 }
             }
-
-            result[i] = nums[idx] * nums[idx];
         }
 
-        return result;
+        return ans;
     }
 };
 
