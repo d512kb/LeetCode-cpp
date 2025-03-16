@@ -5,48 +5,22 @@
 
 using namespace std;
 
-class Iterator {
+class Solution {
 public:
-	Iterator(const vector<int>& nums) {};
-	
-	// Returns the next element in the iteration.
-	int next() {};
-	
-	// Returns true if the iteration has more elements.
-	bool hasNext() const {};
-	
-};
+    bool isToeplitzMatrix(vector<vector<int>>& matrix) {
+        const int rows = matrix.size();
+        const int cols = matrix.front().size();
 
-class PeekingIterator : public Iterator {
-public:
-	PeekingIterator(const vector<int>& nums) : Iterator(nums), m_peekIterator(nums) {
-		// Initialize any member here.
-		// **DO NOT** save a copy of nums and manipulate it directly.
-		// You should only use the Iterator interface methods.
+        for (int row = 1; row < rows; ++row) {
+            for (int col = 1; col < cols; ++col) {
+                if (matrix[row - 1][col - 1] != matrix[row][col]) {
+                    return false;
+                }
+            }
+        }
 
-		m_peekValue = m_peekIterator.next();
-	}
-
-	// Returns the next element in the iteration without advancing the iterator.
-	int peek() {
-		return m_peekValue;
-	}
-
-	// hasNext() and next() should behave the same as in the Iterator interface.
-	// Override them if needed.
-	int next() {
-		if (m_peekIterator.hasNext()) {
-			m_peekValue = m_peekIterator.next();
-		}
-		return Iterator::next();
-	}
-
-	bool hasNext() const {
-		return Iterator::hasNext();
-	}
-private:
-	Iterator m_peekIterator;
-	int m_peekValue;
+        return true;
+    }
 };
 
 int main()
