@@ -7,43 +7,31 @@ using namespace std;
 
 class Solution {
 public:
-    int numRookCaptures(vector<vector<char>>& board) {
-        int ans = 0;
+    bool lemonadeChange(vector<int>& bills) {
+        int fifths = 0;
+        int tens = 0;
 
-        for (int i = 0; i < board.size(); ++i) {
-            for (int j = 0; j < board[0].size(); ++j) {
-                if (board[i][j] == 'R') {
-                    for (int c = j + 1; c < board[0].size(); ++c) {
-                        if (board[i][c] != '.') {
-                            ans += board[i][c] == 'p';
-                            break;
-                        }
-                    }
-                    for (int c = j - 1; c >= 0; --c) {
-                        if (board[i][c] != '.') {
-                            ans += board[i][c] == 'p';
-                            break;
-                        }
-                    }
-                    for (int r = i + 1; r < board.size(); ++r) {
-                        if (board[r][j] != '.') {
-                            ans += board[r][j] == 'p';
-                            break;
-                        }
-                    }
-                    for (int r = i - 1; r >= 0; --r) {
-                        if (board[r][j] != '.') {
-                            ans += board[r][j] == 'p';
-                            break;
-                        }
-                    }
-
-                    return ans;
+        for (int b : bills) {
+            if (b == 5) { ++fifths; } else if (b == 10) {
+                if (fifths > 0) {
+                    --fifths;
+                    ++tens;
+                } else {
+                    return false;
+                }
+            } else {
+                if (tens > 0 && fifths > 0) {
+                    --tens;
+                    --fifths;
+                } else if (fifths >= 3) {
+                    fifths -= 3;
+                } else {
+                    return false;
                 }
             }
         }
 
-        return ans;
+        return true;
     }
 };
 
