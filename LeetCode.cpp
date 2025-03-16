@@ -7,30 +7,27 @@ using namespace std;
 
 class Solution {
 public:
-    bool backspaceCompare(string s, string t) {
-        int sIndex = s.size() - 1;
-        int tIndex = t.size() - 1;
-        int sSkip = 0;
-        int tSkip = 0;
+    string removeDuplicates(string s) {
+        stack<char> st({ 0 });
 
-        while (true) {
-            while (sIndex >= 0 && (s[sIndex] == '#' || sSkip > 0)) {
-                sSkip += s[sIndex] == '#' ? 1 : -1;
-                --sIndex;
+        for (char c : s) {
+            if (st.top() == c) {
+                st.pop();
+            } else {
+                st.push(c);
             }
-
-            while (tIndex >= 0 && (t[tIndex] == '#' || tSkip > 0)) {
-                tSkip += t[tIndex] == '#' ? 1 : -1;
-                --tIndex;
-            }
-
-            if (sIndex < 0 && tIndex < 0) { return true; }
-            if (sIndex < 0 || tIndex < 0 || s[sIndex] != t[tIndex]) { return false; }
-            --sIndex;
-            --tIndex;
         }
 
-        return true;
+        string result;
+
+        while (st.size() > 1) {
+            result.push_back(st.top());
+            st.pop();
+        }
+
+        reverse(result.begin(), result.end());
+
+        return result;
     }
 };
 
