@@ -7,35 +7,20 @@ using namespace std;
 
 class Solution {
 public:
-    int minZeroArray(vector<int>& nums, vector<vector<int>>& queries) {
-        int ans = 0;
-        const int qsz = queries.size();
+    int maxSum(vector<int>& nums) {
+        int result = *max_element(nums.begin(), nums.end());
+        if (result < 0) { return result; }
+        result = 0;
 
-        for (int numIndex = 0; numIndex < nums.size(); ++numIndex) {
-            if (nums[numIndex] == 0) { continue; }
+        unordered_set<int> nset;
 
-            int n = nums[numIndex];
-            vector<char> dp(n + 1);
-            dp[0] = 1;
-
-            for (int i = 0; i < qsz; ++i) {
-                if (queries[i][0] > numIndex || queries[i][1] < numIndex) { continue; }
-                int qVal = queries[i][2];
-
-                for (int sum = n - qVal; sum >= 0; --sum) {
-                    dp[sum + qVal] |= dp[sum];
-                }
-
-                if (dp[n] == 1) {
-                    ans = max(ans, i + 1);
-                    break;
-                }
+        for (int n : nums) {
+            if (n > 0 && nset.insert(n).second) {
+                result += n;
             }
-
-            if (dp[n] == 0) { return -1; }
         }
 
-        return ans;
+        return result;
     }
 };
 
