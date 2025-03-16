@@ -7,16 +7,21 @@ using namespace std;
 
 class Solution {
 public:
-    vector<string> fizzBuzz(int n) {
-        vector<string> result(n);
+    vector<string> commonChars(vector<string>& words) {
+        string word(words.front());
+        sort(word.begin(), word.end());
 
-        for (; n > 0; --n) {
-            string& str = result[n - 1];
+        auto wordStart = word.begin();
+        auto wordEnd = word.end();
 
-            if (n % 3 == 0 && n % 5 == 0) { str = "FizzBuzz"; } else
-                if (n % 3 == 0) { str = "Fizz"; } else
-                    if (n % 5 == 0) { str = "Buzz"; } else
-                        str = to_string(n);
+        for (string& s : words) {
+            sort(s.begin(), s.end());
+            wordEnd = set_intersection(wordStart, wordEnd, s.begin(), s.end(), wordStart);
+        }
+
+        vector<string> result;
+        for (; wordStart != wordEnd; ++wordStart) {
+            result.emplace_back(1, *wordStart);
         }
 
         return result;
