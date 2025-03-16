@@ -7,25 +7,26 @@ using namespace std;
 
 class Solution {
 public:
-    string removeDuplicates(string s) {
-        stack<char> st({ 0 });
+    vector<int> sortedSquares(vector<int>& nums) {
+        const int sz = nums.size();
+        int pos = distance(nums.begin(), lower_bound(nums.begin(), nums.end(), 0));
+        int neg = pos - 1;
 
-        for (char c : s) {
-            if (st.top() == c) {
-                st.pop();
-            } else {
-                st.push(c);
+        vector<int> result(sz);
+
+        for (int i = 0; i < sz; ++i) {
+            int idx = 0;
+
+            if (pos == sz) { idx = neg--; } else if (neg < 0) { idx = pos++; } else {
+                if (abs(nums[neg]) < nums[pos]) {
+                    idx = neg--;
+                } else {
+                    idx = pos++;
+                }
             }
+
+            result[i] = nums[idx] * nums[idx];
         }
-
-        string result;
-
-        while (st.size() > 1) {
-            result.push_back(st.top());
-            st.pop();
-        }
-
-        reverse(result.begin(), result.end());
 
         return result;
     }
