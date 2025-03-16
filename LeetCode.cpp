@@ -7,31 +7,14 @@ using namespace std;
 
 class Solution {
 public:
-    bool lemonadeChange(vector<int>& bills) {
-        int fifths = 0;
-        int tens = 0;
+    int findComplement(int num) {
+        int mask = 1;
 
-        for (int b : bills) {
-            if (b == 5) { ++fifths; } else if (b == 10) {
-                if (fifths > 0) {
-                    --fifths;
-                    ++tens;
-                } else {
-                    return false;
-                }
-            } else {
-                if (tens > 0 && fifths > 0) {
-                    --tens;
-                    --fifths;
-                } else if (fifths >= 3) {
-                    fifths -= 3;
-                } else {
-                    return false;
-                }
-            }
+        while (mask < num) {
+            mask = (mask << 1) + 1;
         }
 
-        return true;
+        return mask - num;
     }
 };
 
