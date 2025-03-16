@@ -7,22 +7,19 @@ using namespace std;
 
 class Solution {
 public:
-    vector<string> commonChars(vector<string>& words) {
-        string word(words.front());
-        sort(word.begin(), word.end());
+    string licenseKeyFormatting(string s, int k) {
+        string result;
 
-        auto wordStart = word.begin();
-        auto wordEnd = word.end();
+        int groupLen = 0;
+        for (int i = s.size() - 1; i >= 0; --i) {
+            if (s[i] == '-') { continue; }
+            if (groupLen == k) { result.push_back('-'); groupLen = 0; }
 
-        for (string& s : words) {
-            sort(s.begin(), s.end());
-            wordEnd = set_intersection(wordStart, wordEnd, s.begin(), s.end(), wordStart);
+            result.push_back(toupper(s[i]));
+            ++groupLen;
         }
 
-        vector<string> result;
-        for (; wordStart != wordEnd; ++wordStart) {
-            result.emplace_back(1, *wordStart);
-        }
+        reverse(result.begin(), result.end());
 
         return result;
     }
