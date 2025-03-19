@@ -26,24 +26,22 @@ public:
 // non-recursive solution
 class Solution {
 public:
-    vector<int> postorder(Node* root) {
+    vector<int> preorder(Node* root) {
         if (!root) { return {}; }
 
-        list<Node*> lst{ root };
-        queue<list<Node*>::iterator> q;
-        q.push(lst.begin());
+        stack<Node*> st({ root });
+        vector<int> result;
 
-        while (!q.empty()) {
-            auto iter(std::move(q.front()));
-            q.pop();
+        while (!st.empty()) {
+            auto node = st.top();
+            st.pop();
 
-            for (auto child : (*iter)->children) {
-                q.push(lst.insert(iter, child));
+            result.push_back(node->val);
+
+            for (auto childIter = node->children.rbegin(), end = node->children.rend(); childIter != end; ++childIter) {
+                st.push(*childIter);
             }
         }
-
-        vector<int> result;
-        transform(lst.begin(), lst.end(), back_inserter(result), [](const Node* ptr) { return ptr->val; });
 
         return result;
     }
