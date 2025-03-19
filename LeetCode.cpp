@@ -5,16 +5,47 @@
 
 using namespace std;
 
+// Definition for a Node
+class Node {
+public:
+    int val;
+    vector<Node*> children;
+
+    Node() {}
+
+    Node(int _val) {
+        val = _val;
+    }
+
+    Node(int _val, vector<Node*> _children) {
+        val = _val;
+        children = _children;
+    }
+};
+
+// non-recursive solution
 class Solution {
 public:
-    int findComplement(int num) {
-        int mask = 1;
+    vector<int> postorder(Node* root) {
+        if (!root) { return {}; }
 
-        while (mask < num) {
-            mask = (mask << 1) + 1;
+        list<Node*> lst{ root };
+        queue<list<Node*>::iterator> q;
+        q.push(lst.begin());
+
+        while (!q.empty()) {
+            auto iter(std::move(q.front()));
+            q.pop();
+
+            for (auto child : (*iter)->children) {
+                q.push(lst.insert(iter, child));
+            }
         }
 
-        return mask - num;
+        vector<int> result;
+        transform(lst.begin(), lst.end(), back_inserter(result), [](const Node* ptr) { return ptr->val; });
+
+        return result;
     }
 };
 
