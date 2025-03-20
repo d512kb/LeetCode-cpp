@@ -7,24 +7,22 @@ using namespace std;
 
 class Solution {
 public:
-    vector<int> finalPrices(vector<int>& prices) {
-        stack<int> monoStack({ prices.back() });
+    int countBinarySubstrings(string s) {
+        const int sz = s.size();
+        int result = 0;
+        int prevLen = 0;
+        int len = 1;
 
-        for (int i = prices.size() - 2; i >= 0; --i) {
-            while (!monoStack.empty() && monoStack.top() > prices[i]) {
-                monoStack.pop();
-            }
-
-            if (monoStack.empty()) {
-                monoStack.push(prices[i]);
+        for (int i = 1; i < sz; ++i) {
+            if (s[i - 1] == s[i]) {
+                ++len;
             } else {
-                int newPrice = prices[i] - monoStack.top();
-                if (monoStack.top() != prices[i]) { monoStack.push(prices[i]); }
-                prices[i] = newPrice;
+                result += min(prevLen, len);
+                prevLen = exchange(len, 1);
             }
         }
 
-        return prices;
+        return result + min(prevLen, len);
     }
 };
 
