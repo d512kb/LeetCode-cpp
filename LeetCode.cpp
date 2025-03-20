@@ -5,41 +5,26 @@
 
 using namespace std;
 
-// Definition for a Node
-class Node {
-public:
-    int val;
-    vector<Node*> children;
-
-    Node() {}
-
-    Node(int _val) {
-        val = _val;
-    }
-
-    Node(int _val, vector<Node*> _children) {
-        val = _val;
-        children = _children;
-    }
-};
-
-// non-recursive solution
 class Solution {
 public:
-    vector<int> preorder(Node* root) {
-        if (!root) { return {}; }
+    int countConsistentStrings(string allowed, vector<string>& words) {
+        array<char, 26> chars{};
 
-        stack<Node*> st({ root });
-        vector<int> result;
+        for (char c : allowed) { chars[c - 'a'] = 1; }
 
-        while (!st.empty()) {
-            auto node = st.top();
-            st.pop();
+        int result = 0;
+        for (const string& str : words) {
+            bool consistent = true;
 
-            result.push_back(node->val);
+            for (char c : str) {
+                if (chars[c - 'a'] == 0) {
+                    consistent = false;
+                    break;
+                }
+            }
 
-            for (auto childIter = node->children.rbegin(), end = node->children.rend(); childIter != end; ++childIter) {
-                st.push(*childIter);
+            if (consistent) {
+                ++result;
             }
         }
 
