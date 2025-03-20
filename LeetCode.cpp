@@ -7,34 +7,24 @@ using namespace std;
 
 class Solution {
 public:
-    vector<int> decrypt(vector<int>& code, int k) {
-        const int sz = code.size();
-        if (k == 0) { return vector<int>(sz, 0); }
+    vector<int> finalPrices(vector<int>& prices) {
+        stack<int> monoStack({ prices.back() });
 
-        int l = 0;
-        int r = 0;
-        if (k > 0) { l = 1; r = 1 + k; } else if (k < 0) { l = k; r = 0; }
+        for (int i = prices.size() - 2; i >= 0; --i) {
+            while (!monoStack.empty() && monoStack.top() > prices[i]) {
+                monoStack.pop();
+            }
 
-        int sum = 0;
-
-        for (int i = l; i < r; ++i) {
-            sum += code[mod(i, sz)];
+            if (monoStack.empty()) {
+                monoStack.push(prices[i]);
+            } else {
+                int newPrice = prices[i] - monoStack.top();
+                if (monoStack.top() != prices[i]) { monoStack.push(prices[i]); }
+                prices[i] = newPrice;
+            }
         }
 
-        vector<int> result(sz);
-        result[0] = sum;
-
-        for (int i = 1; i < sz; ++i, ++l, ++r) {
-            sum -= code[mod(l, sz)];
-            sum += code[mod(r, sz)];
-            result[i] = sum;
-        }
-
-        return result;
-    }
-private:
-    inline int mod(int n, int k) {
-        return (n %= k) < 0 ? n + k : n;
+        return prices;
     }
 };
 
