@@ -7,28 +7,17 @@ using namespace std;
 
 class Solution {
 public:
-    int countConsistentStrings(string allowed, vector<string>& words) {
-        array<char, 26> chars{};
+    int minLength(string s) {
+        stack<char> st;
 
-        for (char c : allowed) { chars[c - 'a'] = 1; }
-
-        int result = 0;
-        for (const string& str : words) {
-            bool consistent = true;
-
-            for (char c : str) {
-                if (chars[c - 'a'] == 0) {
-                    consistent = false;
-                    break;
-                }
-            }
-
-            if (consistent) {
-                ++result;
-            }
+        for (char c : s) {
+            if (st.empty()) { st.push(c); continue; }
+            if (st.top() == 'A' && c == 'B') { st.pop(); continue; }
+            if (st.top() == 'C' && c == 'D') { st.pop(); continue; }
+            st.push(c);
         }
 
-        return result;
+        return st.size();
     }
 };
 
