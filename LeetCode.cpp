@@ -7,17 +7,34 @@ using namespace std;
 
 class Solution {
 public:
-    int minLength(string s) {
-        stack<char> st;
+    vector<int> decrypt(vector<int>& code, int k) {
+        const int sz = code.size();
+        if (k == 0) { return vector<int>(sz, 0); }
 
-        for (char c : s) {
-            if (st.empty()) { st.push(c); continue; }
-            if (st.top() == 'A' && c == 'B') { st.pop(); continue; }
-            if (st.top() == 'C' && c == 'D') { st.pop(); continue; }
-            st.push(c);
+        int l = 0;
+        int r = 0;
+        if (k > 0) { l = 1; r = 1 + k; } else if (k < 0) { l = k; r = 0; }
+
+        int sum = 0;
+
+        for (int i = l; i < r; ++i) {
+            sum += code[mod(i, sz)];
         }
 
-        return st.size();
+        vector<int> result(sz);
+        result[0] = sum;
+
+        for (int i = 1; i < sz; ++i, ++l, ++r) {
+            sum -= code[mod(l, sz)];
+            sum += code[mod(r, sz)];
+            result[i] = sum;
+        }
+
+        return result;
+    }
+private:
+    inline int mod(int n, int k) {
+        return (n %= k) < 0 ? n + k : n;
     }
 };
 
