@@ -7,22 +7,38 @@ using namespace std;
 
 class Solution {
 public:
-    int countBinarySubstrings(string s) {
-        const int sz = s.size();
-        int result = 0;
-        int prevLen = 0;
-        int len = 1;
+    long long countSubarrays(vector<int>& nums, int k) {
+        const int sz = nums.size();
+        int maxElem = *max_element(nums.begin(), nums.end());
 
-        for (int i = 1; i < sz; ++i) {
-            if (s[i - 1] == s[i]) {
-                ++len;
-            } else {
-                result += min(prevLen, len);
-                prevLen = exchange(len, 1);
+        queue<int> maxes;
+        int right = 0;
+
+        for (; right < sz; ++right) {
+            if (nums[right] == maxElem) {
+                maxes.push(right);
+                if (maxes.size() == k) {
+                    break;
+                }
             }
         }
 
-        return result + min(prevLen, len);
+        if (maxes.size() < k) { return 0; }
+
+        int64_t leftPart = 1 + maxes.front();
+        int64_t result = leftPart;
+        for (++right; right < sz; ++right) {
+            if (nums[right] != maxElem) {
+                result += leftPart;
+            } else {
+                maxes.pop();
+                maxes.push(right);
+                leftPart = 1 + maxes.front();
+                result += leftPart;
+            }
+        }
+
+        return result;
     }
 };
 
