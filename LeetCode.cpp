@@ -7,15 +7,28 @@ using namespace std;
 
 class Solution {
 public:
-    bool canSplitArray(vector<int>& nums, int m) {
-        const int sz = nums.size();
-        if (sz <= 2) { return true; }
+    int takeCharacters(string s, int k) {
+        array<int, 3> charCount{};
 
-        for (int i = 1; i < sz; ++i) {
-            if (nums[i - 1] + nums[i] >= m) { return true; }
+        for (char c : s) { ++charCount[c - 'a']; }
+        if (*min_element(charCount.begin(), charCount.end()) < k) { return -1; }
+
+        const int sz = s.size();
+        int windowSize = 0;
+
+        for (int left = 0, right = 0; right < sz; ++right) {
+            char rc = s[right] - 'a';
+
+            if (--charCount[rc] < k) {
+                while (charCount[rc] < k) {
+                    ++charCount[s[left++] - 'a'];
+                }
+            }
+
+            windowSize = max(windowSize, right - left + 1);
         }
 
-        return false;
+        return sz - windowSize;
     }
 };
 
