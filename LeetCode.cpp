@@ -7,31 +7,15 @@ using namespace std;
 
 class Solution {
 public:
-    long long maxStrength(vector<int>& nums) {
-        int64_t result = 1;
-        int64_t resultNeg = 1;
-        int maxNeg = numeric_limits<int>::min();
-        int zeroCount = 0;
+    int findValueOfPartition(vector<int>& nums) {
+        sort(nums.begin(), nums.end());
 
-        for (int n : nums) {
-            if (n > 0) {
-                result *= n;
-            } else if (n < 0) {
-                resultNeg *= n;
-                maxNeg = max(maxNeg, n);
-            } else {
-                ++zeroCount;
-            }
+        int minDiff = numeric_limits<int>::max();
+        for (int i = 1; i < nums.size(); ++i) {
+            minDiff = min(minDiff, nums[i] - nums[i - 1]);
         }
 
-        if (zeroCount == nums.size()) { return 0; }
-        if (nums.size() - zeroCount == 1) {
-            if (zeroCount > 0) { return max<int64_t>(0, result * resultNeg); }
-            return result * resultNeg;
-        }
-
-        if (resultNeg < 0) { resultNeg /= maxNeg; }
-        return result * resultNeg;
+        return minDiff;
     }
 };
 
