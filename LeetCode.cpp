@@ -7,19 +7,8 @@ using namespace std;
 
 class Solution {
 public:
-    long long minimumSteps(string s) {
-        int64_t result = 0;
-        int zeroesAhead = 0;
-
-        for (int i = s.size() - 1; i >= 0; --i) {
-            if (s[i] == '0') {
-                ++zeroesAhead;
-            } else {
-                result += zeroesAhead;
-            }
-        }
-
-        return result;
+    int maxContainers(int n, int w, int maxWeight) {
+        return min(n * n, maxWeight / w);
     }
 };
 
