@@ -7,15 +7,19 @@ using namespace std;
 
 class Solution {
 public:
-    int findValueOfPartition(vector<int>& nums) {
-        sort(nums.begin(), nums.end());
+    long long minimumSteps(string s) {
+        int64_t result = 0;
+        int zeroesAhead = 0;
 
-        int minDiff = numeric_limits<int>::max();
-        for (int i = 1; i < nums.size(); ++i) {
-            minDiff = min(minDiff, nums[i] - nums[i - 1]);
+        for (int i = s.size() - 1; i >= 0; --i) {
+            if (s[i] == '0') {
+                ++zeroesAhead;
+            } else {
+                result += zeroesAhead;
+            }
         }
 
-        return minDiff;
+        return result;
     }
 };
 
