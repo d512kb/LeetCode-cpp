@@ -7,28 +7,31 @@ using namespace std;
 
 class Solution {
 public:
-    int takeCharacters(string s, int k) {
-        array<int, 3> charCount{};
+    long long maxStrength(vector<int>& nums) {
+        int64_t result = 1;
+        int64_t resultNeg = 1;
+        int maxNeg = numeric_limits<int>::min();
+        int zeroCount = 0;
 
-        for (char c : s) { ++charCount[c - 'a']; }
-        if (*min_element(charCount.begin(), charCount.end()) < k) { return -1; }
-
-        const int sz = s.size();
-        int windowSize = 0;
-
-        for (int left = 0, right = 0; right < sz; ++right) {
-            char rc = s[right] - 'a';
-
-            if (--charCount[rc] < k) {
-                while (charCount[rc] < k) {
-                    ++charCount[s[left++] - 'a'];
-                }
+        for (int n : nums) {
+            if (n > 0) {
+                result *= n;
+            } else if (n < 0) {
+                resultNeg *= n;
+                maxNeg = max(maxNeg, n);
+            } else {
+                ++zeroCount;
             }
-
-            windowSize = max(windowSize, right - left + 1);
         }
 
-        return sz - windowSize;
+        if (zeroCount == nums.size()) { return 0; }
+        if (nums.size() - zeroCount == 1) {
+            if (zeroCount > 0) { return max<int64_t>(0, result * resultNeg); }
+            return result * resultNeg;
+        }
+
+        if (resultNeg < 0) { resultNeg /= maxNeg; }
+        return result * resultNeg;
     }
 };
 
