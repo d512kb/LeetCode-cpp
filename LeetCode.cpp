@@ -7,17 +7,20 @@ using namespace std;
 
 class Solution {
 public:
-    bool checkArray(vector<int>& nums, int k) {
-        const int sz = nums.size();
-        int corr = 0;
+    int removeAlmostEqualCharacters(string word) {
+        const int sz = word.size();
+        int ans = 0;
 
-        for (int i = 0; i < sz; ++i) {
-            if ((nums[i] -= corr) < 0) { return false; }
-            corr += nums[i];
-            if (i - k + 1 >= 0) { corr -= nums[i - k + 1]; }
+        for (int i = 1; i < sz;) {
+            if (abs(word[i] - word[i - 1]) <= 1) {
+                ++ans;
+                i += 2;
+            } else {
+                ++i;
+            }
         }
 
-        return corr == 0;
+        return ans;
     }
 };
 
