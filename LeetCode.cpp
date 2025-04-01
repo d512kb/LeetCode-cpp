@@ -6,35 +6,23 @@ using namespace std;
 
 class Solution {
 public:
-    bool stoneGame(vector<int>& piles) {
-        const int sz = piles.size();
+    string lastNonEmptyString(string s) {
+        array<int, 26> charCount{};
 
-        if (sz % 2 == 0) { return true; }
+        for (char c : s) { ++charCount[c - 'a']; }
+        int maxCount = *max_element(charCount.begin(), charCount.end());
 
-        for (int i = 0; i < sz; ++i) {
-            array<int, 2> stones{ piles[1], 0 };
-            char bobTurn = 1;
-            int left = i - 1; int right = i + 1;
+        string result;
 
-            while (left > 0 || right < sz - 1) {
-                int leftVal = left - 1 >= 0 ? piles[left - 1] : 0;
-                int rightVal = right + 1 < sz ? piles[right + 1] : 0;
-
-                if (left > right) {
-                    stones[bobTurn] += piles[left];
-                    --left;
-                } else {
-                    stones[bobTurn] += piles[right];
-                    ++right;
-                }
-
-                bobTurn = (bobTurn + 1) % 2;
+        for (auto iter = s.rbegin(); iter != s.rend(); ++iter) {
+            if (charCount[*iter - 'a'] == maxCount) {
+                result.push_back(*iter);
+                charCount[*iter - 'a'] = 0;
             }
-
-            if (stones[0] > stones[1]) { return true; }
         }
 
-        return false;
+        reverse(result.begin(), result.end());
+        return result;
     }
 };
 
