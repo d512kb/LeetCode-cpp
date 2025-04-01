@@ -1,5 +1,4 @@
 ﻿// LeetCode.cpp : Defines the entry point for the application.
-//
 
 #include "LeetCode.h"
 
@@ -7,20 +6,35 @@ using namespace std;
 
 class Solution {
 public:
-    int removeAlmostEqualCharacters(string word) {
-        const int sz = word.size();
-        int ans = 0;
+    bool stoneGame(vector<int>& piles) {
+        const int sz = piles.size();
 
-        for (int i = 1; i < sz;) {
-            if (abs(word[i] - word[i - 1]) <= 1) {
-                ++ans;
-                i += 2;
-            } else {
-                ++i;
+        if (sz % 2 == 0) { return true; }
+
+        for (int i = 0; i < sz; ++i) {
+            array<int, 2> stones{ piles[1], 0 };
+            char bobTurn = 1;
+            int left = i - 1; int right = i + 1;
+
+            while (left > 0 || right < sz - 1) {
+                int leftVal = left - 1 >= 0 ? piles[left - 1] : 0;
+                int rightVal = right + 1 < sz ? piles[right + 1] : 0;
+
+                if (left > right) {
+                    stones[bobTurn] += piles[left];
+                    --left;
+                } else {
+                    stones[bobTurn] += piles[right];
+                    ++right;
+                }
+
+                bobTurn = (bobTurn + 1) % 2;
             }
+
+            if (stones[0] > stones[1]) { return true; }
         }
 
-        return ans;
+        return false;
     }
 };
 
