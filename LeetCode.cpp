@@ -6,23 +6,32 @@ using namespace std;
 
 class Solution {
 public:
-    string lastNonEmptyString(string s) {
-        array<int, 26> charCount{};
+    vector<int> getGoodIndices(vector<vector<int>>& variables, int target) {
+        vector<int> result;
 
-        for (char c : s) { ++charCount[c - 'a']; }
-        int maxCount = *max_element(charCount.begin(), charCount.end());
+        for (int i = 0; i < variables.size(); ++i) {
+            int a = variables[i][0];
+            int b = variables[i][1];
+            int c = variables[i][2];
+            int m = variables[i][3];
 
-        string result;
-
-        for (auto iter = s.rbegin(); iter != s.rend(); ++iter) {
-            if (charCount[*iter - 'a'] == maxCount) {
-                result.push_back(*iter);
-                charCount[*iter - 'a'] = 0;
+            if (calcPow(calcPow(a, b, 10), c, m) == target) {
+                result.push_back(i);
             }
         }
 
-        reverse(result.begin(), result.end());
         return result;
+    }
+
+private:
+    int calcPow(int n, int p, int m) {
+        int ans = 1;
+
+        while (p-- > 0) {
+            ans = (ans * n) % m;
+        }
+
+        return ans;
     }
 };
 
