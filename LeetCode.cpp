@@ -6,32 +6,29 @@ using namespace std;
 
 class Solution {
 public:
-    vector<int> getGoodIndices(vector<vector<int>>& variables, int target) {
-        vector<int> result;
+    string smallestPalindrome(string s) {
+        array<int, 26> charCount{};
+        for (char c : s) { ++charCount[c - 'a']; }
 
-        for (int i = 0; i < variables.size(); ++i) {
-            int a = variables[i][0];
-            int b = variables[i][1];
-            int c = variables[i][2];
-            int m = variables[i][3];
+        string result(s.size(), 0);
 
-            if (calcPow(calcPow(a, b, 10), c, m) == target) {
-                result.push_back(i);
+        int aIndex = 0;
+        int bIndex = s.size() - 1;
+
+        for (int i = 0; i < 26; ++i) {
+            while (charCount[i] > 1) {
+                result[aIndex++] = i + 'a';
+                result[bIndex--] = i + 'a';
+                charCount[i] -= 2;
+            }
+
+            if (charCount[i] == 1) {
+                result[s.size() / 2] = i + 'a';
+                --charCount[i];
             }
         }
 
         return result;
-    }
-
-private:
-    int calcPow(int n, int p, int m) {
-        int ans = 1;
-
-        while (p-- > 0) {
-            ans = (ans * n) % m;
-        }
-
-        return ans;
     }
 };
 
