@@ -6,18 +6,41 @@ using namespace std;
 
 class Solution {
 public:
-    long long maxArrayValue(vector<int>& nums) {
-        long long sum = 0;
+    ListNode* doubleIt(ListNode* head) {
+        head = reverseList(head);
 
-        for (int i = nums.size() - 1; i >= 0; --i) {
-            if (nums[i] <= sum) {
-                sum += nums[i];
-            } else {
-                sum = nums[i];
-            }
+        ListNode* node = head;
+        char c = 0;
+
+        while (node) {
+            int val = 2 * node->val + c;
+            node->val = val % 10;
+            c = val / 10;
+            node = node->next;
         }
 
-        return sum;
+        head = reverseList(head);
+
+        if (c) {
+            ListNode* newHead = new ListNode(1, head);
+            head = newHead;
+        }
+
+        return head;
+    }
+
+private:
+    ListNode* reverseList(ListNode* head) const {
+        ListNode* preHead = nullptr;
+
+        while (head) {
+            ListNode* next = head->next;
+            head->next = preHead;
+            preHead = head;
+            head = next;
+        }
+
+        return preHead;
     }
 };
 
