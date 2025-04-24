@@ -6,37 +6,58 @@ using namespace std;
 
 class Solution {
 public:
-    int maximizeSquareArea(int m, int n, vector<int>& hFences, vector<int>& vFences) {
-        hFences.push_back(1);
-        hFences.push_back(m);
-        vFences.push_back(1);
-        vFences.push_back(n);
+    vector<int> beautifulIndices(string s, string a, string b, int k) {
+        auto aIndexes = findIndexes(s, a);
+        auto bIndexes = findIndexes(s, b);
 
-        unordered_set<int> hAreas;
-        // it works faster when sorted
-        sort(hFences.begin(), hFences.end());
-        sort(vFences.begin(), vFences.end());
+        vector<int> result;
+        int bi = 0;
 
-        for (int i = 0; i < hFences.size(); ++i) {
-            for (int j = i + 1; j < hFences.size(); ++j) {
-                hAreas.insert(hFences[j] - hFences[i]); // no need to abs if sorted
+        for (int aIndex : aIndexes) {
+            while (bi < bIndexes.size() && (aIndex - bIndexes[bi]) > k) {
+                ++bi;
+            }
+
+            if (bi == bIndexes.size()) { return result; }
+
+            if (abs(aIndex - bIndexes[bi]) <= k) {
+                result.push_back(aIndex);
             }
         }
 
-        const int modulo = 1e9 + 7;
-        int maxArea = 0;
+        return result;
+    }
+private:
+    vector<int> findIndexes(const string& where, const string& what) {
+        string s = what + '#' + where;
+        const int sz = s.size();
+        const int whatSz = what.size();
+        vector<int> z(sz);
+        vector<int> result;
 
-        for (int i = 0; i < vFences.size(); ++i) {
-            for (int j = i + 1; j < vFences.size(); ++j) {
-                int vArea = vFences[j] - vFences[i];
+        int l = 0;
+        int r = 0;
 
-                if (hAreas.contains(vArea)) {
-                    maxArea = max(maxArea, vArea);
-                }
+        for (int i = 1; i < sz; ++i) {
+            if (i < r) {
+                z[i] = min(r - i, z[i - l]);
+            }
+
+            while (i + z[i] < sz && s[i + z[i]] == s[z[i]]) {
+                ++z[i];
+            }
+
+            if (z[i] == whatSz) {
+                result.push_back(i - whatSz - 1);
+            }
+
+            if (i + z[i] > r) {
+                l = i;
+                r = i + z[i];
             }
         }
 
-        return maxArea > 0 ? static_cast<int64_t>(maxArea) * maxArea % modulo : -1;
+        return result;
     }
 };
 
