@@ -6,41 +6,37 @@ using namespace std;
 
 class Solution {
 public:
-    ListNode* doubleIt(ListNode* head) {
-        head = reverseList(head);
+    int maximizeSquareArea(int m, int n, vector<int>& hFences, vector<int>& vFences) {
+        hFences.push_back(1);
+        hFences.push_back(m);
+        vFences.push_back(1);
+        vFences.push_back(n);
 
-        ListNode* node = head;
-        char c = 0;
+        unordered_set<int> hAreas;
+        // it works faster when sorted
+        sort(hFences.begin(), hFences.end());
+        sort(vFences.begin(), vFences.end());
 
-        while (node) {
-            int val = 2 * node->val + c;
-            node->val = val % 10;
-            c = val / 10;
-            node = node->next;
+        for (int i = 0; i < hFences.size(); ++i) {
+            for (int j = i + 1; j < hFences.size(); ++j) {
+                hAreas.insert(hFences[j] - hFences[i]); // no need to abs if sorted
+            }
         }
 
-        head = reverseList(head);
+        const int modulo = 1e9 + 7;
+        int maxArea = 0;
 
-        if (c) {
-            ListNode* newHead = new ListNode(1, head);
-            head = newHead;
+        for (int i = 0; i < vFences.size(); ++i) {
+            for (int j = i + 1; j < vFences.size(); ++j) {
+                int vArea = vFences[j] - vFences[i];
+
+                if (hAreas.contains(vArea)) {
+                    maxArea = max(maxArea, vArea);
+                }
+            }
         }
 
-        return head;
-    }
-
-private:
-    ListNode* reverseList(ListNode* head) const {
-        ListNode* preHead = nullptr;
-
-        while (head) {
-            ListNode* next = head->next;
-            head->next = preHead;
-            preHead = head;
-            head = next;
-        }
-
-        return preHead;
+        return maxArea > 0 ? static_cast<int64_t>(maxArea) * maxArea % modulo : -1;
     }
 };
 
