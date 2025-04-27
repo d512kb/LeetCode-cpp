@@ -6,58 +6,31 @@ using namespace std;
 
 class Solution {
 public:
-    vector<int> beautifulIndices(string s, string a, string b, int k) {
-        auto aIndexes = findIndexes(s, a);
-        auto bIndexes = findIndexes(s, b);
+    vector<string> findHighAccessEmployees(vector<vector<string>>& access_times) {
+        unordered_map<string, vector<int>> accessTimes;
 
-        vector<int> result;
-        int bi = 0;
+        for (const auto& time : access_times) {
+            accessTimes[time[0]].push_back(getMins(time[1]));
+        }
 
-        for (int aIndex : aIndexes) {
-            while (bi < bIndexes.size() && (aIndex - bIndexes[bi]) > k) {
-                ++bi;
-            }
+        vector<string> result;
 
-            if (bi == bIndexes.size()) { return result; }
+        for (auto& [name, times] : accessTimes) {
+            sort(times.begin(), times.end());
 
-            if (abs(aIndex - bIndexes[bi]) <= k) {
-                result.push_back(aIndex);
+            for (int i = 0, j = i + 2; j < times.size(); ++i, ++j) {
+                if (times[j] - times[i] < 60) {
+                    result.push_back(name);
+                    break;
+                }
             }
         }
 
         return result;
     }
 private:
-    vector<int> findIndexes(const string& where, const string& what) {
-        string s = what + '#' + where;
-        const int sz = s.size();
-        const int whatSz = what.size();
-        vector<int> z(sz);
-        vector<int> result;
-
-        int l = 0;
-        int r = 0;
-
-        for (int i = 1; i < sz; ++i) {
-            if (i < r) {
-                z[i] = min(r - i, z[i - l]);
-            }
-
-            while (i + z[i] < sz && s[i + z[i]] == s[z[i]]) {
-                ++z[i];
-            }
-
-            if (z[i] == whatSz) {
-                result.push_back(i - whatSz - 1);
-            }
-
-            if (i + z[i] > r) {
-                l = i;
-                r = i + z[i];
-            }
-        }
-
-        return result;
+    int getMins(const string& time) const {
+        return ((time[0] - '0') * 10 + (time[1] - '0')) * 60 + (time[2] - '0') * 10 + (time[3] - '0');
     }
 };
 
