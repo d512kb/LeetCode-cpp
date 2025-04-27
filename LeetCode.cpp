@@ -6,27 +6,23 @@ using namespace std;
 
 class Solution {
 public:
-    int beautifulSubstrings(string s, int k) {
-        const int sz = s.size();
+    int minimumAddedCoins(vector<int>& coins, int target) {
+        sort(coins.begin(), coins.end());
+        size_t canObtain = 0;
         int ans = 0;
 
-        for (int i = 0; i < sz; ++i) {
-            int vowels = 0;
-            int consonants = 0;
-
-            for (int j = i; j < sz; ++j) {
-                char c = s[j];
-
-                if (c == 'a' || c == 'e' || c == 'i' || c == 'o' || c == 'u') {
-                    ++vowels;
-                } else {
-                    ++consonants;
-                }
-
-                if (vowels == consonants && (vowels * consonants % k) == 0) {
-                    ++ans;
-                }
+        for (int c : coins) {
+            while ((canObtain + 1) < c) {
+                canObtain = 2 * canObtain + 1;
+                ++ans;
             }
+
+            canObtain += c;
+        }
+
+        while (canObtain < target) {
+            canObtain = 2 * canObtain + 1;
+            ++ans;
         }
 
         return ans;
