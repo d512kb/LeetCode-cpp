@@ -6,31 +6,30 @@ using namespace std;
 
 class Solution {
 public:
-    vector<string> findHighAccessEmployees(vector<vector<string>>& access_times) {
-        unordered_map<string, vector<int>> accessTimes;
+    int beautifulSubstrings(string s, int k) {
+        const int sz = s.size();
+        int ans = 0;
 
-        for (const auto& time : access_times) {
-            accessTimes[time[0]].push_back(getMins(time[1]));
-        }
+        for (int i = 0; i < sz; ++i) {
+            int vowels = 0;
+            int consonants = 0;
 
-        vector<string> result;
+            for (int j = i; j < sz; ++j) {
+                char c = s[j];
 
-        for (auto& [name, times] : accessTimes) {
-            sort(times.begin(), times.end());
+                if (c == 'a' || c == 'e' || c == 'i' || c == 'o' || c == 'u') {
+                    ++vowels;
+                } else {
+                    ++consonants;
+                }
 
-            for (int i = 0, j = i + 2; j < times.size(); ++i, ++j) {
-                if (times[j] - times[i] < 60) {
-                    result.push_back(name);
-                    break;
+                if (vowels == consonants && (vowels * consonants % k) == 0) {
+                    ++ans;
                 }
             }
         }
 
-        return result;
-    }
-private:
-    int getMins(const string& time) const {
-        return ((time[0] - '0') * 10 + (time[1] - '0')) * 60 + (time[2] - '0') * 10 + (time[3] - '0');
+        return ans;
     }
 };
 
