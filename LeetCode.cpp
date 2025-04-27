@@ -6,22 +6,26 @@ using namespace std;
 
 class Solution {
 public:
-    long long countAlternatingSubarrays(vector<int>& nums) {
-        const size_t sz = nums.size();
-        long long totalSubarrays = 1;
-        int alternatingLen = 1;
+    int numberOfSpecialChars(string word) {
+        array<bool, 26> lowercaseChars{}, uppercaseChars{};
 
-        for (int i = 1; i < sz; ++i) {
-            if (nums[i - 1] == nums[i]) {
-                alternatingLen = 1;
+        for (char c : word) {
+            if (isupper(c)) {
+                uppercaseChars[c - 'A'] = true;
             } else {
-                ++alternatingLen;
+                lowercaseChars[c - 'a'] = !uppercaseChars[c - 'a'];
             }
-
-            totalSubarrays += alternatingLen;
         }
 
-        return totalSubarrays;
+        int ans = 0;
+
+        for (int i = 0; i < 26; ++i) {
+            if (lowercaseChars[i] && uppercaseChars[i]) {
+                ++ans;
+            }
+        }
+
+        return ans;
     }
 };
 
