@@ -6,23 +6,21 @@ using namespace std;
 
 class Solution {
 public:
-    int minimumAddedCoins(vector<int>& coins, int target) {
-        sort(coins.begin(), coins.end());
-        size_t canObtain = 0;
+    int maxSubarrayLength(vector<int>& nums, int k) {
+        int left = 0;
         int ans = 0;
 
-        for (int c : coins) {
-            while ((canObtain + 1) < c) {
-                canObtain = 2 * canObtain + 1;
-                ++ans;
+        unordered_map<int, int> numsCount;
+
+        for (int right = 0; right < nums.size(); ++right) {
+            int& count = numsCount[nums[right]];
+            ++count;
+
+            while (count > k) {
+                --numsCount[nums[left++]];
             }
 
-            canObtain += c;
-        }
-
-        while (canObtain < target) {
-            canObtain = 2 * canObtain + 1;
-            ++ans;
+            ans = max(ans, right - left + 1);
         }
 
         return ans;
