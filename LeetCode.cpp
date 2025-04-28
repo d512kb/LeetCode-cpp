@@ -6,11 +6,53 @@ using namespace std;
 
 class Solution {
 public:
-    long long countSubstrings(string s, char c) {
-        long long charCount = count(s.begin(), s.end(), c);
+    int countMatchingSubarrays(vector<int>& nums, vector<int>& pattern) {
+        vector<int> numsPatterns(nums.size() - 1);
 
-        // first char with itself, second char with itself and previous, etc.
-        return charCount * (charCount + 1) / 2;
+        for (int i = 0; i < numsPatterns.size(); ++i) {
+            int v = nums[i + 1] - nums[i];
+
+            if (v > 0) { numsPatterns[i] = 1; } else if (v < 0) { numsPatterns[i] = -1; }
+        }
+
+        return countPatterns(numsPatterns, pattern);
+    }
+
+private:
+    int countPatterns(const vector<int>& where, const vector<int>& what) const {
+        vector<int> s;
+        s.reserve(where.size() + what.size() + 1);
+        copy(what.begin(), what.end(), back_inserter(s));
+        s.push_back(numeric_limits<int>::max());
+        copy(where.begin(), where.end(), back_inserter(s));
+
+        const int sz = s.size();
+        vector<int> zIndex(sz);
+
+        int l = 0;
+        int r = 0;
+        int result = 0;
+
+        for (int i = 1; i < sz; ++i) {
+            if (i < r) {
+                zIndex[i] = min(zIndex[i - l], r - i);
+            }
+
+            while (i + zIndex[i] < sz && s[i + zIndex[i]] == s[zIndex[i]]) {
+                ++zIndex[i];
+            }
+
+            if (i + zIndex[i] > r) {
+                l = i;
+                r = i + zIndex[i];
+            }
+
+            if (zIndex[i] == what.size()) {
+                ++result;
+            }
+        }
+
+        return result;
     }
 };
 
