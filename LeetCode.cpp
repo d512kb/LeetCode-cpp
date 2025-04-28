@@ -6,24 +6,13 @@ using namespace std;
 
 class Solution {
 public:
-    string getSmallestString(string s, int k) {
-        for (char& c : s) {
-            int dist = calcDistance('a', c);
+    // first increase i times, then duplicate d times
+    // (i+1) * (d+1) >= k, and it's the best when the increase and duplication numbers are equal => i+1 == sqrt(k)
+    int minOperations(int k) {
+        int i = ceil(sqrt(k));
+        int d = ceil(static_cast<double>(k) / i);
 
-            if (dist <= k) {
-                c = 'a';
-                k -= dist;
-            } else {
-                c -= k;
-                break;
-            }
-        }
-
-        return s;
-    }
-private:
-    inline int calcDistance(char a, char b) const { // works only for a <= b
-        return min(b - a, a + 26 - b);
+        return i - 1 + d - 1;
     }
 };
 
