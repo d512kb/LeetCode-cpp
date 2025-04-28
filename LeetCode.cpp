@@ -6,13 +6,11 @@ using namespace std;
 
 class Solution {
 public:
-    // first increase i times, then duplicate d times
-    // (i+1) * (d+1) >= k, and it's the best when the increase and duplication numbers are equal => i+1 == sqrt(k)
-    int minOperations(int k) {
-        int i = ceil(sqrt(k));
-        int d = ceil(static_cast<double>(k) / i);
+    long long countSubstrings(string s, char c) {
+        long long charCount = count(s.begin(), s.end(), c);
 
-        return i - 1 + d - 1;
+        // first char with itself, second char with itself and previous, etc.
+        return charCount * (charCount + 1) / 2;
     }
 };
 
