@@ -6,24 +6,24 @@ using namespace std;
 
 class Solution {
 public:
-    long long minOperationsToMakeMedianK(vector<int>& nums, int k) {
-        const int sz = nums.size();
-        sort(nums.begin(), nums.end());
+    string getSmallestString(string s, int k) {
+        for (char& c : s) {
+            int dist = calcDistance('a', c);
 
-        int medianIndex = sz / 2;
-        long long ans = 0;
-
-        if (k < nums[medianIndex]) { // decrease left part
-            for (; medianIndex >= 0 && nums[medianIndex] > k; --medianIndex) {
-                ans += nums[medianIndex] - k;
-            }
-        } else if (k > nums[medianIndex]) { // increase right part
-            for (; medianIndex < sz && nums[medianIndex] < k; ++medianIndex) {
-                ans += k - nums[medianIndex];
+            if (dist <= k) {
+                c = 'a';
+                k -= dist;
+            } else {
+                c -= k;
+                break;
             }
         }
 
-        return ans;
+        return s;
+    }
+private:
+    inline int calcDistance(char a, char b) const { // works only for a <= b
+        return min(b - a, a + 26 - b);
     }
 };
 
