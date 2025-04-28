@@ -6,23 +6,36 @@ using namespace std;
 
 class Solution {
 public:
-    int maximumPrimeDifference(vector<int>& nums) {
-        vector<bool> primes(101, true);
-        primes[0] = false;
-        primes[1] = false;
+    int minimumOperations(vector<vector<int>>& grid) {
+        constexpr int N = 10;
+        const int rows = grid.size();
+        const int cols = grid.front().size();
 
-        for (int i = 2; i <= 100; ++i) {
-            if (!primes[i]) { continue; }
+        vector<pair<int, char>> dpPrev(N), dp(N);
 
-            for (int val = i + i; val <= 100; val += i) {
-                primes[val] = false;
+        for (int col = 0; col < cols; ++col) {
+            swap(dpPrev, dp);
+            array<int, N> nCount{};
+
+            for (int row = 0; row < rows; ++row) {
+                ++nCount[grid[row][col]];
             }
+
+            for (int val = 0; val < N; ++val) {
+                dp[val].second = val;
+                dp[val].first = rows - nCount[val];
+
+                if (dpPrev.front().second != val) {
+                    dp[val].first += dpPrev.front().first;
+                } else {
+                    dp[val].first += next(dpPrev.begin())->first;
+                }
+            }
+
+            sort(dp.begin(), dp.end());
         }
 
-        auto iterA = find_if(nums.begin(), nums.end(), [&primes](int val) { return primes[val]; });
-        auto iterB = find_if(nums.rbegin(), nums.rend(), [&primes](int val) { return primes[val]; });
-
-        return distance(iterA, iterB.base()) - 1;
+        return dp.front().first;
     }
 };
 
