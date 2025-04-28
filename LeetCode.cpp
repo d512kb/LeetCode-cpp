@@ -6,26 +6,23 @@ using namespace std;
 
 class Solution {
 public:
-    int numberOfSpecialChars(string word) {
-        array<bool, 26> lowercaseChars{}, uppercaseChars{};
+    int maximumPrimeDifference(vector<int>& nums) {
+        vector<bool> primes(101, true);
+        primes[0] = false;
+        primes[1] = false;
 
-        for (char c : word) {
-            if (isupper(c)) {
-                uppercaseChars[c - 'A'] = true;
-            } else {
-                lowercaseChars[c - 'a'] = !uppercaseChars[c - 'a'];
+        for (int i = 2; i <= 100; ++i) {
+            if (!primes[i]) { continue; }
+
+            for (int val = i + i; val <= 100; val += i) {
+                primes[val] = false;
             }
         }
 
-        int ans = 0;
+        auto iterA = find_if(nums.begin(), nums.end(), [&primes](int val) { return primes[val]; });
+        auto iterB = find_if(nums.rbegin(), nums.rend(), [&primes](int val) { return primes[val]; });
 
-        for (int i = 0; i < 26; ++i) {
-            if (lowercaseChars[i] && uppercaseChars[i]) {
-                ++ans;
-            }
-        }
-
-        return ans;
+        return distance(iterA, iterB.base()) - 1;
     }
 };
 
