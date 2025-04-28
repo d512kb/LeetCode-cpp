@@ -6,36 +6,24 @@ using namespace std;
 
 class Solution {
 public:
-    int minimumOperations(vector<vector<int>>& grid) {
-        constexpr int N = 10;
-        const int rows = grid.size();
-        const int cols = grid.front().size();
+    long long minOperationsToMakeMedianK(vector<int>& nums, int k) {
+        const int sz = nums.size();
+        sort(nums.begin(), nums.end());
 
-        vector<pair<int, char>> dpPrev(N), dp(N);
+        int medianIndex = sz / 2;
+        long long ans = 0;
 
-        for (int col = 0; col < cols; ++col) {
-            swap(dpPrev, dp);
-            array<int, N> nCount{};
-
-            for (int row = 0; row < rows; ++row) {
-                ++nCount[grid[row][col]];
+        if (k < nums[medianIndex]) { // decrease left part
+            for (; medianIndex >= 0 && nums[medianIndex] > k; --medianIndex) {
+                ans += nums[medianIndex] - k;
             }
-
-            for (int val = 0; val < N; ++val) {
-                dp[val].second = val;
-                dp[val].first = rows - nCount[val];
-
-                if (dpPrev.front().second != val) {
-                    dp[val].first += dpPrev.front().first;
-                } else {
-                    dp[val].first += next(dpPrev.begin())->first;
-                }
+        } else if (k > nums[medianIndex]) { // increase right part
+            for (; medianIndex < sz && nums[medianIndex] < k; ++medianIndex) {
+                ans += k - nums[medianIndex];
             }
-
-            sort(dp.begin(), dp.end());
         }
 
-        return dp.front().first;
+        return ans;
     }
 };
 
