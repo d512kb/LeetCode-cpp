@@ -6,53 +6,33 @@ using namespace std;
 
 class Solution {
 public:
-    int countMatchingSubarrays(vector<int>& nums, vector<int>& pattern) {
-        vector<int> numsPatterns(nums.size() - 1);
+    int rangeSum(vector<int>& nums, int n, int left, int right) {
+        auto cmp = [](const auto& p1, const auto& p2) { return p1.first > p2.first; };
+        priority_queue<pair<int, int>, vector<pair<int, int>>, decltype(cmp)> pq;
 
-        for (int i = 0; i < numsPatterns.size(); ++i) {
-            int v = nums[i + 1] - nums[i];
-
-            if (v > 0) { numsPatterns[i] = 1; } else if (v < 0) { numsPatterns[i] = -1; }
+        for (int i = 0; i < n; ++i) {
+            pq.emplace(nums[i], i + 1); // put next index
         }
 
-        return countPatterns(numsPatterns, pattern);
-    }
+        constexpr int modulo = 1e9 + 7;
+        int ans = 0;
+        --left; // make it 0-based
 
-private:
-    int countPatterns(const vector<int>& where, const vector<int>& what) const {
-        vector<int> s;
-        s.reserve(where.size() + what.size() + 1);
-        copy(what.begin(), what.end(), back_inserter(s));
-        s.push_back(numeric_limits<int>::max());
-        copy(where.begin(), where.end(), back_inserter(s));
+        for (int i = 0; i < right; ++i) {
+            auto val = pq.top();
+            pq.pop();
 
-        const int sz = s.size();
-        vector<int> zIndex(sz);
-
-        int l = 0;
-        int r = 0;
-        int result = 0;
-
-        for (int i = 1; i < sz; ++i) {
-            if (i < r) {
-                zIndex[i] = min(zIndex[i - l], r - i);
+            if (i >= left) {
+                ans = (ans + val.first) % modulo;
             }
 
-            while (i + zIndex[i] < sz && s[i + zIndex[i]] == s[zIndex[i]]) {
-                ++zIndex[i];
-            }
-
-            if (i + zIndex[i] > r) {
-                l = i;
-                r = i + zIndex[i];
-            }
-
-            if (zIndex[i] == what.size()) {
-                ++result;
+            if (val.second < n) {
+                val.first += nums[val.second++];
+                pq.push(val);
             }
         }
 
-        return result;
+        return ans;
     }
 };
 
