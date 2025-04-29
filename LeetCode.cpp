@@ -6,21 +6,18 @@ using namespace std;
 
 class Solution {
 public:
-    int minimumPushes(string word) {
-        array<int, 26> charCount{};
+    bool isSubPath(ListNode* head, TreeNode* root) {
+        if (!root) { return false; }
 
-        for (char c : word) {
-            ++charCount[c - 'a'];
-        }
+        return containsPath(head, root) || isSubPath(head, root->left) || isSubPath(head, root->right);
+    }
+private:
+    bool containsPath(ListNode* head, TreeNode* node) {
+        if (!head) { return true; }
+        if (!node) { return false; }
+        if (node->val != head->val) { return false; }
 
-        sort(charCount.rbegin(), charCount.rend());
-        int ans = 0;
-
-        for (int i = 0; i < 26; ++i) {
-            ans += charCount[i] * (i / 8 + 1);
-        }
-
-        return ans;
+        return containsPath(head->next, node->left) || containsPath(head->next, node->right);
     }
 };
 
