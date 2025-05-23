@@ -6,18 +6,32 @@ using namespace std;
 
 class Solution {
 public:
-    bool isSubPath(ListNode* head, TreeNode* root) {
-        if (!root) { return false; }
+    int subarraysWithKDistinct(vector<int>& nums, int k) {
+        const auto sz = nums.size();
+        vector<size_t> numbersCount(sz + 1);
+        size_t left = 0;
+        size_t mid = 0;
+        size_t right = 0;
+        size_t uniqueNumbers = 0;
+        int ans = 0;
 
-        return containsPath(head, root) || isSubPath(head, root->left) || isSubPath(head, root->right);
-    }
-private:
-    bool containsPath(ListNode* head, TreeNode* node) {
-        if (!head) { return true; }
-        if (!node) { return false; }
-        if (node->val != head->val) { return false; }
+        for (right; right < sz; ++right) {
+            if (++numbersCount[nums[right]] == 1 && ++uniqueNumbers > k) {
+                --numbersCount[nums[mid++]];
+                left = mid;
+                uniqueNumbers = k;
+            }
 
-        return containsPath(head->next, node->left) || containsPath(head->next, node->right);
+            if (uniqueNumbers == k) {
+                while (numbersCount[nums[mid]] > 1) {
+                    --numbersCount[nums[mid++]];
+                }
+
+                ans += mid - left + 1;
+            }
+        }
+
+        return ans;
     }
 };
 
