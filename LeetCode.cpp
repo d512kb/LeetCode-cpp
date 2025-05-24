@@ -6,29 +6,39 @@ using namespace std;
 
 class Solution {
 public:
-    int numSubmatrixSumTarget(vector<vector<int>>& matrix, int target) {
-        const auto rows = matrix.size();
-        const auto cols = matrix.front().size();
-        int ans = 0;
+    long long sumOfLargestPrimes(string s) {
+        const auto sz = s.size();
+        set<int64_t, greater<>> primes;
 
-        for (size_t rowA = 0; rowA < rows; ++rowA) {
-            vector<int> compressedRows(cols);
+        for (int i = 0; i < sz; ++i) {
+            int64_t val = 0;
 
-            for (size_t rowB = rowA; rowB < rows; ++rowB) {
-                unordered_map<int, size_t> sumsCounter{ {0, 1} };
-                int totalSum = 0;
+            for (int j = i; j < sz; ++j) {
+                val *= 10;
+                val += s[j] - '0';
 
-                for (size_t col = 0; col < cols; ++col) {
-                    compressedRows[col] += matrix[rowB][col];
-                    totalSum += compressedRows[col];
-
-                    ans += sumsCounter[totalSum - target];
-                    ++sumsCounter[totalSum];
-                }
+                if (isPrime(val))
+                    primes.insert(val);
             }
         }
 
-        return ans;
+        if (primes.size() < 3) {
+            return accumulate(primes.begin(), primes.end(), 0ll);
+        }
+
+        return accumulate(primes.begin(), next(primes.begin(), 3), 0ll);
+    }
+private:
+    bool isPrime(int64_t val) {
+        if (val == 1) { return false; }
+
+        for (int64_t i = 2; i * i <= val; ++i) {
+            if (val % i == 0) {
+                return false;
+            }
+        }
+
+        return true;
     }
 };
 
