@@ -6,28 +6,25 @@ using namespace std;
 
 class Solution {
 public:
-    int subarraysWithKDistinct(vector<int>& nums, int k) {
-        const auto sz = nums.size();
-        vector<size_t> numbersCount(sz + 1);
-        size_t left = 0;
-        size_t mid = 0;
-        size_t right = 0;
-        size_t uniqueNumbers = 0;
+    int numSubmatrixSumTarget(vector<vector<int>>& matrix, int target) {
+        const auto rows = matrix.size();
+        const auto cols = matrix.front().size();
         int ans = 0;
 
-        for (right; right < sz; ++right) {
-            if (++numbersCount[nums[right]] == 1 && ++uniqueNumbers > k) {
-                --numbersCount[nums[mid++]];
-                left = mid;
-                uniqueNumbers = k;
-            }
+        for (size_t rowA = 0; rowA < rows; ++rowA) {
+            vector<int> compressedRows(cols);
 
-            if (uniqueNumbers == k) {
-                while (numbersCount[nums[mid]] > 1) {
-                    --numbersCount[nums[mid++]];
+            for (size_t rowB = rowA; rowB < rows; ++rowB) {
+                unordered_map<int, size_t> sumsCounter{ {0, 1} };
+                int totalSum = 0;
+
+                for (size_t col = 0; col < cols; ++col) {
+                    compressedRows[col] += matrix[rowB][col];
+                    totalSum += compressedRows[col];
+
+                    ans += sumsCounter[totalSum - target];
+                    ++sumsCounter[totalSum];
                 }
-
-                ans += mid - left + 1;
             }
         }
 
