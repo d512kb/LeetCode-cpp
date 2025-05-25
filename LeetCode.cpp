@@ -6,12 +6,22 @@ using namespace std;
 
 class Solution {
 public:
-    long long minCuttingCost(int n, int m, int k) {
-        if (n <= k && m <= k) { return 0; }
-        if (n > k) {
-            return static_cast<int64_t>(k) * (n - k);
+    string resultingString(string s) {
+        string result;
+
+        for (char c : s) {
+            if (!result.empty() && adjacent(result.back(), c)) {
+                result.pop_back();
+            } else {
+                result.push_back(c);
+            }
         }
-        return static_cast<int64_t>(k) * (m - k);
+
+        return result;
+    }
+private:
+    inline bool adjacent(char a, char b) const {
+        return abs(a - b) == 1 || abs(a - b) == 25;
     }
 };
 
