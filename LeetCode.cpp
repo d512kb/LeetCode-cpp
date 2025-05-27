@@ -4,75 +4,35 @@
 
 using namespace std;
 
-class MyCircularDeque {
+class CustomStack {
 public:
-    MyCircularDeque(int k) : m_size(k), m_capacity(k), m_begin(0), m_end(0), m_data(k) {
-
+    CustomStack(int maxSize) : m_size(maxSize) {
+        m_data.reserve(m_size);
     }
 
-    bool insertFront(int value) {
-        if (isFull()) { return false; }
-        --m_capacity;
-
-        m_begin = (m_begin - 1 + m_size) % m_size;
-        m_data[m_begin] = value;
-
-        return true;
+    void push(int x) {
+        if (m_data.size() < m_size) {
+            m_data.push_back(x);
+        }
     }
 
-    bool insertLast(int value) {
-        if (isFull()) { return false; }
-        --m_capacity;
+    int pop() {
+        if (m_data.empty()) { return -1; }
 
-        m_data[m_end] = value;
-        m_end = (m_end + 1) % m_size;
+        int result = m_data.back();
+        m_data.pop_back();
 
-        return true;
+        return result;
     }
 
-    bool deleteFront() {
-        if (isEmpty()) { return false; }
-        ++m_capacity;
-
-        m_begin = (m_begin + 1) % m_size;
-
-        return true;
-    }
-
-    bool deleteLast() {
-        if (isEmpty()) { return false; }
-        ++m_capacity;
-
-        m_end = (m_end - 1 + m_size) % m_size;
-
-        return true;
-    }
-
-    int getFront() const {
-        if (isEmpty()) { return -1; }
-
-        return m_data[m_begin];
-    }
-
-    int getRear() const {
-        if (isEmpty()) { return -1; }
-
-        return m_data[(m_end - 1 + m_size) % m_size];
-    }
-
-    inline bool isEmpty() const {
-        return m_capacity == m_size;
-    }
-
-    inline bool isFull() const {
-        return m_capacity == 0;
+    void increment(int k, int val) {
+        for (int i = 0; i < k && i < m_data.size(); ++i) {
+            m_data[i] += val;
+        }
     }
 
 private:
     const size_t m_size;
-    int m_capacity;
-    int m_begin;
-    int m_end;
     vector<int> m_data;
 };
 
