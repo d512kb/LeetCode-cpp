@@ -4,36 +4,57 @@
 
 using namespace std;
 
-class CustomStack {
+class Solution {
 public:
-    CustomStack(int maxSize) : m_size(maxSize) {
-        m_data.reserve(m_size);
-    }
+    int maximumInvitations(vector<int>& favorite) {
+        const auto sz = favorite.size();
+        vector<int> inDegree(sz);
 
-    void push(int x) {
-        if (m_data.size() < m_size) {
-            m_data.push_back(x);
+        for (int i = 0; i < sz; ++i) {
+            ++inDegree[favorite[i]];
         }
-    }
 
-    int pop() {
-        if (m_data.empty()) { return -1; }
-
-        int result = m_data.back();
-        m_data.pop_back();
-
-        return result;
-    }
-
-    void increment(int k, int val) {
-        for (int i = 0; i < k && i < m_data.size(); ++i) {
-            m_data[i] += val;
+        queue<int> q;
+        for (int i = 0; i < sz; ++i) {
+            if (inDegree[i] == 0) {
+                q.push(i);
+            }
         }
-    }
 
-private:
-    const size_t m_size;
-    vector<int> m_data;
+        vector<int> depth(sz, 1);
+
+        while (!q.empty()) {
+            int node = q.front();
+            int nextNode = favorite[node];
+            q.pop();
+
+            depth[nextNode] = max(depth[nextNode], 1 + depth[node]);
+            if (--inDegree[nextNode] == 0) {
+                q.push(nextNode);
+            }
+        }
+
+        int peopleInChains = 0;
+        int peopleInCycles = 0;
+
+        for (int i = 0; i < sz; ++i) {
+            if (inDegree[i] == 0) { continue; }
+
+            int cycleLength = 0;
+            for (int current = i; inDegree[current] > 0; current = favorite[current]) {
+                inDegree[current] = 0;
+                ++cycleLength;
+            }
+
+            if (cycleLength == 2) {
+                peopleInChains += depth[i] + depth[favorite[i]];
+            } else {
+                peopleInCycles = max(peopleInCycles, cycleLength);
+            }
+        }
+
+        return max(peopleInChains, peopleInCycles);
+    }
 };
 
 int main()
