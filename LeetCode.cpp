@@ -6,36 +6,37 @@ using namespace std;
 
 class Solution {
 public:
-    bool checkEqualPartitions(vector<int>& nums, long long target) {
-        for (int n : nums) {
-            if (target % n != 0) { return false; }
-        }
+    vector<vector<int>> minAbsDiff(vector<vector<int>>& grid, int k) {
+        const auto rows = grid.size();
+        const auto cols = grid[0].size();
 
-        return distribute(nums, target, target);
-    }
+        vector<vector<int>> result(rows - k + 1, vector<int>(cols - k + 1));
 
-private:
-    bool distribute(vector<int>& values, int64_t value, int64_t target) {
-        if (value == 1) {
-            return accumulate(values.begin(), values.end(), 1ll, multiplies<>{}) == target;
-        }
+        for (int rowStart = 0; rowStart <= rows - k; ++rowStart) {
+            for (int colStart = 0; colStart <= cols - k; ++colStart) {
+                vector<int> values;
+                values.reserve(k * k);
 
-        for (auto iter = values.begin(); iter != values.end(); ++iter) {
-            if (*iter == 1) { continue; }
-
-            if (value % *iter == 0) {
-                auto val = *iter;
-                *iter = 1;
-
-                if (distribute(values, value / val, target)) {
-                    return true;
+                for (int i = rowStart; i < rowStart + k; ++i) {
+                    for (int j = colStart; j < colStart + k; ++j) {
+                        values.push_back(grid[i][j]);
+                    }
                 }
 
-                *iter = val;
+                sort(values.begin(), values.end());
+                int minDiff = numeric_limits<int>::max();
+
+                for (auto iter = values.begin(), nextIter = next(iter); nextIter != values.end(); ++iter, ++nextIter) {
+                    if (*iter != *nextIter) {
+                        minDiff = min(minDiff, abs(*iter - *nextIter));
+                    }
+                }
+
+                result[rowStart][colStart] = minDiff == numeric_limits<int>::max() ? 0 : minDiff;
             }
         }
 
-        return false;
+        return result;
     }
 };
 
