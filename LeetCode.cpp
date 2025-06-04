@@ -6,33 +6,26 @@ using namespace std;
 
 class Solution {
 public:
-    vector<vector<int>> minAbsDiff(vector<vector<int>>& grid, int k) {
-        const auto rows = grid.size();
-        const auto cols = grid[0].size();
+    vector<vector<int>> getSkyline(vector<vector<int>>& buildings) {
+        vector<pair<int, int>> events;
+        for (const auto& b : buildings) {
+            events.emplace_back(b[0], -b[2]); // start, negative height
+            events.emplace_back(b[1], b[2]);  // end, positive height
+        }
+        sort(events.begin(), events.end());
 
-        vector<vector<int>> result(rows - k + 1, vector<int>(cols - k + 1));
+        multiset<int, greater<>> heights = { 0 };
+        vector<vector<int>> result;
+        int prev = 0;
 
-        for (int rowStart = 0; rowStart <= rows - k; ++rowStart) {
-            for (int colStart = 0; colStart <= cols - k; ++colStart) {
-                vector<int> values;
-                values.reserve(k * k);
+        for (auto [x, h] : events) {
+            if (h < 0) heights.insert(-h); // start
+            else heights.erase(heights.find(h)); // end
 
-                for (int i = rowStart; i < rowStart + k; ++i) {
-                    for (int j = colStart; j < colStart + k; ++j) {
-                        values.push_back(grid[i][j]);
-                    }
-                }
-
-                sort(values.begin(), values.end());
-                int minDiff = numeric_limits<int>::max();
-
-                for (auto iter = values.begin(), nextIter = next(iter); nextIter != values.end(); ++iter, ++nextIter) {
-                    if (*iter != *nextIter) {
-                        minDiff = min(minDiff, abs(*iter - *nextIter));
-                    }
-                }
-
-                result[rowStart][colStart] = minDiff == numeric_limits<int>::max() ? 0 : minDiff;
+            int curr = *heights.begin();
+            if (curr != prev) {
+                result.push_back({ x, curr });
+                prev = curr;
             }
         }
 
@@ -43,7 +36,7 @@ public:
 int main()
 {
     INIT_TIME(timer);
-
+ 
     PRINT_ELAPSED(timer);
     return 0;
 }
