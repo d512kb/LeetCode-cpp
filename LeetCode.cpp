@@ -6,30 +6,21 @@ using namespace std;
 
 class Solution {
 public:
-    vector<vector<int>> getSkyline(vector<vector<int>>& buildings) {
-        vector<pair<int, int>> events;
-        for (const auto& b : buildings) {
-            events.emplace_back(b[0], -b[2]); // start, negative height
-            events.emplace_back(b[1], b[2]);  // end, positive height
-        }
-        sort(events.begin(), events.end());
+    ListNode* deleteDuplicates(ListNode* head) {
+        ListNode* node = head;
 
-        multiset<int, greater<>> heights = { 0 };
-        vector<vector<int>> result;
-        int prev = 0;
-
-        for (auto [x, h] : events) {
-            if (h < 0) heights.insert(-h); // start
-            else heights.erase(heights.find(h)); // end
-
-            int curr = *heights.begin();
-            if (curr != prev) {
-                result.push_back({ x, curr });
-                prev = curr;
+        while (node && node->next) {
+            if (node->val == node->next->val) {
+                ListNode* n = node->next;
+                node->next = node->next->next;
+                delete n;
+            }
+            else {
+                node = node->next;
             }
         }
 
-        return result;
+        return head;
     }
 };
 
