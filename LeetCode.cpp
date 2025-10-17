@@ -6,15 +6,13 @@ using namespace std;
 
 class Solution {
 public:
-    string defangIPaddr(string address) {
-        string result;
+    vector<int> recoverOrder(vector<int>& order, vector<int>& friends) {
+        unordered_set<int> cachedFriends(friends.begin(), friends.end());
+        vector<int> result;
 
-        for (char c : address) {
-            if (c == '.') {
-                result += "[.]";
-            }
-            else {
-                result.push_back(c);
+        for (int o : order) {
+            if (cachedFriends.contains(o)) {
+                result.push_back(o);
             }
         }
 
