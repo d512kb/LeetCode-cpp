@@ -6,19 +6,12 @@ using namespace std;
 
 class Solution {
 public:
-    int numIdenticalPairs(vector<int>& nums) {
-        unordered_map<int, size_t> numsCount;
-
-        for (int n : nums) {
-            ++numsCount[n];
-        }
-
+    int finalValueAfterOperations(vector<string>& operations) {
         int ans = 0;
 
-        for (auto [_, count] : numsCount) {
-            if (count > 1) {
-                ans += (count - 1) * count / 2;
-            }
+        for (auto& op : operations) {
+            if (op[1] == '-') { --ans; }
+            else { ++ans; }
         }
 
         return ans;
