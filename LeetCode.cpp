@@ -6,29 +6,19 @@ using namespace std;
 
 class Solution {
 public:
-    int minDepth(TreeNode* root) {
-        if (!root) { return 0; }
+    vector<int> getRow(int rowIndex) {
+        vector<int> result(rowIndex + 1, 1);
+        vector<int> prev(rowIndex + 1, 1);
 
-        queue<TreeNode*> q;
-        q.push(root);
-        int ans = 1;
+        for (int i = 2; i <= rowIndex; ++i) {
+            swap(prev, result);
 
-        while (!q.empty()) {
-            int sz = q.size();
-
-            while (sz--) {
-                auto node = q.front();
-                q.pop();
-
-                if (!node->left && !node->right) { return ans; }
-                if (node->left) { q.push(node->left); }
-                if (node->right) { q.push(node->right); }
+            for (int j = 1; j < i; ++j) {
+                result[j] = prev[j - 1] + prev[j];
             }
-
-            ++ans;
         }
 
-        return ans;
+        return result;
     }
 };
 
