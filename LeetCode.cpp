@@ -6,13 +6,13 @@ using namespace std;
 
 class Solution {
 public:
-    vector<int> recoverOrder(vector<int>& order, vector<int>& friends) {
-        unordered_set<int> cachedFriends(friends.begin(), friends.end());
-        vector<int> result;
+    vector<int> transformArray(vector<int>& nums) {
+        vector<int> result(nums.size());
+        auto iter = result.rbegin();
 
-        for (int o : order) {
-            if (cachedFriends.contains(o)) {
-                result.push_back(o);
+        for (int n : nums) {
+            if (n % 2) {
+                *iter++ = 1;
             }
         }
 
