@@ -5,9 +5,17 @@
 using namespace std;
 
 class Solution {
+    int xorSum(const vector<int>& nums, int index, int currentSum) {
+        if (index == nums.size()) { return currentSum; }
+
+        int with = xorSum(nums, index + 1, currentSum ^ nums[index]);
+        int without = xorSum(nums, index + 1, currentSum);
+
+        return with + without;
+    }
 public:
-    vector<double> convertTemperature(double celsius) {
-        return { celsius + 273.15, celsius * 1.8 + 32 };
+    int subsetXORSum(vector<int>& nums) {
+        return xorSum(nums, 0, 0);
     }
 };
 
