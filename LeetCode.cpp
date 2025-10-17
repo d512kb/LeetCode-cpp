@@ -5,17 +5,21 @@
 using namespace std;
 
 class Solution {
-    int xorSum(const vector<int>& nums, int index, int currentSum) {
-        if (index == nums.size()) { return currentSum; }
-
-        int with = xorSum(nums, index + 1, currentSum ^ nums[index]);
-        int without = xorSum(nums, index + 1, currentSum);
-
-        return with + without;
-    }
 public:
-    int subsetXORSum(vector<int>& nums) {
-        return xorSum(nums, 0, 0);
+    int maxFreqSum(string s) {
+        vector<int> freq(26);
+
+        for (char c : s) {
+            ++freq[c - 'a'];
+        }
+
+        int vovelFreq = exchange(freq[0], 0);
+        vovelFreq = max(vovelFreq, exchange(freq['e' - 'a'], 0));
+        vovelFreq = max(vovelFreq, exchange(freq['i' - 'a'], 0));
+        vovelFreq = max(vovelFreq, exchange(freq['o' - 'a'], 0));
+        vovelFreq = max(vovelFreq, exchange(freq['u' - 'a'], 0));
+
+        return *max_element(freq.begin(), freq.end()) + vovelFreq;
     }
 };
 
