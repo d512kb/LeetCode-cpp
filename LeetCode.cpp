@@ -6,14 +6,8 @@ using namespace std;
 
 class Solution {
 public:
-    vector<int> findWordsContaining(vector<string>& words, char x) {
-        vector<int> result;
-
-        for (int i = 0; i < words.size(); ++i) {
-            if (words[i].contains(x)) { result.push_back(i); }
-        }
-
-        return result;
+    vector<double> convertTemperature(double celsius) {
+        return { celsius + 273.15, celsius * 1.8 + 32 };
     }
 };
 
