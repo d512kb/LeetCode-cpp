@@ -6,20 +6,19 @@ using namespace std;
 
 class Solution {
 public:
-    int maxFreqSum(string s) {
-        vector<int> freq(26);
+    string defangIPaddr(string address) {
+        string result;
 
-        for (char c : s) {
-            ++freq[c - 'a'];
+        for (char c : address) {
+            if (c == '.') {
+                result += "[.]";
+            }
+            else {
+                result.push_back(c);
+            }
         }
 
-        int vovelFreq = exchange(freq[0], 0);
-        vovelFreq = max(vovelFreq, exchange(freq['e' - 'a'], 0));
-        vovelFreq = max(vovelFreq, exchange(freq['i' - 'a'], 0));
-        vovelFreq = max(vovelFreq, exchange(freq['o' - 'a'], 0));
-        vovelFreq = max(vovelFreq, exchange(freq['u' - 'a'], 0));
-
-        return *max_element(freq.begin(), freq.end()) + vovelFreq;
+        return result;
     }
 };
 
