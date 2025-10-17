@@ -6,11 +6,16 @@ using namespace std;
 
 class Solution {
 public:
-    int scoreOfString(string s) {
+    int differenceOfSums(int n, int m) {
         int ans = 0;
 
-        for (int i = 1; i < s.size(); ++i) {
-            ans += abs(s[i] - s[i - 1]);
+        for (int i = 1; i <= n; ++i) {
+            if (i % m) {
+                ans += i;
+            }
+            else {
+                ans -= i;
+            }
         }
 
         return ans;
