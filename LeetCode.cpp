@@ -6,16 +6,11 @@ using namespace std;
 
 class Solution {
 public:
-    int differenceOfSums(int n, int m) {
-        int ans = 0;
+    vector<int> buildArray(vector<int>& nums) {
+        vector<int> ans(nums.size());
 
-        for (int i = 1; i <= n; ++i) {
-            if (i % m) {
-                ans += i;
-            }
-            else {
-                ans -= i;
-            }
+        for (int i = 0; i < nums.size(); ++i) {
+            ans[i] = nums[nums[i]];
         }
 
         return ans;
