@@ -6,12 +6,15 @@ using namespace std;
 
 class Solution {
 public:
-    int finalValueAfterOperations(vector<string>& operations) {
+    int numJewelsInStones(string jewels, string stones) {
+        unordered_set<char> jewelsSet(jewels.begin(), jewels.end());
+
         int ans = 0;
 
-        for (auto& op : operations) {
-            if (op[1] == '-') { --ans; }
-            else { ++ans; }
+        for (char s : stones) {
+            if (jewelsSet.contains(s)) {
+                ++ans;
+            }
         }
 
         return ans;
