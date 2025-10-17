@@ -6,17 +6,14 @@ using namespace std;
 
 class Solution {
 public:
-    string convertToTitle(int columnNumber) {
-        string result;
+    int scoreOfString(string s) {
+        int ans = 0;
 
-        while (columnNumber > 0) {
-            --columnNumber;
-            result.push_back('A' + columnNumber % 26);
-            columnNumber /= 26;
+        for (int i = 1; i < s.size(); ++i) {
+            ans += abs(s[i] - s[i - 1]);
         }
 
-        reverse(result.begin(), result.end());
-        return result;
+        return ans;
     }
 };
 
