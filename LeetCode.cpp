@@ -6,17 +6,22 @@ using namespace std;
 
 class Solution {
 public:
-    vector<int> transformArray(vector<int>& nums) {
-        vector<int> result(nums.size());
-        auto iter = result.rbegin();
+    int numIdenticalPairs(vector<int>& nums) {
+        unordered_map<int, size_t> numsCount;
 
         for (int n : nums) {
-            if (n % 2) {
-                *iter++ = 1;
+            ++numsCount[n];
+        }
+
+        int ans = 0;
+
+        for (auto [_, count] : numsCount) {
+            if (count > 1) {
+                ans += (count - 1) * count / 2;
             }
         }
 
-        return result;
+        return ans;
     }
 };
 
