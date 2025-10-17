@@ -6,8 +6,12 @@ using namespace std;
 
 class Solution {
 public:
-    int theMaximumAchievableX(int num, int t) {
-        return num + t * 2;
+    vector<int> getConcatenation(vector<int>& nums) {
+        vector<int> result(nums);
+
+        copy(nums.begin(), nums.end(), back_inserter(result));
+
+        return result;
     }
 };
 
