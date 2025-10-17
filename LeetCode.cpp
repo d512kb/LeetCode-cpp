@@ -6,15 +6,11 @@ using namespace std;
 
 class Solution {
 public:
-    int numJewelsInStones(string jewels, string stones) {
-        unordered_set<char> jewelsSet(jewels.begin(), jewels.end());
-
+    int minimumOperations(vector<int>& nums) {
         int ans = 0;
 
-        for (char s : stones) {
-            if (jewelsSet.contains(s)) {
-                ++ans;
-            }
+        for (int n : nums) {
+            ans += min(n % 3, 3 - n % 3);
         }
 
         return ans;
