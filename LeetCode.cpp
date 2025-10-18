@@ -6,15 +6,22 @@ using namespace std;
 
 class Solution {
 public:
-    vector<int> decode(vector<int>& encoded, int first) {
-        vector<int> result;
-        result.push_back(first);
+    int maxWidthOfVerticalArea(vector<vector<int>>& points) {
+        vector<int> xPoints;
+        xPoints.reserve(points.size());
 
-        for (int i = 0; i < encoded.size(); ++i) {
-            result.push_back(result.back() ^ encoded[i]);
+        for (const auto& p : points) {
+            xPoints.push_back(p[0]);
         }
 
-        return result;
+        sort(xPoints.begin(), xPoints.end());
+        int ans = 0;
+
+        for (int i = 1; i < xPoints.size(); ++i) {
+            ans = max(ans, xPoints[i] - xPoints[i - 1]);
+        }
+
+        return ans;
     }
 };
 
