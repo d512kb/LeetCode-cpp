@@ -6,13 +6,11 @@ using namespace std;
 
 class Solution {
 public:
-    int alternatingSum(vector<int>& nums) {
+    int maximumWealth(vector<vector<int>>& accounts) {
         int ans = 0;
-        int sign = 1;
 
-        for (int n : nums) {
-            ans += sign * n;
-            sign = -sign;
+        for (const auto& account : accounts) {
+            ans = max(ans, accumulate(account.begin(), account.end(), 0));
         }
 
         return ans;
