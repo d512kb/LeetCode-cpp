@@ -6,17 +6,14 @@ using namespace std;
 
 class Solution {
 public:
-    int findPermutationDifference(string s, string t) {
-        array<char, 26> pos{};
-
-        for (int i = 0; i < s.size(); ++i) {
-            pos[s[i] - 'a'] = i;
-        }
+    int minMovesToSeat(vector<int>& seats, vector<int>& students) {
+        sort(seats.begin(), seats.end());
+        sort(students.begin(), students.end());
 
         int ans = 0;
 
-        for (int i = 0; i < t.size(); ++i) {
-            ans += abs(i - pos[t[i] - 'a']);
+        for (int i = 0; i < seats.size(); ++i) {
+            ans += abs(seats[i] - students[i]);
         }
 
         return ans;
