@@ -6,19 +6,23 @@ using namespace std;
 
 class Solution {
 public:
-    vector<int> leftRightDifference(vector<int>& nums) {
-        vector<int> rightSums(nums.size());
-        partial_sum(nums.rbegin(), nums.rend() - 1, rightSums.rbegin() + 1);
-        int leftSum = 0;
+    int countPairs(vector<int>& nums, int target) {
+        sort(nums.begin(), nums.end());
+        int ans = 0;
+        int start = 0;
+        int end = nums.size() - 1;
 
-        vector<int> result;
-
-        for (int i = 0; i < nums.size(); ++i) {
-            result.push_back(abs(leftSum - rightSums[i]));
-            leftSum += nums[i];
+        while (start < end) {
+            if (nums[start] + nums[end] < target) {
+                ans += end - start;
+                ++start;
+            }
+            else {
+                --end;
+            }
         }
 
-        return result;
+        return ans;
     }
 };
 
