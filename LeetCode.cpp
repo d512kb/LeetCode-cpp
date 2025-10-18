@@ -6,8 +6,8 @@ using namespace std;
 
 class Solution {
 public:
-    int numberOfEmployeesWhoMetTarget(vector<int>& hours, int target) {
-        return count_if(hours.begin(), hours.end(), [target](int val) { return val >= target; });
+    int minBitFlips(int start, int goal) {
+        return popcount(static_cast<size_t>(start ^ goal));
     }
 };
 
