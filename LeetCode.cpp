@@ -6,12 +6,15 @@ using namespace std;
 
 class Solution {
 public:
-    int xorOperation(int n, int start) {
-        int ans = 0;
-        for (int i = 0; i < n; ++i) {
-            ans ^= start + i * 2;
+    vector<int> decode(vector<int>& encoded, int first) {
+        vector<int> result;
+        result.push_back(first);
+
+        for (int i = 0; i < encoded.size(); ++i) {
+            result.push_back(result.back() ^ encoded[i]);
         }
-        return ans;
+
+        return result;
     }
 };
 
