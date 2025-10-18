@@ -6,11 +6,11 @@ using namespace std;
 
 class Solution {
 public:
-    int minimumOperations(vector<int>& nums) {
+    int titleToNumber(string columnTitle) {
         int ans = 0;
 
-        for (int n : nums) {
-            ans += min(n % 3, 3 - n % 3);
+        for (char c : columnTitle) {
+            ans = ans * 26 + (c - 'A' + 1);
         }
 
         return ans;
