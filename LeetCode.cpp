@@ -6,8 +6,9 @@ using namespace std;
 
 class Solution {
 public:
-    int minOperations(vector<int>& nums, int k) {
-        return accumulate(nums.begin(), nums.end(), 0) % k;
+    int smallestEvenMultiple(int n) {
+        if (n % 2)  return 2 * n;
+        return n;
     }
 };
 
