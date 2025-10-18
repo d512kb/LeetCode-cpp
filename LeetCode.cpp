@@ -6,14 +6,15 @@ using namespace std;
 
 class Solution {
 public:
-    int titleToNumber(string columnTitle) {
-        int ans = 0;
+    vector<int> shuffle(vector<int>& nums, int n) {
+        vector<int> result(nums.size());
 
-        for (char c : columnTitle) {
-            ans = ans * 26 + (c - 'A' + 1);
+        for (int i = 0, k = 0; i < n; ++i, k = i * 2) {
+            result[k] = nums[i];
+            result[k + 1] = nums[i + n];
         }
 
-        return ans;
+        return result;
     }
 };
 
