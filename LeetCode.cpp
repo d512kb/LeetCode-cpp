@@ -6,20 +6,17 @@ using namespace std;
 
 class Solution {
 public:
-    int countPairs(vector<int>& nums, int target) {
-        sort(nums.begin(), nums.end());
-        int ans = 0;
-        int start = 0;
-        int end = nums.size() - 1;
+    int findPermutationDifference(string s, string t) {
+        array<char, 26> pos{};
 
-        while (start < end) {
-            if (nums[start] + nums[end] < target) {
-                ans += end - start;
-                ++start;
-            }
-            else {
-                --end;
-            }
+        for (int i = 0; i < s.size(); ++i) {
+            pos[s[i] - 'a'] = i;
+        }
+
+        int ans = 0;
+
+        for (int i = 0; i < t.size(); ++i) {
+            ans += abs(i - pos[t[i] - 'a']);
         }
 
         return ans;
