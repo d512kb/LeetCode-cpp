@@ -6,14 +6,29 @@ using namespace std;
 
 class Solution {
 public:
-    int reverseDegree(string s) {
-        int ans = 0;
+    string interpret(string command) {
+        int index = 0;
+        const int sz = command.size();
+        string result;
 
-        for (int i = 0; i < s.size(); ++i) {
-            ans += ('z' - s[i] + 1) * (i + 1);
+        while (index < sz) {
+            if (command[index] == 'G') {
+                result.push_back('G');
+                ++index;
+            }
+            else {
+                if (command[index + 1] == ')') {
+                    result.push_back('o');
+                    index += 2;
+                }
+                else {
+                    result += "al";
+                    index += 4;
+                }
+            }
         }
 
-        return ans;
+        return result;
     }
 };
 
