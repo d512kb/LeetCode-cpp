@@ -6,15 +6,16 @@ using namespace std;
 
 class Solution {
 public:
-    vector<int> shuffle(vector<int>& nums, int n) {
-        vector<int> result(nums.size());
+    int alternatingSum(vector<int>& nums) {
+        int ans = 0;
+        int sign = 1;
 
-        for (int i = 0, k = 0; i < n; ++i, k = i * 2) {
-            result[k] = nums[i];
-            result[k + 1] = nums[i + n];
+        for (int n : nums) {
+            ans += sign * n;
+            sign = -sign;
         }
 
-        return result;
+        return ans;
     }
 };
 
