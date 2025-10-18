@@ -6,15 +6,12 @@ using namespace std;
 
 class Solution {
 public:
-    vector<int> smallerNumbersThanCurrent(vector<int>& nums) {
-        vector<int> result(nums);
-        sort(nums.begin(), nums.end());
-
-        for (int i = 0; i < nums.size(); ++i) {
-            result[i] = distance(nums.begin(), lower_bound(nums.begin(), nums.end(), result[i]));
+    int xorOperation(int n, int start) {
+        int ans = 0;
+        for (int i = 0; i < n; ++i) {
+            ans ^= start + i * 2;
         }
-
-        return result;
+        return ans;
     }
 };
 
