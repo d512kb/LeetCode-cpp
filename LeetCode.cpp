@@ -6,17 +6,15 @@ using namespace std;
 
 class Solution {
 public:
-    int minMovesToSeat(vector<int>& seats, vector<int>& students) {
-        sort(seats.begin(), seats.end());
-        sort(students.begin(), students.end());
+    vector<int> smallerNumbersThanCurrent(vector<int>& nums) {
+        vector<int> result(nums);
+        sort(nums.begin(), nums.end());
 
-        int ans = 0;
-
-        for (int i = 0; i < seats.size(); ++i) {
-            ans += abs(seats[i] - students[i]);
+        for (int i = 0; i < nums.size(); ++i) {
+            result[i] = distance(nums.begin(), lower_bound(nums.begin(), nums.end(), result[i]));
         }
 
-        return ans;
+        return result;
     }
 };
 
