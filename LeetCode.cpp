@@ -6,19 +6,21 @@ using namespace std;
 
 class Solution {
 public:
-    int maxWidthOfVerticalArea(vector<vector<int>>& points) {
-        vector<int> xPoints;
-        xPoints.reserve(points.size());
-
-        for (const auto& p : points) {
-            xPoints.push_back(p[0]);
-        }
-
-        sort(xPoints.begin(), xPoints.end());
+    int balancedStringSplit(string s) {
+        int b = 0;
         int ans = 0;
 
-        for (int i = 1; i < xPoints.size(); ++i) {
-            ans = max(ans, xPoints[i] - xPoints[i - 1]);
+        for (char c : s) {
+            if (c == 'R') {
+                ++b;
+            }
+            else {
+                --b;
+            }
+
+            if (b == 0) {
+                ++ans;
+            }
         }
 
         return ans;
