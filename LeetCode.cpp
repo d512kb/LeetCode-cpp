@@ -6,24 +6,28 @@ using namespace std;
 
 class Solution {
 public:
-    int balancedStringSplit(string s) {
-        int b = 0;
-        int ans = 0;
+    vector<int> getFinalState(vector<int>& nums, int k, int multiplier) {
+        priority_queue<pair<int, int>, vector<pair<int, int>>, greater<>> pq;
 
-        for (char c : s) {
-            if (c == 'R') {
-                ++b;
-            }
-            else {
-                --b;
-            }
-
-            if (b == 0) {
-                ++ans;
-            }
+        for (int i = 0; i < nums.size(); ++i) {
+            pq.emplace(nums[i], i);
         }
 
-        return ans;
+        for (int i = 0; i < k; ++i) {
+            auto [val, index] = pq.top();
+            pq.pop();
+            pq.emplace(val * multiplier, index);
+        }
+
+        vector<int> result(nums.size());
+
+        while (!pq.empty()) {
+            auto [val, index] = pq.top();
+            result[index] = val;
+            pq.pop();
+        }
+
+        return result;
     }
 };
 
