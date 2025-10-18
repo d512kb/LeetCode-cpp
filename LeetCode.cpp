@@ -6,14 +6,8 @@ using namespace std;
 
 class Solution {
 public:
-    int maximumWealth(vector<vector<int>>& accounts) {
-        int ans = 0;
-
-        for (const auto& account : accounts) {
-            ans = max(ans, accumulate(account.begin(), account.end(), 0));
-        }
-
-        return ans;
+    int minOperations(vector<int>& nums, int k) {
+        return accumulate(nums.begin(), nums.end(), 0) % k;
     }
 };
 
