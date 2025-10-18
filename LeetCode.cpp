@@ -6,25 +6,23 @@ using namespace std;
 
 class Solution {
 public:
-    string interpret(string command) {
-        int index = 0;
-        const int sz = command.size();
-        string result;
+    vector<vector<int>> largestLocal(vector<vector<int>>& grid) {
+        const int n = grid.size();
+        vector<vector<int>> result;
 
-        while (index < sz) {
-            if (command[index] == 'G') {
-                result.push_back('G');
-                ++index;
-            }
-            else {
-                if (command[index + 1] == ')') {
-                    result.push_back('o');
-                    index += 2;
+        for (int row = 1; row < n - 1; ++row) {
+            result.emplace_back();
+
+            for (int col = 1; col < n - 1; ++col) {
+                int maxVal = 0;
+
+                for (int i = -1; i <= 1; ++i) {
+                    for (int j = -1; j <= 1; ++j) {
+                        maxVal = max(maxVal, grid[row + i][col + j]);
+                    }
                 }
-                else {
-                    result += "al";
-                    index += 4;
-                }
+
+                result.back().push_back(maxVal);
             }
         }
 
