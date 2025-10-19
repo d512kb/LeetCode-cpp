@@ -6,16 +6,12 @@ using namespace std;
 
 class Solution {
 public:
-    int findCenter(vector<vector<int>>& edges) {
-        auto edge1 = edges[0];
-        auto edge2 = edges[1];
-        vector<int> result;
+    int mostWordsFound(vector<string>& sentences) {
+        auto longestSent = max_element(sentences.begin(), sentences.end(), [](const auto& sent1, const auto& sent2) {
+            return count(sent1.begin(), sent1.end(), ' ') < count(sent2.begin(), sent2.end(), ' ');
+            });
 
-        sort(edge1.begin(), edge1.end());
-        sort(edge2.begin(), edge2.end());
-        set_intersection(edge1.begin(), edge1.end(), edge2.begin(), edge2.end(), back_inserter(result));
-
-        return result.front();
+        return count(longestSent->begin(), longestSent->end(), ' ') + 1;
     }
 };
 
