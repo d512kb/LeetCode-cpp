@@ -6,12 +6,18 @@ using namespace std;
 
 class Solution {
 public:
-    int mostWordsFound(vector<string>& sentences) {
-        auto longestSent = max_element(sentences.begin(), sentences.end(), [](const auto& sent1, const auto& sent2) {
-            return count(sent1.begin(), sent1.end(), ' ') < count(sent2.begin(), sent2.end(), ' ');
-            });
+    int subtractProductAndSum(int n) {
+        int product = 1;
+        int sum = 0;
 
-        return count(longestSent->begin(), longestSent->end(), ' ') + 1;
+        while (n > 0) {
+            int digit = n % 10;
+            product *= digit;
+            sum += digit;
+            n /= 10;
+        }
+
+        return product - sum;
     }
 };
 
