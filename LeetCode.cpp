@@ -6,28 +6,16 @@ using namespace std;
 
 class Solution {
 public:
-    vector<int> getFinalState(vector<int>& nums, int k, int multiplier) {
-        priority_queue<pair<int, int>, vector<pair<int, int>>, greater<>> pq;
+    int findCenter(vector<vector<int>>& edges) {
+        auto edge1 = edges[0];
+        auto edge2 = edges[1];
+        vector<int> result;
 
-        for (int i = 0; i < nums.size(); ++i) {
-            pq.emplace(nums[i], i);
-        }
+        sort(edge1.begin(), edge1.end());
+        sort(edge2.begin(), edge2.end());
+        set_intersection(edge1.begin(), edge1.end(), edge2.begin(), edge2.end(), back_inserter(result));
 
-        for (int i = 0; i < k; ++i) {
-            auto [val, index] = pq.top();
-            pq.pop();
-            pq.emplace(val * multiplier, index);
-        }
-
-        vector<int> result(nums.size());
-
-        while (!pq.empty()) {
-            auto [val, index] = pq.top();
-            result[index] = val;
-            pq.pop();
-        }
-
-        return result;
+        return result.front();
     }
 };
 
