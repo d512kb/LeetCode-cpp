@@ -6,33 +6,23 @@ using namespace std;
 
 class Solution {
 public:
-    vector<int> minOperations(string boxes) {
-        const auto sz = boxes.size();
-        int rightBalls = 0;
-        int rightMoves = 0;
+    vector<int> pivotArray(vector<int>& nums, int pivot) {
+        vector<int> lessNums, greaterNums;
 
-        for (int i = sz - 1; i >= 0; --i) {
-            rightMoves += rightBalls;
-            if (boxes[i] == '1') { ++rightBalls; }
-        }
-
-        int leftMoves = 0;
-        int leftBalls = 0;
-        vector<int> result(sz);
-
-        for (int i = 0; i < sz; ++i) {
-            leftMoves += leftBalls;
-            result[i] = leftMoves + rightMoves;
-
-            if (boxes[i] == '1') {
-                ++leftBalls;
-                --rightBalls;
+        for (int n : nums) {
+            if (n < pivot) {
+                lessNums.push_back(n);
             }
-
-            rightMoves -= rightBalls;
+            else if (n > pivot) {
+                greaterNums.push_back(n);
+            }
         }
 
-        return result;
+        auto ans(std::move(lessNums));
+        fill_n(back_inserter(ans), nums.size() - ans.size() - greaterNums.size(), pivot);
+        ans.insert(ans.end(), greaterNums.begin(), greaterNums.end());
+
+        return ans;
     }
 };
 
