@@ -6,16 +6,28 @@ using namespace std;
 
 class Solution {
 public:
-    vector<int> numberGame(vector<int>& nums) {
-        sort(nums.begin(), nums.end());
-        vector<int> result;
+    int countKDifference(vector<int>& nums, int k) {
+        unordered_map<int, size_t> mp;
 
-        for (int i = 0; i < nums.size(); i += 2) {
-            result.push_back(nums[i + 1]);
-            result.push_back(nums[i]);
+        for (int n : nums) {
+            ++mp[n];
         }
 
-        return result;
+        int ans = 0;
+
+        for (auto [num, count] : mp) {
+            auto iterA = mp.find(num - k);
+            auto iterB = mp.find(num + k);
+
+            if (iterA != mp.end()) {
+                ans += count * iterA->second;
+            }
+            if (iterB != mp.end()) {
+                ans += count * iterB->second;
+            }
+        }
+
+        return ans / 2;
     }
 };
 
