@@ -6,20 +6,16 @@ using namespace std;
 
 class Solution {
 public:
-    int differenceOfSum(vector<int>& nums) {
-        int totalSum = 0;
-        int digitSum = 0;
+    vector<int> numberGame(vector<int>& nums) {
+        sort(nums.begin(), nums.end());
+        vector<int> result;
 
-        for (int n : nums) {
-            totalSum += n;
-
-            while (n) {
-                digitSum += n % 10;
-                n /= 10;
-            }
+        for (int i = 0; i < nums.size(); i += 2) {
+            result.push_back(nums[i + 1]);
+            result.push_back(nums[i]);
         }
 
-        return abs(totalSum - digitSum);
+        return result;
     }
 };
 
