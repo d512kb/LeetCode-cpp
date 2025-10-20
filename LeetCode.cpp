@@ -6,21 +6,11 @@ using namespace std;
 
 class Solution {
 public:
-    int numberOfPairs(vector<int>& nums1, vector<int>& nums2, int k) {
-        sort(nums2.begin(), nums2.end());
-        int ans = 0;
+    bool arrayStringsAreEqual(vector<string>& word1, vector<string>& word2) {
+        string str1 = accumulate(word1.begin(), word1.end(), string());
+        string str2 = accumulate(word2.begin(), word2.end(), string());
 
-        for (int i = 0; i < nums1.size(); ++i) {
-            for (int j = 0; j < nums2.size(); ++j) {
-                if (nums2[j] * k > nums1[i]) { break; }
-
-                if (nums1[i] % (nums2[j] * k) == 0) {
-                    ++ans;
-                }
-            }
-        }
-
-        return ans;
+        return str1 == str2;
     }
 };
 
