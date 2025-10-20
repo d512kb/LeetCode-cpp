@@ -6,25 +6,11 @@ using namespace std;
 
 class Solution {
 public:
-    string removeOuterParentheses(string s) {
-        int op = 0;
-        string tempStr;
-        string result;
+    vector<int> createTargetArray(vector<int>& nums, vector<int>& index) {
+        vector<int> result;
 
-        for (char c : s) {
-            if (c == '(') {
-                ++op;
-                tempStr.push_back('(');
-            }
-            else {
-                if (--op == 0) {
-                    result.append(tempStr.substr(1));
-                    tempStr.clear();
-                }
-                else {
-                    tempStr.push_back(')');
-                }
-            }
+        for (int i = 0; i < nums.size(); ++i) {
+            result.insert(result.begin() + index[i], nums[i]);
         }
 
         return result;
