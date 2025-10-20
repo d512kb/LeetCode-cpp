@@ -6,18 +6,16 @@ using namespace std;
 
 class Solution {
 public:
-    int subtractProductAndSum(int n) {
-        int product = 1;
-        int sum = 0;
+    vector<int> stableMountains(vector<int>& height, int threshold) {
+        vector<int> result;
 
-        while (n > 0) {
-            int digit = n % 10;
-            product *= digit;
-            sum += digit;
-            n /= 10;
+        for (int i = 1; i < height.size(); ++i) {
+            if (height[i - 1] > threshold) {
+                result.push_back(i);
+            }
         }
 
-        return product - sum;
+        return result;
     }
 };
 
