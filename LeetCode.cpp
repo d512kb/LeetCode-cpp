@@ -6,16 +6,31 @@ using namespace std;
 
 class Solution {
 public:
-    string reversePrefix(string word, char ch) {
-        auto iter = find(word.begin(), word.end(), ch);
+    string removeOuterParentheses(string s) {
+        int op = 0;
+        string tempStr;
+        string result;
 
-        if (iter != word.end()) {
-            reverse(word.begin(), iter + 1);
+        for (char c : s) {
+            if (c == '(') {
+                ++op;
+                tempStr.push_back('(');
+            }
+            else {
+                if (--op == 0) {
+                    result.append(tempStr.substr(1));
+                    tempStr.clear();
+                }
+                else {
+                    tempStr.push_back(')');
+                }
+            }
         }
 
-        return word;
+        return result;
     }
 };
+
 
 int main()
 {
