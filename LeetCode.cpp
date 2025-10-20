@@ -6,14 +6,25 @@ using namespace std;
 
 class Solution {
 public:
-    TreeNode* getTargetCopy(TreeNode* original, TreeNode* cloned, TreeNode* target) {
-        if (!original) { return nullptr; }
-        if (original == target) { return cloned; }
+    string decodeMessage(string key, string message) {
+        array<char, 26> table;
+        unordered_set<char> usedChars;
 
-        auto left = getTargetCopy(original->left, cloned->left, target);
-        if (left) { return left; }
+        for (char c : key) {
+            if (c == ' ') { continue; }
 
-        return getTargetCopy(original->right, cloned->right, target);
+            if (usedChars.insert(c).second) {
+                table[c - 'a'] = usedChars.size() - 1;
+            }
+        }
+
+        for (char& c : message) {
+            if (c == ' ') { continue; }
+
+            c = table[c - 'a'] + 'a';
+        }
+
+        return message;
     }
 };
 
