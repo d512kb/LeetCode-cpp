@@ -6,21 +6,17 @@ using namespace std;
 
 class Solution {
 public:
-    int numberOfMatches(int n) {
-        int ans = 0;
+    int minimumSum(int num) {
+        array<char, 4> digits;
 
-        while (n > 1) {
-            ans += n / 2;
-
-            if (n & 1) {
-                n = n / 2 + 1;
-            }
-            else {
-                n /= 2;
-            }
+        for (int i = 0; i < 4; ++i) {
+            digits[i] = num % 10;
+            num /= 10;
         }
 
-        return ans;
+        sort(digits.begin(), digits.end());
+
+        return digits[0] * 10 + digits[2] + digits[1] * 10 + digits[3];
     }
 };
 
