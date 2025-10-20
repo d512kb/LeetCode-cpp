@@ -6,15 +6,13 @@ using namespace std;
 
 class Solution {
 public:
-    int countDigits(int num) {
-        int x = num;
+    int sumIndicesWithKSetBits(vector<int>& nums, int k) {
         int ans = 0;
 
-        while (x) {
-            if (num % (x % 10) == 0) {
-                ++ans;
+        for (size_t i = 0; i < nums.size(); ++i) {
+            if (popcount(i) == k) {
+                ans += nums[i];
             }
-            x /= 10;
         }
 
         return ans;
