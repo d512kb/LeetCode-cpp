@@ -6,17 +6,16 @@ using namespace std;
 
 class Solution {
 public:
-    int minimumSum(int num) {
-        array<char, 4> digits;
+    vector<int> decompressRLElist(vector<int>& nums) {
+        vector<int> result;
 
-        for (int i = 0; i < 4; ++i) {
-            digits[i] = num % 10;
-            num /= 10;
+        for (int i = 0; i < nums.size(); i += 2) {
+            for (int j = 0; j < nums[i]; ++j) {
+                result.push_back(nums[i + 1]);
+            }
         }
 
-        sort(digits.begin(), digits.end());
-
-        return digits[0] * 10 + digits[2] + digits[1] * 10 + digits[3];
+        return result;
     }
 };
 
