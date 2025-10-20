@@ -6,16 +6,21 @@ using namespace std;
 
 class Solution {
 public:
-    vector<int> decompressRLElist(vector<int>& nums) {
-        vector<int> result;
+    int numberOfPairs(vector<int>& nums1, vector<int>& nums2, int k) {
+        sort(nums2.begin(), nums2.end());
+        int ans = 0;
 
-        for (int i = 0; i < nums.size(); i += 2) {
-            for (int j = 0; j < nums[i]; ++j) {
-                result.push_back(nums[i + 1]);
+        for (int i = 0; i < nums1.size(); ++i) {
+            for (int j = 0; j < nums2.size(); ++j) {
+                if (nums2[j] * k > nums1[i]) { break; }
+
+                if (nums1[i] % (nums2[j] * k) == 0) {
+                    ++ans;
+                }
             }
         }
 
-        return result;
+        return ans;
     }
 };
 
