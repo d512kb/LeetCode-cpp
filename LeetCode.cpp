@@ -6,8 +6,21 @@ using namespace std;
 
 class Solution {
 public:
-    int minOperations(vector<int>& nums, int k) {
-        return count_if(nums.begin(), nums.end(), [k](int n) { return n < k; });
+    int numberOfMatches(int n) {
+        int ans = 0;
+
+        while (n > 1) {
+            ans += n / 2;
+
+            if (n & 1) {
+                n = n / 2 + 1;
+            }
+            else {
+                n /= 2;
+            }
+        }
+
+        return ans;
     }
 };
 
