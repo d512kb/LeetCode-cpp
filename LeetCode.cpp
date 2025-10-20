@@ -6,17 +6,16 @@ using namespace std;
 
 class Solution {
 public:
-    vector<int> createTargetArray(vector<int>& nums, vector<int>& index) {
-        vector<int> result;
-
-        for (int i = 0; i < nums.size(); ++i) {
-            result.insert(result.begin() + index[i], nums[i]);
+    string truncateSentence(string s, int k) {
+        for (int i = 0; i < s.size(); ++i) {
+            if (s[i] == ' ' && --k == 0) {
+                return s.substr(0, i);
+            }
         }
 
-        return result;
+        return s;
     }
 };
-
 
 int main()
 {
