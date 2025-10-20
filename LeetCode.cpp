@@ -6,16 +6,14 @@ using namespace std;
 
 class Solution {
 public:
-    int sumIndicesWithKSetBits(vector<int>& nums, int k) {
-        int ans = 0;
+    TreeNode* getTargetCopy(TreeNode* original, TreeNode* cloned, TreeNode* target) {
+        if (!original) { return nullptr; }
+        if (original == target) { return cloned; }
 
-        for (size_t i = 0; i < nums.size(); ++i) {
-            if (popcount(i) == k) {
-                ans += nums[i];
-            }
-        }
+        auto left = getTargetCopy(original->left, cloned->left, target);
+        if (left) { return left; }
 
-        return ans;
+        return getTargetCopy(original->right, cloned->right, target);
     }
 };
 
