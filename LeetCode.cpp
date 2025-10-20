@@ -6,14 +6,20 @@ using namespace std;
 
 class Solution {
 public:
-    string restoreString(string s, vector<int>& indices) {
-        string ans(s);
+    int differenceOfSum(vector<int>& nums) {
+        int totalSum = 0;
+        int digitSum = 0;
 
-        for (int i = 0; i < s.size(); ++i) {
-            ans[indices[i]] = s[i];
+        for (int n : nums) {
+            totalSum += n;
+
+            while (n) {
+                digitSum += n % 10;
+                n /= 10;
+            }
         }
 
-        return ans;
+        return abs(totalSum - digitSum);
     }
 };
 
