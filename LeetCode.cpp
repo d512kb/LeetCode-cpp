@@ -6,14 +6,11 @@ using namespace std;
 
 class Solution {
 public:
-    int subarraySum(vector<int>& nums) {
-        int ans = 0;
+    string restoreString(string s, vector<int>& indices) {
+        string ans(s);
 
-        vector<int> prefixSum(nums.size() + 1);
-        partial_sum(nums.begin(), nums.end(), prefixSum.begin() + 1);
-
-        for (int i = 0; i < nums.size(); ++i) {
-            ans += prefixSum[i + 1] - prefixSum[max(0, i - nums[i])];
+        for (int i = 0; i < s.size(); ++i) {
+            ans[indices[i]] = s[i];
         }
 
         return ans;
