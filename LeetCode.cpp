@@ -6,25 +6,33 @@ using namespace std;
 
 class Solution {
 public:
-    string decodeMessage(string key, string message) {
-        array<char, 26> table;
-        unordered_set<char> usedChars;
+    vector<int> minOperations(string boxes) {
+        const auto sz = boxes.size();
+        int rightBalls = 0;
+        int rightMoves = 0;
 
-        for (char c : key) {
-            if (c == ' ') { continue; }
+        for (int i = sz - 1; i >= 0; --i) {
+            rightMoves += rightBalls;
+            if (boxes[i] == '1') { ++rightBalls; }
+        }
 
-            if (usedChars.insert(c).second) {
-                table[c - 'a'] = usedChars.size() - 1;
+        int leftMoves = 0;
+        int leftBalls = 0;
+        vector<int> result(sz);
+
+        for (int i = 0; i < sz; ++i) {
+            leftMoves += leftBalls;
+            result[i] = leftMoves + rightMoves;
+
+            if (boxes[i] == '1') {
+                ++leftBalls;
+                --rightBalls;
             }
+
+            rightMoves -= rightBalls;
         }
 
-        for (char& c : message) {
-            if (c == ' ') { continue; }
-
-            c = table[c - 'a'] + 'a';
-        }
-
-        return message;
+        return result;
     }
 };
 
