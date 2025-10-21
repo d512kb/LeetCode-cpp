@@ -6,26 +6,19 @@ using namespace std;
 
 class Solution {
 public:
-    vector<int> findIntersectionValues(vector<int>& nums1, vector<int>& nums2) {
-        unordered_set<int> nums1Set(nums1.begin(), nums1.end());
-        unordered_set<int> nums2Set(nums2.begin(), nums2.end());
+    vector<string> cellsInRange(string s) {
+        vector<string> result;
 
-        int ans1 = 0;
-        int ans2 = 0;
-
-        for (int n : nums1) {
-            if (nums2Set.contains(n)) {
-                ++ans1;
+        for (char col = s[0]; col <= s[3]; ++col) {
+            for (char row = s[1]; row <= s[4]; ++row) {
+                string cell;
+                cell.push_back(col);
+                cell.push_back(row);
+                result.push_back(move(cell));
             }
         }
 
-        for (int n : nums2) {
-            if (nums1Set.contains(n)) {
-                ++ans2;
-            }
-        }
-
-        return { ans1, ans2 };
+        return result;
     }
 };
 
