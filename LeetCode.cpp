@@ -6,21 +6,21 @@ using namespace std;
 
 class Solution {
 public:
-    int diagonalSum(vector<vector<int>>& mat) {
-        const int sz = mat.size();
-        int ans = 0;
+    int pivotInteger(int n) {
+        int leftSum = 0;
+        int rightSum = n * (n + 1) / 2;
 
-        for (int row = 0, col = 0; row < sz; ++row, ++col) {
-            ans += mat[row][col];
+        for (int i = 1; i <= n; ++i) {
+            leftSum += i;
+
+            if (leftSum == rightSum) {
+                return i;
+            }
+
+            rightSum -= i;
         }
 
-        for (int row = 0, col = sz - 1; row < sz; ++row, --col) {
-            ans += mat[row][col];
-        }
-
-        if (mat.size() % 2) { ans -= mat[sz / 2][sz / 2]; }
-
-        return ans;
+        return -1;
     }
 };
 
