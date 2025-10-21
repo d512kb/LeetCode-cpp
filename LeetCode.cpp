@@ -6,23 +6,35 @@ using namespace std;
 
 class Solution {
 public:
-    string firstPalindrome(vector<string>& words) {
-        for (const string& word : words) {
-            bool palindromic = true;
+    string sortSentence(string s) {
+        vector<string> sortedWords(9);
 
-            for (int i = 0, j = word.size() - 1; i <= j; ++i, --j) {
-                if (word[i] != word[j]) {
-                    palindromic = false;
-                    break;
-                }
+        string tmp;
+        for (char c : s) {
+            if (c == ' ') {
+                int pos = tmp.back() - '0';
+                tmp.pop_back();
+                sortedWords[pos - 1] = std::move(tmp);
             }
-
-            if (palindromic) {
-                return word;
+            else {
+                tmp.push_back(c);
             }
         }
 
-        return "";
+        int pos = tmp.back() - '0';
+        tmp.pop_back();
+        sortedWords[pos - 1] = std::move(tmp);
+        string result;
+
+        for (const string& str : sortedWords) {
+            if (str.empty()) { break; }
+            result.append(str);
+            result.push_back(' ');
+        }
+
+        result.pop_back();
+
+        return result;
     }
 };
 
