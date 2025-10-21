@@ -6,21 +6,23 @@ using namespace std;
 
 class Solution {
 public:
-    int pivotInteger(int n) {
-        int leftSum = 0;
-        int rightSum = n * (n + 1) / 2;
+    string reverseWords(string s) {
+        int startPos = 0;
+        int spacePos = 0;
+        string result;
 
-        for (int i = 1; i <= n; ++i) {
-            leftSum += i;
-
-            if (leftSum == rightSum) {
-                return i;
-            }
-
-            rightSum -= i;
+        while ((spacePos = s.find(' ', startPos)) != string::npos) {
+            auto word = s.substr(startPos, spacePos - startPos);
+            reverse(word.begin(), word.end());
+            result += word + " ";
+            startPos = spacePos + 1;
         }
 
-        return -1;
+        string word = s.substr(startPos);
+        reverse(word.begin(), word.end());
+        result += word;
+
+        return result;
     }
 };
 
