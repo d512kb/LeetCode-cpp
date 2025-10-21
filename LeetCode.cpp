@@ -6,16 +6,17 @@ using namespace std;
 
 class Solution {
 public:
-    int prefixCount(vector<string>& words, string pref) {
-        int ans = 0;
+    int maximum69Number(int num) {
+        auto number = to_string(num);
 
-        for (const string& word : words) {
-            if (word.starts_with(pref)) {
-                ++ans;
+        for (char& c : number) {
+            if (c == '6') {
+                c = '9';
+                break;
             }
         }
 
-        return ans;
+        return stoi(number);
     }
 };
 
