@@ -6,18 +6,13 @@ using namespace std;
 
 class Solution {
 public:
-    int maxDepth(string s) {
+    int prefixCount(vector<string>& words, string pref) {
         int ans = 0;
-        int opened = 0;
 
-        for (char c : s) {
-            if (c == '(') {
-                ++opened;
+        for (const string& word : words) {
+            if (word.starts_with(pref)) {
+                ++ans;
             }
-            else if (c == ')') {
-                --opened;
-            }
-            ans = max(ans, opened);
         }
 
         return ans;
