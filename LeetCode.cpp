@@ -6,18 +6,23 @@ using namespace std;
 
 class Solution {
 public:
-    int countPairs(vector<int>& nums, int k) {
-        int ans = 0;
+    string firstPalindrome(vector<string>& words) {
+        for (const string& word : words) {
+            bool palindromic = true;
 
-        for (int i = 0; i < nums.size(); ++i) {
-            for (int j = i + 1; j < nums.size(); ++j) {
-                if (nums[i] == nums[j] && (i * j % k) == 0) {
-                    ++ans;
+            for (int i = 0, j = word.size() - 1; i <= j; ++i, --j) {
+                if (word[i] != word[j]) {
+                    palindromic = false;
+                    break;
                 }
+            }
+
+            if (palindromic) {
+                return word;
             }
         }
 
-        return ans;
+        return "";
     }
 };
 
