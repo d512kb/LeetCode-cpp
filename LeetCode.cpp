@@ -6,8 +6,20 @@ using namespace std;
 
 class Solution {
 public:
-    bool checkTree(TreeNode* root) {
-        return root->val == root->left->val + root->right->val;
+    vector<string> sortPeople(vector<string>& names, vector<int>& heights) {
+        vector<size_t> indexes(names.size());
+        iota(indexes.begin(), indexes.end(), 0);
+
+        sort(indexes.begin(), indexes.end(), [&heights](int i, int j) {
+            return heights[i] > heights[j];
+            });
+
+        vector<string> result(names.size());
+        for (int i = 0; i < names.size(); ++i) {
+            result[i] = names[indexes[i]];
+        }
+
+        return result;
     }
 };
 
