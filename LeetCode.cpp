@@ -6,23 +6,19 @@ using namespace std;
 
 class Solution {
 public:
-    string reverseWords(string s) {
-        int startPos = 0;
-        int spacePos = 0;
-        string result;
+    int sumOddLengthSubarrays(vector<int>& arr) {
+        vector<int> prefixSum(arr.size() + 1);
+        partial_sum(arr.begin(), arr.end(), prefixSum.begin() + 1);
 
-        while ((spacePos = s.find(' ', startPos)) != string::npos) {
-            auto word = s.substr(startPos, spacePos - startPos);
-            reverse(word.begin(), word.end());
-            result += word + " ";
-            startPos = spacePos + 1;
+        int ans = 0;
+
+        for (int len = 1; len <= arr.size(); len += 2) {
+            for (int i = 0, j = i + len; j <= arr.size(); ++i, ++j) {
+                ans += prefixSum[j] - prefixSum[i];
+            }
         }
 
-        string word = s.substr(startPos);
-        reverse(word.begin(), word.end());
-        result += word;
-
-        return result;
+        return ans;
     }
 };
 
