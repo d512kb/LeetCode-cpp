@@ -6,12 +6,21 @@ using namespace std;
 
 class Solution {
 public:
-    string toLowerCase(string s) {
-        for (char& c : s) {
-            c = tolower(c);
+    int minElement(vector<int>& nums) {
+        int ans = numeric_limits<int>::max();
+
+        for (int n : nums) {
+            int val = 0;
+
+            while (n) {
+                val += n % 10;
+                n /= 10;
+            }
+
+            ans = min(ans, val);
         }
 
-        return s;
+        return ans;
     }
 };
 
