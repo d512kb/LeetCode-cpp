@@ -6,19 +6,14 @@ using namespace std;
 
 class Solution {
 public:
-    vector<string> cellsInRange(string s) {
-        vector<string> result;
+    bool checkIfPangram(string sentence) {
+        array<char, 26> chars{};
 
-        for (char col = s[0]; col <= s[3]; ++col) {
-            for (char row = s[1]; row <= s[4]; ++row) {
-                string cell;
-                cell.push_back(col);
-                cell.push_back(row);
-                result.push_back(move(cell));
-            }
+        for (char c : sentence) {
+            chars[c - 'a'] = 1;
         }
 
-        return result;
+        return all_of(chars.begin(), chars.end(), [](char c) { return c == 1; });
     }
 };
 
