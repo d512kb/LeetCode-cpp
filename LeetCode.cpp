@@ -6,35 +6,21 @@ using namespace std;
 
 class Solution {
 public:
-    string sortSentence(string s) {
-        vector<string> sortedWords(9);
+    int diagonalSum(vector<vector<int>>& mat) {
+        const int sz = mat.size();
+        int ans = 0;
 
-        string tmp;
-        for (char c : s) {
-            if (c == ' ') {
-                int pos = tmp.back() - '0';
-                tmp.pop_back();
-                sortedWords[pos - 1] = std::move(tmp);
-            }
-            else {
-                tmp.push_back(c);
-            }
+        for (int row = 0, col = 0; row < sz; ++row, ++col) {
+            ans += mat[row][col];
         }
 
-        int pos = tmp.back() - '0';
-        tmp.pop_back();
-        sortedWords[pos - 1] = std::move(tmp);
-        string result;
-
-        for (const string& str : sortedWords) {
-            if (str.empty()) { break; }
-            result.append(str);
-            result.push_back(' ');
+        for (int row = 0, col = sz - 1; row < sz; ++row, --col) {
+            ans += mat[row][col];
         }
 
-        result.pop_back();
+        if (mat.size() % 2) { ans -= mat[sz / 2][sz / 2]; }
 
-        return result;
+        return ans;
     }
 };
 
