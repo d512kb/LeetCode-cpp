@@ -6,10 +6,21 @@ using namespace std;
 
 class Solution {
 public:
-    int maxProduct(vector<int>& nums) {
-        partial_sort(nums.begin(), nums.begin() + 2, nums.end(), greater<>{});
+    int uniqueMorseRepresentations(vector<string>& words) {
+        unordered_set<string> transformations;
+        array<string, 26> codes{ ".-","-...","-.-.","-..",".","..-.","--.","....","..",".---","-.-",".-..","--","-.","---",".--.","--.-",".-.","...","-","..-","...-",".--","-..-","-.--","--.." };
 
-        return (nums[0] - 1) * (nums[1] - 1);
+        for (const auto& word : words) {
+            string codedWord;
+
+            for (char c : word) {
+                codedWord += codes[c - 'a'];
+            }
+
+            transformations.insert(codedWord);
+        }
+
+        return transformations.size();
     }
 };
 
