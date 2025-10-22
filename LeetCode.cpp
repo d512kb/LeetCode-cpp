@@ -6,19 +6,10 @@ using namespace std;
 
 class Solution {
 public:
-    int sumOddLengthSubarrays(vector<int>& arr) {
-        vector<int> prefixSum(arr.size() + 1);
-        partial_sum(arr.begin(), arr.end(), prefixSum.begin() + 1);
+    int maxProduct(vector<int>& nums) {
+        partial_sort(nums.begin(), nums.begin() + 2, nums.end(), greater<>{});
 
-        int ans = 0;
-
-        for (int len = 1; len <= arr.size(); len += 2) {
-            for (int i = 0, j = i + len; j <= arr.size(); ++i, ++j) {
-                ans += prefixSum[j] - prefixSum[i];
-            }
-        }
-
-        return ans;
+        return (nums[0] - 1) * (nums[1] - 1);
     }
 };
 
