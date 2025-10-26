@@ -6,17 +6,21 @@ using namespace std;
 
 class Solution {
 public:
-    int minTimeToVisitAllPoints(vector<vector<int>>& points) {
-        int ans = 0;
+    string clearDigits(string s) {
+        string result;
 
-        for (int i = 1; i < points.size(); ++i) {
-            int xDiff = abs(points[i][0] - points[i - 1][0]);
-            int yDiff = abs(points[i][1] - points[i - 1][1]);
-
-            ans += max(xDiff, yDiff);
+        for (char c : s) {
+            if (isdigit(c)) {
+                if (!result.empty() && !isdigit(result.back())) {
+                    result.pop_back();
+                }
+            }
+            else {
+                result.push_back(c);
+            }
         }
 
-        return ans;
+        return result;
     }
 };
 
