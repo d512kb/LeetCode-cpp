@@ -6,28 +6,21 @@ using namespace std;
 
 class Solution {
 public:
-    vector<int> findMissingAndRepeatedValues(vector<vector<int>>& grid) {
-        unordered_map<int, char> intCounts;
-        int intSum = 0;
+    vector<vector<int>> flipAndInvertImage(vector<vector<int>>& image) {
+        for (auto& row : image) {
+            for (int i = 0, j = row.size() - 1; i < j; ++i, --j) {
+                swap(row[i], row[j]);
+                row[i] = ++row[i] % 2;
+                row[j] = ++row[j] % 2;
+            }
 
-        for (int row = 0; row < grid.size(); ++row) {
-            for (int col = 0; col < grid.size(); ++col) {
-                ++intCounts[grid[row][col]];
-                intSum += grid[row][col];
+            if (row.size() % 2) {
+                int mid = row.size() / 2;
+                row[mid] = ++row[mid] % 2;
             }
         }
 
-        vector<int> result{ 0, 0 };
-
-        for (const auto& [val, count] : intCounts) {
-            if (count == 2) { result[0] = val; break; }
-        }
-
-        int n = grid.size() * grid.size();
-
-        result[1] = (n * (n + 1) / 2) - (intSum - result[0]);
-
-        return result;
+        return image;
     }
 };
 
