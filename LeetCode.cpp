@@ -6,21 +6,8 @@ using namespace std;
 
 class Solution {
 public:
-    string clearDigits(string s) {
-        string result;
-
-        for (char c : s) {
-            if (isdigit(c)) {
-                if (!result.empty() && !isdigit(result.back())) {
-                    result.pop_back();
-                }
-            }
-            else {
-                result.push_back(c);
-            }
-        }
-
-        return result;
+    int addedInteger(vector<int>& nums1, vector<int>& nums2) {
+        return *min_element(nums2.begin(), nums2.end()) - *min_element(nums1.begin(), nums1.end());;
     }
 };
 
