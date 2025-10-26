@@ -6,20 +6,56 @@ using namespace std;
 
 class Solution {
 public:
-    int sumOfTheDigitsOfHarshadNumber(int x) {
-        int digitsSum = 0;
-        int n = x;
+    int countSymmetricIntegers(int low, int high) {
+        int ans = 0;
 
-        while (n) {
-            digitsSum += n % 10;
+        for (low; low <= high; ++low) {
+            int digits = countDigits(low);
+            if (digits % 2) {
+                int newStep = 0;
+
+                while (digits) {
+                    newStep = newStep * 10 + 9;
+                    --digits;
+                }
+                low = newStep;
+
+                continue;
+            }
+
+            int n = low;
+            int leftSum = 0;
+            int rightSum = 0;
+
+            digits /= 2;
+
+            for (int i = 0; i < digits; ++i) {
+                rightSum += n % 10;
+                n /= 10;
+            }
+
+            for (int i = 0; i < digits; ++i) {
+                leftSum += n % 10;
+                n /= 10;
+            }
+
+            if (leftSum == rightSum) {
+                ++ans;
+            }
+        }
+
+        return ans;
+    }
+private:
+    char countDigits(int n) {
+        int ans = 0;
+
+        while (n > 0) {
+            ++ans;
             n /= 10;
         }
 
-        if (x % digitsSum == 0) {
-            return digitsSum;
-        }
-
-        return -1;
+        return ans;
     }
 };
 
