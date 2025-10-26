@@ -6,21 +6,21 @@ using namespace std;
 
 class Solution {
 public:
-    int countAsterisks(string s) {
-        int ans = 0;
-        bool inPair = false;
+    int maxProductDifference(vector<int>& nums) {
+        const int sz = nums.size();
 
-        for (char c : s) {
-            if (c == '|') {
-                inPair = !inPair;
-            }
+        array<int, 4> items{};
 
-            if (c == '*' && !inPair) {
-                ++ans;
-            }
-        }
+        nth_element(nums.begin(), nums.begin(), nums.end());
+        items[0] = nums[0];
+        nth_element(nums.begin(), nums.begin() + 1, nums.end());
+        items[1] = nums[1];
+        nth_element(nums.begin(), nums.end() - 1, nums.end());
+        items[2] = nums[sz - 1];
+        nth_element(nums.begin(), nums.end() - 2, nums.end());
+        items[3] = nums[sz - 2];
 
-        return ans;
+        return ((items[2] * items[3]) - (items[0] * items[1]));
     }
 };
 
