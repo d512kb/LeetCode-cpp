@@ -6,16 +6,17 @@ using namespace std;
 
 class Solution {
 public:
-    vector<int> minCosts(vector<int>& cost) {
-        vector<int> result;
-        int minCost = cost[0];
+    int minTimeToVisitAllPoints(vector<vector<int>>& points) {
+        int ans = 0;
 
-        for (int c : cost) {
-            minCost = min(minCost, c);
-            result.push_back(minCost);
+        for (int i = 1; i < points.size(); ++i) {
+            int xDiff = abs(points[i][0] - points[i - 1][0]);
+            int yDiff = abs(points[i][1] - points[i - 1][1]);
+
+            ans += max(xDiff, yDiff);
         }
 
-        return result;
+        return ans;
     }
 };
 
