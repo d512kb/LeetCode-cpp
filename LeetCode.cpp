@@ -6,21 +6,20 @@ using namespace std;
 
 class Solution {
 public:
-    vector<vector<int>> flipAndInvertImage(vector<vector<int>>& image) {
-        for (auto& row : image) {
-            for (int i = 0, j = row.size() - 1; i < j; ++i, --j) {
-                swap(row[i], row[j]);
-                row[i] = ++row[i] % 2;
-                row[j] = ++row[j] % 2;
-            }
+    int sumOfTheDigitsOfHarshadNumber(int x) {
+        int digitsSum = 0;
+        int n = x;
 
-            if (row.size() % 2) {
-                int mid = row.size() / 2;
-                row[mid] = ++row[mid] % 2;
-            }
+        while (n) {
+            digitsSum += n % 10;
+            n /= 10;
         }
 
-        return image;
+        if (x % digitsSum == 0) {
+            return digitsSum;
+        }
+
+        return -1;
     }
 };
 
