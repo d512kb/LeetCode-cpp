@@ -6,13 +6,14 @@ using namespace std;
 
 class Solution {
 public:
-    string maximumOddBinaryNumber(string s) {
-        sort(s.rbegin(), s.rend());
+    bool isAcronym(vector<string>& words, string s) {
+        if (words.size() != s.size()) { return false; }
 
-        auto it = find(s.rbegin(), s.rend(), '1');
-        iter_swap(s.rbegin(), it);
+        for (int i = 0; i < s.size(); ++i) {
+            if (s[i] != words[i][0]) { return false; }
+        }
 
-        return s;
+        return true;
     }
 };
 
