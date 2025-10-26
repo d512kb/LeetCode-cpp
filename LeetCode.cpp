@@ -6,8 +6,13 @@ using namespace std;
 
 class Solution {
 public:
-    int addedInteger(vector<int>& nums1, vector<int>& nums2) {
-        return *min_element(nums2.begin(), nums2.end()) - *min_element(nums1.begin(), nums1.end());;
+    bool evaluateTree(TreeNode* root) {
+        if (root->val == 0) { return false; }
+        if (root->val == 1) { return true; }
+        if (root->val == 2) { return evaluateTree(root->left) || evaluateTree(root->right); };
+        if (root->val == 3) { return evaluateTree(root->left) && evaluateTree(root->right); };
+
+        return false;
     }
 };
 
