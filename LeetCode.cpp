@@ -6,25 +6,13 @@ using namespace std;
 
 class Solution {
 public:
-    int canBeTypedWords(string text, string brokenLetters) {
-        int ans = 0;
-        size_t start = 0;
-        size_t end = 0;
+    string maximumOddBinaryNumber(string s) {
+        sort(s.rbegin(), s.rend());
 
-        while ((end = text.find(' ', start)) != string::npos) {
-            auto s = text.substr(start, end - start);
-            if (find_first_of(s.begin(), s.end(), brokenLetters.begin(), brokenLetters.end()) == s.end()) {
-                ++ans;
-            }
-            start = end + 1;
-        }
+        auto it = find(s.rbegin(), s.rend(), '1');
+        iter_swap(s.rbegin(), it);
 
-        auto s = text.substr(start);
-        if (find_first_of(s.begin(), s.end(), brokenLetters.begin(), brokenLetters.end()) == s.end()) {
-            ++ans;
-        }
-
-        return ans;
+        return s;
     }
 };
 
