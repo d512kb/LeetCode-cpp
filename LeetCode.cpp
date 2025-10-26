@@ -6,21 +6,28 @@ using namespace std;
 
 class Solution {
 public:
-    int uniqueMorseRepresentations(vector<string>& words) {
-        unordered_set<string> transformations;
-        array<string, 26> codes{ ".-","-...","-.-.","-..",".","..-.","--.","....","..",".---","-.-",".-..","--","-.","---",".--.","--.-",".-.","...","-","..-","...-",".--","-..-","-.--","--.." };
+    vector<int> findMissingAndRepeatedValues(vector<vector<int>>& grid) {
+        unordered_map<int, char> intCounts;
+        int intSum = 0;
 
-        for (const auto& word : words) {
-            string codedWord;
-
-            for (char c : word) {
-                codedWord += codes[c - 'a'];
+        for (int row = 0; row < grid.size(); ++row) {
+            for (int col = 0; col < grid.size(); ++col) {
+                ++intCounts[grid[row][col]];
+                intSum += grid[row][col];
             }
-
-            transformations.insert(codedWord);
         }
 
-        return transformations.size();
+        vector<int> result{ 0, 0 };
+
+        for (const auto& [val, count] : intCounts) {
+            if (count == 2) { result[0] = val; break; }
+        }
+
+        int n = grid.size() * grid.size();
+
+        result[1] = (n * (n + 1) / 2) - (intSum - result[0]);
+
+        return result;
     }
 };
 
