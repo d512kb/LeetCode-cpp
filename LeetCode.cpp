@@ -6,12 +6,10 @@ using namespace std;
 
 class Solution {
 public:
-    string replaceDigits(string s) {
-        for (int i = 1; i < s.size(); i += 2) {
-            s[i] = s[i - 1] + s[i] - '0';
-        }
+    int earliestTime(vector<vector<int>>& tasks) {
+        auto it = min_element(tasks.begin(), tasks.end(), [](const auto& t1, const auto& t2) { return (t1[0] + t1[1]) < (t2[0] + t2[1]); });
 
-        return s;
+        return (*it)[0] + (*it)[1];
     }
 };
 
