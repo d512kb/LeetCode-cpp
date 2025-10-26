@@ -6,13 +6,12 @@ using namespace std;
 
 class Solution {
 public:
-    bool evaluateTree(TreeNode* root) {
-        if (root->val == 0) { return false; }
-        if (root->val == 1) { return true; }
-        if (root->val == 2) { return evaluateTree(root->left) || evaluateTree(root->right); };
-        if (root->val == 3) { return evaluateTree(root->left) && evaluateTree(root->right); };
+    string replaceDigits(string s) {
+        for (int i = 1; i < s.size(); i += 2) {
+            s[i] = s[i - 1] + s[i] - '0';
+        }
 
-        return false;
+        return s;
     }
 };
 
