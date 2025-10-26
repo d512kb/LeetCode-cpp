@@ -6,14 +6,16 @@ using namespace std;
 
 class Solution {
 public:
-    bool isAcronym(vector<string>& words, string s) {
-        if (words.size() != s.size()) { return false; }
+    vector<int> minCosts(vector<int>& cost) {
+        vector<int> result;
+        int minCost = cost[0];
 
-        for (int i = 0; i < s.size(); ++i) {
-            if (s[i] != words[i][0]) { return false; }
+        for (int c : cost) {
+            minCost = min(minCost, c);
+            result.push_back(minCost);
         }
 
-        return true;
+        return result;
     }
 };
 
