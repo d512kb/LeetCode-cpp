@@ -6,11 +6,17 @@ using namespace std;
 
 class Solution {
 public:
-    int gcdOfOddEvenSums(int n) {
-        int oddSum = (n * 2) * n / 2;
-        int evenSum = (2 + n * 2) * n / 2;
+    int minOperations(vector<int>& nums) {
+        int ans = 0;
 
-        return gcd(oddSum, evenSum);
+        for (int i = 1; i < nums.size(); ++i) {
+            if (nums[i - 1] >= nums[i]) {
+                ans += nums[i - 1] - nums[i] + 1;
+                nums[i] = nums[i - 1] + 1;
+            }
+        }
+
+        return ans;
     }
 };
 
