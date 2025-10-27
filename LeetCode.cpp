@@ -6,25 +6,10 @@ using namespace std;
 
 class Solution {
 public:
-    vector<int> selfDividingNumbers(int left, int right) {
-        vector<int> result;
+    int maximizeSum(vector<int>& nums, int k) {
+        int maxElem = *max_element(nums.begin(), nums.end());
 
-        for (; left <= right; ++left) {
-            int n = left;
-
-            while (n) {
-                int div = n % 10;
-
-                if (div == 0 || left % div) { break; }
-                n /= 10;
-            }
-
-            if (n == 0) {
-                result.push_back(left);
-            }
-        }
-
-        return result;
+        return (maxElem + maxElem + k - 1) * k / 2;
     }
 };
 
