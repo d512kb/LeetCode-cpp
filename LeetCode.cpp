@@ -6,16 +6,20 @@ using namespace std;
 
 class Solution {
 public:
-    int countSeniors(vector<string>& details) {
-        int ans = 0;
+    bool canAliceWin(vector<int>& nums) {
+        int singleSum = 0;
+        int doubleSum = 0;
 
-        for (const auto& d : details) {
-            if (stoi(d.substr(11, 2)) > 60) {
-                ++ans;
+        for (int n : nums) {
+            if (n < 10) {
+                singleSum += n;
+            }
+            else {
+                doubleSum += n;
             }
         }
 
-        return ans;
+        return singleSum != doubleSum;
     }
 };
 
