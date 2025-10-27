@@ -6,26 +6,24 @@ using namespace std;
 
 class Solution {
 public:
-    int finalPositionOfSnake(int n, vector<string>& commands) {
-        int row = 0;
-        int col = 0;
+    int maximumNumberOfStringPairs(vector<string>& words) {
+        unordered_set<string> wordsSet(words.begin(), words.end());
+        int ans = 0;
 
-        for (const auto& comm : commands) {
-            if (comm[0] == 'U') {
-                --row;
+        while (!wordsSet.empty()) {
+            string word = *wordsSet.begin();
+            reverse(word.begin(), word.end());
+
+            auto iter = wordsSet.find(word);
+            if (iter != wordsSet.begin() && iter != wordsSet.end()) {
+                wordsSet.erase(iter);
+                ++ans;
             }
-            else if (comm[0] == 'R') {
-                ++col;
-            }
-            else if (comm[0] == 'D') {
-                ++row;
-            }
-            else if (comm[0] == 'L') {
-                --col;
-            }
+
+            wordsSet.erase(wordsSet.begin());
         }
 
-        return row * n + col;
+        return ans;
     }
 };
 
