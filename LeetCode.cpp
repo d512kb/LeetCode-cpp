@@ -6,16 +6,23 @@ using namespace std;
 
 class Solution {
 public:
-    int arrayPairSum(vector<int>& nums) {
-        sort(nums.begin(), nums.end());
+    vector<int> diStringMatch(string s) {
+        vector<int> result(s.size() + 1);
 
-        int ans = 0;
+        int decr = count(s.begin(), s.end(), 'D');
+        int incr = decr;
+        result[0] = incr;
 
-        for (int i = 0; i < nums.size(); i += 2) {
-            ans += nums[i];
+        for (int i = 0; i < s.size(); ++i) {
+            if (s[i] == 'D') {
+                result[i + 1] = --decr;
+            }
+            else {
+                result[i + 1] = ++incr;
+            }
         }
 
-        return ans;
+        return result;
     }
 };
 
