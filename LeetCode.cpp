@@ -6,12 +6,13 @@ using namespace std;
 
 class Solution {
 public:
-    int getDecimalValue(ListNode* head) {
+    int numOfStrings(vector<string>& patterns, string word) {
         int ans = 0;
 
-        while (head) {
-            ans = ans * 2 + head->val;
-            head = head->next;
+        for (const auto& pattern : patterns) {
+            if (word.find(pattern) != string::npos) {
+                ++ans;
+            }
         }
 
         return ans;
