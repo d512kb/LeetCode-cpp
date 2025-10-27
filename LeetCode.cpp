@@ -6,20 +6,20 @@ using namespace std;
 
 class Solution {
 public:
-    int totalMoney(int n) {
-        const int firstWeek = 7 * 8 / 2;
-        const int weeks = n / 7;
-        const int lastWeek = firstWeek + 7 * (weeks - 1);
+    string kthDistinct(vector<string>& arr, int k) {
+        unordered_map<string, int> stringCount;
 
-        const int weeksMoney = (firstWeek + lastWeek) * weeks / 2;
+        for (const auto& str : arr) {
+            ++stringCount[str];
+        }
 
-        const int daysLeft = n % 7;
-        const int monday = weeks + 1;
-        const int lastDay = monday + daysLeft - 1;
+        for (const auto& str : arr) {
+            if (stringCount[str] == 1) {
+                if (--k == 0) { return str; }
+            }
+        }
 
-        const int daysMoney = (monday + lastDay) * daysLeft / 2;
-
-        return weeksMoney + daysMoney;
+        return "";
     }
 };
 
