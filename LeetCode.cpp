@@ -6,20 +6,16 @@ using namespace std;
 
 class Solution {
 public:
-    bool canAliceWin(vector<int>& nums) {
-        int singleSum = 0;
-        int doubleSum = 0;
+    int arrayPairSum(vector<int>& nums) {
+        sort(nums.begin(), nums.end());
 
-        for (int n : nums) {
-            if (n < 10) {
-                singleSum += n;
-            }
-            else {
-                doubleSum += n;
-            }
+        int ans = 0;
+
+        for (int i = 0; i < nums.size(); i += 2) {
+            ans += nums[i];
         }
 
-        return singleSum != doubleSum;
+        return ans;
     }
 };
 
