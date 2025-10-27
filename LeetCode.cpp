@@ -6,12 +6,12 @@ using namespace std;
 
 class Solution {
 public:
-    string removeTrailingZeros(string num) {
-        while (num.back() == '0') {
-            num.pop_back();
-        }
+    int findNonMinOrMax(vector<int>& nums) {
+        if (nums.size() < 3) { return -1; }
 
-        return num;
+        sort(nums.begin(), nums.begin() + 3);
+
+        return nums[1];
     }
 };
 
