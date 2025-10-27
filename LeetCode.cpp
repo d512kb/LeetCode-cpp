@@ -6,10 +6,16 @@ using namespace std;
 
 class Solution {
 public:
-    bool isSameAfterReversals(int num) {
-        if (num > 0 && num % 10 == 0) { return false; }
+    int sumOfSquares(vector<int>& nums) {
+        int ans = 0;
 
-        return true;
+        for (int i = 0; i < nums.size(); ++i) {
+            if (nums.size() % (i + 1) == 0) {
+                ans += nums[i] * nums[i];
+            }
+        }
+
+        return ans;
     }
 };
 
