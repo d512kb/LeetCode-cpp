@@ -4,26 +4,18 @@
 
 using namespace std;
 
-class OrderedStream {
+class Solution {
 public:
-    OrderedStream(int n) : m_data(n) {
+    int getDecimalValue(ListNode* head) {
+        int ans = 0;
 
-    }
-
-    vector<string> insert(int idKey, string value) {
-        m_data[idKey - 1] = std::move(value);
-
-        vector<string> result;
-
-        for (; m_pointer < m_data.size() && !m_data[m_pointer].empty(); ++m_pointer) {
-            result.push_back(std::move(m_data[m_pointer]));
+        while (head) {
+            ans = ans * 2 + head->val;
+            head = head->next;
         }
 
-        return result;
+        return ans;
     }
-private:
-    vector<string> m_data;
-    size_t m_pointer = 0;
 };
 
 int main()
