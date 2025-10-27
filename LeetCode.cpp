@@ -6,16 +6,12 @@ using namespace std;
 
 class Solution {
 public:
-    int evenNumberBitwiseORs(vector<int>& nums) {
-        int ans = 0;
-
-        for (int n : nums) {
-            if (n % 2 == 0) {
-                ans |= n;
-            }
+    string makeSmallestPalindrome(string s) {
+        for (int start = 0, end = s.size() - 1; start < end; ++start, --end) {
+            s[start] = s[end] = min(s[start], s[end]);
         }
 
-        return ans;
+        return s;
     }
 };
 
