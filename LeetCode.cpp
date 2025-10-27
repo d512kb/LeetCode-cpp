@@ -6,16 +6,20 @@ using namespace std;
 
 class Solution {
 public:
-    int numOfStrings(vector<string>& patterns, string word) {
-        int ans = 0;
+    int totalMoney(int n) {
+        const int firstWeek = 7 * 8 / 2;
+        const int weeks = n / 7;
+        const int lastWeek = firstWeek + 7 * (weeks - 1);
 
-        for (const auto& pattern : patterns) {
-            if (word.find(pattern) != string::npos) {
-                ++ans;
-            }
-        }
+        const int weeksMoney = (firstWeek + lastWeek) * weeks / 2;
 
-        return ans;
+        const int daysLeft = n % 7;
+        const int monday = weeks + 1;
+        const int lastDay = monday + daysLeft - 1;
+
+        const int daysMoney = (monday + lastDay) * daysLeft / 2;
+
+        return weeksMoney + daysMoney;
     }
 };
 
