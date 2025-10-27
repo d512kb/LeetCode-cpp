@@ -6,21 +6,16 @@ using namespace std;
 
 class Solution {
 public:
-    vector<int> separateDigits(vector<int>& nums) {
-        vector<int> result;
+    int evenNumberBitwiseORs(vector<int>& nums) {
+        int ans = 0;
 
-        for (int i = nums.size() - 1; i >= 0; --i) {
-            int n = nums[i];
-
-            while (n) {
-                result.push_back(n % 10);
-                n /= 10;
+        for (int n : nums) {
+            if (n % 2 == 0) {
+                ans |= n;
             }
         }
 
-        reverse(result.begin(), result.end());
-
-        return result;
+        return ans;
     }
 };
 
