@@ -6,25 +6,14 @@ using namespace std;
 
 class Solution {
 public:
-    char kthCharacter(long long k, vector<int>& operations) {
-        int opIndex = log2(k);
-        long long frameLength = pow(2, opIndex + 1);
-        int changeCounter = 0;
-
-        while (k > 1) {
-            frameLength /= 2;
-
-            if (k > frameLength) {
-                if (operations[opIndex]) {
-                    ++changeCounter;
-                }
-                k -= frameLength;
+    bool isArraySpecial(vector<int>& nums) {
+        for (int i = 1; i < nums.size(); ++i) {
+            if ((nums[i - 1] & 1) == (nums[i] & 1)) {
+                return false;
             }
-
-            --opIndex;
         }
 
-        return changeCounter % 26 + 'a';
+        return true;
     }
 };
 
