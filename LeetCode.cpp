@@ -6,24 +6,35 @@ using namespace std;
 
 class Solution {
 public:
-    int maximumNumberOfStringPairs(vector<string>& words) {
-        unordered_set<string> wordsSet(words.begin(), words.end());
-        int ans = 0;
+    vector<vector<int>> mergeArrays(vector<vector<int>>& nums1, vector<vector<int>>& nums2) {
+        auto iter1 = nums1.begin();
+        auto iter2 = nums2.begin();
 
-        while (!wordsSet.empty()) {
-            string word = *wordsSet.begin();
-            reverse(word.begin(), word.end());
+        vector<vector<int>> result;
 
-            auto iter = wordsSet.find(word);
-            if (iter != wordsSet.begin() && iter != wordsSet.end()) {
-                wordsSet.erase(iter);
-                ++ans;
+        while (iter1 != nums1.end() && iter2 != nums2.end()) {
+            if (iter1->front() < iter2->front()) {
+                result.push_back(std::move(*iter1++));
             }
-
-            wordsSet.erase(wordsSet.begin());
+            else if (iter1->front() > iter2->front()) {
+                result.push_back(std::move(*iter2++));
+            }
+            else {
+                result.push_back({ iter1->front(), iter1->back() + iter2->back() });
+                ++iter1;
+                ++iter2;
+            }
         }
 
-        return ans;
+        while (iter1 != nums1.end()) {
+            result.push_back(std::move(*iter1++));
+        }
+
+        while (iter2 != nums2.end()) {
+            result.push_back(std::move(*iter2++));
+        }
+
+        return result;
     }
 };
 
