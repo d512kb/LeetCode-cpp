@@ -6,20 +6,26 @@ using namespace std;
 
 class Solution {
 public:
-    string kthDistinct(vector<string>& arr, int k) {
-        unordered_map<string, int> stringCount;
+    int finalPositionOfSnake(int n, vector<string>& commands) {
+        int row = 0;
+        int col = 0;
 
-        for (const auto& str : arr) {
-            ++stringCount[str];
-        }
-
-        for (const auto& str : arr) {
-            if (stringCount[str] == 1) {
-                if (--k == 0) { return str; }
+        for (const auto& comm : commands) {
+            if (comm[0] == 'U') {
+                --row;
+            }
+            else if (comm[0] == 'R') {
+                ++col;
+            }
+            else if (comm[0] == 'D') {
+                ++row;
+            }
+            else if (comm[0] == 'L') {
+                --col;
             }
         }
 
-        return "";
+        return row * n + col;
     }
 };
 
