@@ -6,12 +6,24 @@ using namespace std;
 
 class Solution {
 public:
-    int findNonMinOrMax(vector<int>& nums) {
-        if (nums.size() < 3) { return -1; }
+    int findSpecialInteger(vector<int>& arr) {
+        const int threshold = arr.size() / 4;
+        int currInt = -1;
+        int currCount = 0;
 
-        sort(nums.begin(), nums.begin() + 3);
+        for (int c : arr) {
+            if (c == currInt) {
+                ++currCount;
+            }
+            else {
+                currInt = c;
+                currCount = 1;
+            }
 
-        return nums[1];
+            if (currCount > threshold) { return c; }
+        }
+
+        return -1;
     }
 };
 
