@@ -6,16 +6,11 @@ using namespace std;
 
 class Solution {
 public:
-    int sumOfSquares(vector<int>& nums) {
-        int ans = 0;
+    int gcdOfOddEvenSums(int n) {
+        int oddSum = (n * 2) * n / 2;
+        int evenSum = (2 + n * 2) * n / 2;
 
-        for (int i = 0; i < nums.size(); ++i) {
-            if (nums.size() % (i + 1) == 0) {
-                ans += nums[i] * nums[i];
-            }
-        }
-
-        return ans;
+        return gcd(oddSum, evenSum);
     }
 };
 
