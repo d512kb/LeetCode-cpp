@@ -6,10 +6,25 @@ using namespace std;
 
 class Solution {
 public:
-    void reverseString(vector<char>& s) {
-        for (int start = 0, end = s.size() - 1; start < end; ++start, --end) {
-            swap(s[start], s[end]);
+    vector<int> selfDividingNumbers(int left, int right) {
+        vector<int> result;
+
+        for (; left <= right; ++left) {
+            int n = left;
+
+            while (n) {
+                int div = n % 10;
+
+                if (div == 0 || left % div) { break; }
+                n /= 10;
+            }
+
+            if (n == 0) {
+                result.push_back(left);
+            }
         }
+
+        return result;
     }
 };
 
