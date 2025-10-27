@@ -6,17 +6,15 @@ using namespace std;
 
 class Solution {
 public:
-    int minOperations(vector<int>& nums) {
+    int countPoints(string rings) {
         int ans = 0;
+        array<unordered_set<char>, 10> rods;
 
-        for (int i = 1; i < nums.size(); ++i) {
-            if (nums[i - 1] >= nums[i]) {
-                ans += nums[i - 1] - nums[i] + 1;
-                nums[i] = nums[i - 1] + 1;
-            }
+        for (int i = 0; i < rings.size(); i += 2) {
+            rods[rings[i + 1] - '0'].insert(rings[i]);
         }
 
-        return ans;
+        return count_if(rods.begin(), rods.end(), [](const auto& rod) { return rod.size() == 3; });
     }
 };
 
