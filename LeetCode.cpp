@@ -6,12 +6,23 @@ using namespace std;
 
 class Solution {
 public:
-    string makeSmallestPalindrome(string s) {
-        for (int start = 0, end = s.size() - 1; start < end; ++start, --end) {
-            s[start] = s[end] = min(s[start], s[end]);
+    string freqAlphabets(string s) {
+        string result;
+
+        for (int i = s.size() - 1; i >= 0;) {
+            if (s[i] == '#') {
+                result.push_back('j' + stoi(s.substr(i - 2, 2)) - 10);
+                i -= 3;
+            }
+            else {
+                result.push_back('a' + s[i] - '0' - 1);
+                i -= 1;
+            }
         }
 
-        return s;
+        reverse(result.begin(), result.end());
+
+        return result;
     }
 };
 
