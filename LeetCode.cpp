@@ -6,14 +6,11 @@ using namespace std;
 
 class Solution {
 public:
-    int heightChecker(vector<int>& heights) {
-        vector<int> sorted = heights;
-        sort(sorted.begin(), sorted.end());
-
+    int countSeniors(vector<string>& details) {
         int ans = 0;
 
-        for (int i = 0; i < heights.size(); ++i) {
-            if (sorted[i] != heights[i]) {
+        for (const auto& d : details) {
+            if (stoi(d.substr(11, 2)) > 60) {
                 ++ans;
             }
         }
