@@ -6,23 +6,10 @@ using namespace std;
 
 class Solution {
 public:
-    string freqAlphabets(string s) {
-        string result;
-
-        for (int i = s.size() - 1; i >= 0;) {
-            if (s[i] == '#') {
-                result.push_back('j' + stoi(s.substr(i - 2, 2)) - 10);
-                i -= 3;
-            }
-            else {
-                result.push_back('a' + s[i] - '0' - 1);
-                i -= 1;
-            }
+    void reverseString(vector<char>& s) {
+        for (int start = 0, end = s.size() - 1; start < end; ++start, --end) {
+            swap(s[start], s[end]);
         }
-
-        reverse(result.begin(), result.end());
-
-        return result;
     }
 };
 
