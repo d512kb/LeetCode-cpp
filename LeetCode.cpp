@@ -6,24 +6,25 @@ using namespace std;
 
 class Solution {
 public:
-    char kthCharacter(int k) {
-        int iterations = 0;
-        int stringLen = 1;
-
-        while (stringLen < k) {
-            stringLen *= 2;
-        }
+    char kthCharacter(long long k, vector<int>& operations) {
+        int opIndex = log2(k);
+        long long frameLength = pow(2, opIndex + 1);
+        int changeCounter = 0;
 
         while (k > 1) {
-            stringLen /= 2;
+            frameLength /= 2;
 
-            if (k > stringLen) {
-                ++iterations;
-                k -= stringLen;
+            if (k > frameLength) {
+                if (operations[opIndex]) {
+                    ++changeCounter;
+                }
+                k -= frameLength;
             }
+
+            --opIndex;
         }
 
-        return iterations % 26 + 'a';
+        return changeCounter % 26 + 'a';
     }
 };
 
