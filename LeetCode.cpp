@@ -4,13 +4,26 @@
 
 using namespace std;
 
-class Solution {
+class OrderedStream {
 public:
-    int earliestTime(vector<vector<int>>& tasks) {
-        auto it = min_element(tasks.begin(), tasks.end(), [](const auto& t1, const auto& t2) { return (t1[0] + t1[1]) < (t2[0] + t2[1]); });
+    OrderedStream(int n) : m_data(n) {
 
-        return (*it)[0] + (*it)[1];
     }
+
+    vector<string> insert(int idKey, string value) {
+        m_data[idKey - 1] = std::move(value);
+
+        vector<string> result;
+
+        for (; m_pointer < m_data.size() && !m_data[m_pointer].empty(); ++m_pointer) {
+            result.push_back(std::move(m_data[m_pointer]));
+        }
+
+        return result;
+    }
+private:
+    vector<string> m_data;
+    size_t m_pointer = 0;
 };
 
 int main()
