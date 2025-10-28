@@ -6,23 +6,27 @@ using namespace std;
 
 class Solution {
 public:
-    int specialArray(vector<int>& nums) {
-        sort(nums.begin(), nums.end());
-        auto iter = nums.begin();
-        int prevVal = 0;
+    int findKOr(vector<int>& nums, int k) {
+        constexpr size_t bitwidth = 32;
+        array<int, bitwidth> bitsCounter{};
 
-        while (iter != nums.end()) {
-            int frameSize = distance(iter, nums.end());
+        for (int n : nums) {
+            bitset<bitwidth> bset(n);
 
-            if (*iter >= frameSize && frameSize > prevVal) {
-                return frameSize;
+            for (int i = 0; i < bitwidth; ++i) {
+                bitsCounter[i] += bset[i];
             }
-
-            prevVal = *iter;
-            iter = upper_bound(iter, nums.end(), *iter);
         }
 
-        return -1;
+        bitset<bitwidth> bset;
+
+        for (int i = 0; i < bitwidth; ++i) {
+            if (bitsCounter[i] >= k) {
+                bset[i] = 1;
+            }
+        }
+
+        return bset.to_ulong();
     }
 };
 
