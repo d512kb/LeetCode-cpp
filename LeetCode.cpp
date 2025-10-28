@@ -6,22 +6,23 @@ using namespace std;
 
 class Solution {
 public:
-    string bestHand(vector<int>& ranks, vector<char>& suits) {
-        if (count(suits.begin(), suits.end(), *suits.begin()) == 5) {
-            return "Flush";
+    int specialArray(vector<int>& nums) {
+        sort(nums.begin(), nums.end());
+        auto iter = nums.begin();
+        int prevVal = 0;
+
+        while (iter != nums.end()) {
+            int frameSize = distance(iter, nums.end());
+
+            if (*iter >= frameSize && frameSize > prevVal) {
+                return frameSize;
+            }
+
+            prevVal = *iter;
+            iter = upper_bound(iter, nums.end(), *iter);
         }
 
-        unordered_map<int, int> ranksSet;
-        int maxRanks = 0;
-
-        for (int r : ranks) {
-            maxRanks = max(maxRanks, ++ranksSet[r]);
-        }
-
-        if (maxRanks >= 3) { return "Three of a Kind"; }
-        if (maxRanks == 2) { return "Pair"; }
-
-        return "High Card";
+        return -1;
     }
 };
 
