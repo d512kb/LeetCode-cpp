@@ -6,24 +6,22 @@ using namespace std;
 
 class Solution {
 public:
-    int findSpecialInteger(vector<int>& arr) {
-        const int threshold = arr.size() / 4;
-        int currInt = -1;
-        int currCount = 0;
-
-        for (int c : arr) {
-            if (c == currInt) {
-                ++currCount;
-            }
-            else {
-                currInt = c;
-                currCount = 1;
-            }
-
-            if (currCount > threshold) { return c; }
+    string bestHand(vector<int>& ranks, vector<char>& suits) {
+        if (count(suits.begin(), suits.end(), *suits.begin()) == 5) {
+            return "Flush";
         }
 
-        return -1;
+        unordered_map<int, int> ranksSet;
+        int maxRanks = 0;
+
+        for (int r : ranks) {
+            maxRanks = max(maxRanks, ++ranksSet[r]);
+        }
+
+        if (maxRanks >= 3) { return "Three of a Kind"; }
+        if (maxRanks == 2) { return "Pair"; }
+
+        return "High Card";
     }
 };
 
