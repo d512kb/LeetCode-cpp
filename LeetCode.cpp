@@ -6,23 +6,15 @@ using namespace std;
 
 class Solution {
 public:
-    bool areOccurrencesEqual(string s) {
-        array<int, 26> freq{};
+    int passThePillow(int n, int time) {
+        int cycle = time / (n - 1);
+        int pos = time % (n - 1);
 
-        for (char c : s) {
-            ++freq[c - 'a'];
+        if (cycle % 2 == 0) {
+            return pos + 1;
         }
 
-        int commonFreq = 0;
-
-        for (int f : freq) {
-            if (f != 0) {
-                if (commonFreq == 0) { commonFreq = f; }
-                else if (commonFreq != f) { return false; }
-            }
-        }
-
-        return true;
+        return n - pos;
     }
 };
 
