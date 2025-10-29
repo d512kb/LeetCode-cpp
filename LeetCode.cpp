@@ -6,15 +6,20 @@ using namespace std;
 
 class Solution {
 public:
-    int numberOfChild(int n, int k) {
-        int cycle = k / (n - 1);
-        int pos = k % (n - 1);
+    bool hasMatch(string s, string p) {
+        int starPos = p.find('*');
+        string firstPart = p.substr(0, starPos);
+        string secondPart = p.substr(starPos + 1);
 
-        if (cycle % 2 == 0) {
-            return pos;
-        }
+        if (firstPart.empty()) { return s.find(secondPart) != string::npos; }
+        if (secondPart.empty()) { return s.find(firstPart) != string::npos; }
 
-        return n - pos - 1;
+        int firstPartPos = s.find(firstPart);
+        if (firstPartPos == string::npos) { return false; }
+
+        int secondPartPos = s.find(secondPart, firstPartPos + firstPart.size());
+
+        return secondPartPos != string::npos;
     }
 };
 
