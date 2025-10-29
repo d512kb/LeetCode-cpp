@@ -6,14 +6,17 @@ using namespace std;
 
 class Solution {
 public:
-    int smallestNumber(int n) {
-        int ans = 1;
-
-        while (ans < n) {
-            ans = (ans << 1) | 1;
+    string reverseStr(string s, int k) {
+        for (int start = 0; start < s.size(); start += 2 * k) {
+            if (start + k <= s.size()) {
+                reverse(s.begin() + start, s.begin() + start + k);
+            }
+            else {
+                reverse(s.begin() + start, s.end());
+            }
         }
 
-        return ans;
+        return s;
     }
 };
 
