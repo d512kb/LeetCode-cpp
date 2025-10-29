@@ -6,17 +6,23 @@ using namespace std;
 
 class Solution {
 public:
-    string reverseStr(string s, int k) {
-        for (int start = 0; start < s.size(); start += 2 * k) {
-            if (start + k <= s.size()) {
-                reverse(s.begin() + start, s.begin() + start + k);
-            }
-            else {
-                reverse(s.begin() + start, s.end());
-            }
+    bool isCovered(vector<vector<int>>& ranges, int left, int right) {
+        vector<int> rangeCount(52);
+
+        for (const auto& r : ranges) {
+            ++rangeCount[r[0]];
+            --rangeCount[r[1] + 1];
         }
 
-        return s;
+        for (int i = 1; i < rangeCount.size(); ++i) {
+            rangeCount[i] += rangeCount[i - 1];
+        }
+
+        for (left; left <= right; ++left) {
+            if (rangeCount[left] <= 0) { return false; }
+        }
+
+        return true;
     }
 };
 
