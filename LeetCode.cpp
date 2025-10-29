@@ -6,16 +6,23 @@ using namespace std;
 
 class Solution {
 public:
-    int countPrefixes(vector<string>& words, string s) {
-        int ans = 0;
+    bool areOccurrencesEqual(string s) {
+        array<int, 26> freq{};
 
-        for (const auto& word : words) {
-            if (s.starts_with(word)) {
-                ++ans;
+        for (char c : s) {
+            ++freq[c - 'a'];
+        }
+
+        int commonFreq = 0;
+
+        for (int f : freq) {
+            if (f != 0) {
+                if (commonFreq == 0) { commonFreq = f; }
+                else if (commonFreq != f) { return false; }
             }
         }
 
-        return ans;
+        return true;
     }
 };
 
