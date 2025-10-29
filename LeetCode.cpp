@@ -6,15 +6,15 @@ using namespace std;
 
 class Solution {
 public:
-    int passThePillow(int n, int time) {
-        int cycle = time / (n - 1);
-        int pos = time % (n - 1);
+    int numberOfChild(int n, int k) {
+        int cycle = k / (n - 1);
+        int pos = k % (n - 1);
 
         if (cycle % 2 == 0) {
-            return pos + 1;
+            return pos;
         }
 
-        return n - pos;
+        return n - pos - 1;
     }
 };
 
