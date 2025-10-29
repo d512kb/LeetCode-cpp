@@ -6,27 +6,27 @@ using namespace std;
 
 class Solution {
 public:
-    int findKOr(vector<int>& nums, int k) {
-        constexpr size_t bitwidth = 32;
-        array<int, bitwidth> bitsCounter{};
+    int rearrangeCharacters(string s, string target) {
+        array<int, 26> charCount{};
+        array<int, 26> targetCharCount{};
 
-        for (int n : nums) {
-            bitset<bitwidth> bset(n);
-
-            for (int i = 0; i < bitwidth; ++i) {
-                bitsCounter[i] += bset[i];
-            }
+        for (char c : s) {
+            ++charCount[c - 'a'];
         }
 
-        bitset<bitwidth> bset;
-
-        for (int i = 0; i < bitwidth; ++i) {
-            if (bitsCounter[i] >= k) {
-                bset[i] = 1;
-            }
+        for (char c : target) {
+            ++targetCharCount[c - 'a'];
         }
 
-        return bset.to_ulong();
+        int ans = numeric_limits<int>::max();
+
+        for (int i = 0; i < targetCharCount.size(); ++i) {
+            if (targetCharCount[i] == 0) { continue; }
+
+            ans = min(ans, charCount[i] / targetCharCount[i]);
+        }
+
+        return ans;
     }
 };
 
