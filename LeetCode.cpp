@@ -6,23 +6,22 @@ using namespace std;
 
 class Solution {
 public:
-    bool isCovered(vector<vector<int>>& ranges, int left, int right) {
-        vector<int> rangeCount(52);
+    int getCommon(vector<int>& nums1, vector<int>& nums2) {
+        auto iter1 = nums1.begin();
+        auto iter2 = nums2.begin();
 
-        for (const auto& r : ranges) {
-            ++rangeCount[r[0]];
-            --rangeCount[r[1] + 1];
+        while (iter1 != nums1.end() && iter2 != nums2.end()) {
+            if (*iter1 == *iter2) { return *iter1; }
+
+            if (*iter1 < *iter2) {
+                ++iter1;
+            }
+            else {
+                ++iter2;
+            }
         }
 
-        for (int i = 1; i < rangeCount.size(); ++i) {
-            rangeCount[i] += rangeCount[i - 1];
-        }
-
-        for (left; left <= right; ++left) {
-            if (rangeCount[left] <= 0) { return false; }
-        }
-
-        return true;
+        return -1;
     }
 };
 
