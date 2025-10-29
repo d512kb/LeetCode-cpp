@@ -6,16 +6,17 @@ using namespace std;
 
 class Solution {
 public:
-    int rearrangeCharacters(string s, string target) {
+    int maxNumberOfBalloons(string text) {
         array<int, 26> charCount{};
         array<int, 26> targetCharCount{};
+        targetCharCount['b' - 'a'] = 1;
+        targetCharCount['a' - 'a'] = 1;
+        targetCharCount['l' - 'a'] = 2;
+        targetCharCount['o' - 'a'] = 2;
+        targetCharCount['n' - 'a'] = 1;
 
-        for (char c : s) {
+        for (char c : text) {
             ++charCount[c - 'a'];
-        }
-
-        for (char c : target) {
-            ++targetCharCount[c - 'a'];
         }
 
         int ans = numeric_limits<int>::max();
