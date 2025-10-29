@@ -6,22 +6,16 @@ using namespace std;
 
 class Solution {
 public:
-    int getCommon(vector<int>& nums1, vector<int>& nums2) {
-        auto iter1 = nums1.begin();
-        auto iter2 = nums2.begin();
+    int countPrefixes(vector<string>& words, string s) {
+        int ans = 0;
 
-        while (iter1 != nums1.end() && iter2 != nums2.end()) {
-            if (*iter1 == *iter2) { return *iter1; }
-
-            if (*iter1 < *iter2) {
-                ++iter1;
-            }
-            else {
-                ++iter2;
+        for (const auto& word : words) {
+            if (s.starts_with(word)) {
+                ++ans;
             }
         }
 
-        return -1;
+        return ans;
     }
 };
 
