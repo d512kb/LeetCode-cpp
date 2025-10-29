@@ -6,20 +6,21 @@ using namespace std;
 
 class Solution {
 public:
-    bool hasMatch(string s, string p) {
-        int starPos = p.find('*');
-        string firstPart = p.substr(0, starPos);
-        string secondPart = p.substr(starPos + 1);
+    bool canBeIncreasing(vector<int>& nums) {
+        const size_t sz = nums.size();
+        int dels = 0;
 
-        if (firstPart.empty()) { return s.find(secondPart) != string::npos; }
-        if (secondPart.empty()) { return s.find(firstPart) != string::npos; }
+        for (int i = 1; i < sz; ++i) {
+            if (nums[i - 1] >= nums[i]) {
+                if (++dels > 1) { return false; }
 
-        int firstPartPos = s.find(firstPart);
-        if (firstPartPos == string::npos) { return false; }
+                if (i > 1 && nums[i - 2] >= nums[i]) {
+                    nums[i] = nums[i - 1];
+                }
+            }
+        }
 
-        int secondPartPos = s.find(secondPart, firstPartPos + firstPart.size());
-
-        return secondPartPos != string::npos;
+        return true;
     }
 };
 
