@@ -6,42 +6,22 @@ using namespace std;
 
 class Solution {
 public:
-    int countValidWords(string sentence) {
-        int ans = 0;
+    int longestAlternatingSubarray(vector<int>& nums, int threshold) {
+        int len = nums[0] % 2 == 0 && nums[0] <= threshold;
+        int ans = len;
 
-        size_t start = 0;
-        size_t stop = 0;
+        for (int i = 1; i < nums.size(); ++i) {
+            if (((nums[i - 1] ^ nums[i]) & 1) && nums[i - 1] <= threshold && nums[i] <= threshold) {
+                ++len;
+            }
+            else {
+                len = nums[i] % 2 == 0 && nums[i] <= threshold;
+            }
 
-        while ((stop = sentence.find(' ', start)) != string::npos) {
-            if (isValidWord(sentence, start, stop)) { ++ans; }
-            start = stop + 1;
+            ans = max(ans, len);
         }
-
-        if (isValidWord(sentence, start, sentence.size())) { ++ans; }
 
         return ans;
-    }
-private:
-    bool isValidWord(const string& word, size_t start, size_t stop) {
-        if (start == stop) { return false; }
-
-        size_t hyphenCount = 0;
-
-        for (size_t i = start; i < stop; ++i) {
-            char c = word[i];
-
-            if (isdigit(c)) { return false; }
-            if (c == '-') {
-                if (++hyphenCount > 1) { return false; }
-                if (i == start || i == stop - 1) { return false; }
-                if (!isalpha(word[i - 1]) || !isalpha(word[i + 1])) { return false; }
-            }
-            else if (c == '.' || c == ',' || c == '!') {
-                if (i != stop - 1) { return false; }
-            }
-        }
-
-        return true;
     }
 };
 
