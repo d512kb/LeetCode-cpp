@@ -6,32 +6,30 @@ using namespace std;
 
 class Solution {
 public:
-    string findLatestTime(string s) {
-        if (s[0] == '?' && s[1] == '?') {
-            s[0] = '1';
-            s[1] = '1';
-        }
-        else if (s[0] == '?') {
-            if (s[1] == '0' || s[1] == '1') {
-                s[0] = '1';
+    int alternatingSubarray(vector<int>& nums) {
+        int len = 1;
+        int longestLen = 1;
+        int sign = 1;
+
+        for (int i = 0; i < nums.size() - 1; ) {
+            if (nums[i] + sign == nums[i + 1]) {
+                sign = -sign;
+                longestLen = max(longestLen, ++len);
+                ++i;
             }
             else {
-                s[0] = '0';
-            }
-        }
-        else if (s[1] == '?') {
-            if (s[0] == '0') {
-                s[1] = '9';
-            }
-            else {
-                s[1] = '1';
+                if (sign == 1) {
+                    len = 1;
+                    ++i;
+                }
+                else {
+                    len = 1;
+                    sign = -sign;
+                }
             }
         }
 
-        if (s[3] == '?') { s[3] = '5'; }
-        if (s[4] == '?') { s[4] = '9'; }
-
-        return s;
+        return longestLen == 1 ? -1 : longestLen;
     }
 };
 
