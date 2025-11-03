@@ -6,21 +6,30 @@ using namespace std;
 
 class Solution {
 public:
-    bool validMountainArray(vector<int>& arr) {
-        if (arr.size() < 3) { return false; }
+    int missingInteger(vector<int>& nums) {
+        int prefixLen = 1;
 
-        int left = 0;
-        int right = arr.size() - 1;
-
-        while (left < arr.size() - 2 && arr[left] < arr[left + 1]) {
-            ++left;
+        for (int i = 1; i < nums.size(); ++i) {
+            if (nums[i - 1] + 1 == nums[i]) {
+                ++prefixLen;
+            }
+            else {
+                break;
+            }
         }
 
-        while (right > 1 && arr[right - 1] > arr[right]) {
-            --right;
+        int prefixSum = (nums[0] + nums[prefixLen - 1]) * prefixLen / 2;
+        int ans = prefixSum;
+        auto iter = nums.begin() + prefixLen - 1;
+
+        while (true) {
+            if (find(iter, nums.end(), ans) == nums.end()) {
+                return ans;
+            }
+            ++ans;
         }
 
-        return left == right;
+        return ans;
     }
 };
 
