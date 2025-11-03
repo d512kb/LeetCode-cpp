@@ -6,17 +6,21 @@ using namespace std;
 
 class Solution {
 public:
-    int thirdMax(vector<int>& nums) {
-        set<int> maxes;
+    string categorizeBox(int length, int width, int height, int mass) {
+        bool heavy = mass >= 100;
+        bool bulky = length >= 10'000 || width >= 10'000 || height >= 10'000;
 
-        for (int n : nums) {
-            maxes.insert(n);
-            if (maxes.size() > 3) {
-                maxes.erase(maxes.begin());
-            }
-        }
+        int64_t vol = length;
+        vol *= width;
+        vol *= height;
 
-        return maxes.size() >= 3 ? *maxes.begin() : *maxes.rbegin();
+        bulky = bulky || vol >= 1'000'000'000;
+
+        if (bulky && heavy) { return "Both"; }
+        if (bulky) { return "Bulky"; }
+        if (heavy) { return "Heavy"; }
+
+        return "Neither";
     }
 };
 
