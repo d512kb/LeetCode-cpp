@@ -6,21 +6,15 @@ using namespace std;
 
 class Solution {
 public:
-    string categorizeBox(int length, int width, int height, int mass) {
-        bool heavy = mass >= 100;
-        bool bulky = length >= 10'000 || width >= 10'000 || height >= 10'000;
+    bool isBoomerang(vector<vector<int>>& points) {
+        const auto& p1 = points[0];
+        const auto& p2 = points[1];
+        const auto& p3 = points[2];
 
-        int64_t vol = length;
-        vol *= width;
-        vol *= height;
+        if (p1 == p2 || p1 == p3 || p2 == p3) { return false; }
 
-        bulky = bulky || vol >= 1'000'000'000;
-
-        if (bulky && heavy) { return "Both"; }
-        if (bulky) { return "Bulky"; }
-        if (heavy) { return "Heavy"; }
-
-        return "Neither";
+        // division transformed into multiplication
+        return (p1[1] - p2[1]) * (p2[0] - p3[0]) != (p2[1] - p3[1]) * (p1[0] - p2[0]);
     }
 };
 
