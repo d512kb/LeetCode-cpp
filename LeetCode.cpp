@@ -6,26 +6,23 @@ using namespace std;
 
 class Solution {
 public:
-    bool isLongPressedName(string name, string typed) {
-        if (name.size() > typed.size() || name[0] != typed[0]) { return false; }
+    int smallestAbsent(vector<int>& nums) {
+        double sum = 0;
+        unordered_set<int> setNums;
 
-        int i = 0;
-        int j = 0;
-
-        while (j < typed.size()) {
-            if (name[i] == typed[j]) {
-                ++i;
-                ++j;
-            }
-            else if (name[i - 1] == typed[j]) {
-                ++j;
-            }
-            else {
-                return false;
-            }
+        for (int n : nums) {
+            sum += n;
+            setNums.insert(n);
         }
 
-        return i == name.size();
+        int ans = (sum / nums.size()) + 1;
+        if (ans <= 0) { ans = 1; }
+
+        while (setNums.contains(ans)) {
+            ++ans;
+        }
+
+        return ans;
     }
 };
 
