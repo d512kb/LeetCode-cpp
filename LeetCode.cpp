@@ -6,24 +6,34 @@ using namespace std;
 
 class Solution {
 public:
-    int countSegments(string s) {
-        int start = 0;
-        int end = 0;
+    int diagonalPrime(vector<vector<int>>& nums) {
+        const int sz = nums.size();
         int ans = 0;
 
-        for (int i = 0; i < s.size(); ++i) {
-            if (s[i] == ' ') {
-                if (end - start > 0) { ++ans; }
-                start = end = i + 1;
+        for (int i = 0; i < sz; ++i) {
+            if (isPrime(nums[i][i])) {
+                ans = max(ans, nums[i][i]);
             }
-            else {
-                end = i + 1;
+
+            if (isPrime(nums[i][sz - i - 1])) {
+                ans = max(ans, nums[i][sz - i - 1]);
             }
         }
 
-        if (end - start > 0) { ++ans; }
-
         return ans;
+    }
+
+private:
+    bool isPrime(int n) {
+        if (n == 1) { return false; }
+        if (n == 2) { return true; }
+        if (n % 2 == 0) { return false; }
+
+        for (int i = 3; i * i <= n; i += 2) {
+            if (n % i == 0) { return false; }
+        }
+
+        return true;
     }
 };
 
