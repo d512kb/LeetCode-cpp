@@ -6,22 +6,32 @@ using namespace std;
 
 class Solution {
 public:
-    int longestAlternatingSubarray(vector<int>& nums, int threshold) {
-        int len = nums[0] % 2 == 0 && nums[0] <= threshold;
-        int ans = len;
+    string generateTag(string caption) {
+        string result("#");
 
-        for (int i = 1; i < nums.size(); ++i) {
-            if (((nums[i - 1] ^ nums[i]) & 1) && nums[i - 1] <= threshold && nums[i] <= threshold) {
-                ++len;
+        bool word = false;
+        for (char c : caption) {
+            if (c == ' ') {
+                word = true;
+                continue;
+            }
+
+            if (!isalpha(c)) { continue; }
+
+            if (word) {
+                c = toupper(c);
+                word = false;
             }
             else {
-                len = nums[i] % 2 == 0 && nums[i] <= threshold;
+                c = tolower(c);
             }
 
-            ans = max(ans, len);
+            result.push_back(c);
+            if (result.size() == 100) { break; }
         }
 
-        return ans;
+        result[1] = tolower(result[1]);
+        return result;
     }
 };
 
