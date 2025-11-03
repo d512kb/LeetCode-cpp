@@ -6,27 +6,21 @@ using namespace std;
 
 class Solution {
 public:
-    bool buddyStrings(string s, string goal) {
-        if (s.size() != goal.size()) { return false; }
+    bool validMountainArray(vector<int>& arr) {
+        if (arr.size() < 3) { return false; }
 
-        vector<int> wrongPos;
-        array<int, 26> rightPos;
+        int left = 0;
+        int right = arr.size() - 1;
 
-        for (int i = 0; i < s.size(); ++i) {
-            if (s[i] != goal[i]) {
-                wrongPos.push_back(i);
-            }
-            else {
-                ++rightPos[s[i] - 'a'];
-            }
-
-            if (wrongPos.size() > 2) { return false; }
+        while (left < arr.size() - 2 && arr[left] < arr[left + 1]) {
+            ++left;
         }
 
-        if (wrongPos.size() == 1) { return false; }
-        if (wrongPos.empty()) { return find_if(rightPos.begin(), rightPos.end(), [](int c) { return c > 1; }) != rightPos.end(); }
+        while (right > 1 && arr[right - 1] > arr[right]) {
+            --right;
+        }
 
-        return s[wrongPos[0]] == goal[wrongPos[1]] && s[wrongPos[1]] == goal[wrongPos[0]];
+        return left == right;
     }
 };
 
