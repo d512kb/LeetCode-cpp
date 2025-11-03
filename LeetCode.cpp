@@ -6,30 +6,32 @@ using namespace std;
 
 class Solution {
 public:
-    int missingInteger(vector<int>& nums) {
-        int prefixLen = 1;
-
-        for (int i = 1; i < nums.size(); ++i) {
-            if (nums[i - 1] + 1 == nums[i]) {
-                ++prefixLen;
+    string findLatestTime(string s) {
+        if (s[0] == '?' && s[1] == '?') {
+            s[0] = '1';
+            s[1] = '1';
+        }
+        else if (s[0] == '?') {
+            if (s[1] == '0' || s[1] == '1') {
+                s[0] = '1';
             }
             else {
-                break;
+                s[0] = '0';
+            }
+        }
+        else if (s[1] == '?') {
+            if (s[0] == '0') {
+                s[1] = '9';
+            }
+            else {
+                s[1] = '1';
             }
         }
 
-        int prefixSum = (nums[0] + nums[prefixLen - 1]) * prefixLen / 2;
-        int ans = prefixSum;
-        auto iter = nums.begin() + prefixLen - 1;
+        if (s[3] == '?') { s[3] = '5'; }
+        if (s[4] == '?') { s[4] = '9'; }
 
-        while (true) {
-            if (find(iter, nums.end(), ans) == nums.end()) {
-                return ans;
-            }
-            ++ans;
-        }
-
-        return ans;
+        return s;
     }
 };
 
