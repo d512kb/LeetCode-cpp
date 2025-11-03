@@ -6,32 +6,26 @@ using namespace std;
 
 class Solution {
 public:
-    string generateTag(string caption) {
-        string result("#");
+    bool isLongPressedName(string name, string typed) {
+        if (name.size() > typed.size() || name[0] != typed[0]) { return false; }
 
-        bool word = false;
-        for (char c : caption) {
-            if (c == ' ') {
-                word = true;
-                continue;
+        int i = 0;
+        int j = 0;
+
+        while (j < typed.size()) {
+            if (name[i] == typed[j]) {
+                ++i;
+                ++j;
             }
-
-            if (!isalpha(c)) { continue; }
-
-            if (word) {
-                c = toupper(c);
-                word = false;
+            else if (name[i - 1] == typed[j]) {
+                ++j;
             }
             else {
-                c = tolower(c);
+                return false;
             }
-
-            result.push_back(c);
-            if (result.size() == 100) { break; }
         }
 
-        result[1] = tolower(result[1]);
-        return result;
+        return i == name.size();
     }
 };
 
