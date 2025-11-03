@@ -6,17 +6,38 @@ using namespace std;
 
 class Solution {
 public:
-    bool canBeIncreasing(vector<int>& nums) {
-        const size_t sz = nums.size();
-        int dels = 0;
+    int countValidWords(string sentence) {
+        int ans = 0;
 
-        for (int i = 1; i < sz; ++i) {
-            if (nums[i - 1] >= nums[i]) {
-                if (++dels > 1) { return false; }
+        size_t start = 0;
+        size_t stop = 0;
 
-                if (i > 1 && nums[i - 2] >= nums[i]) {
-                    nums[i] = nums[i - 1];
-                }
+        while ((stop = sentence.find(' ', start)) != string::npos) {
+            if (isValidWord(sentence, start, stop)) { ++ans; }
+            start = stop + 1;
+        }
+
+        if (isValidWord(sentence, start, sentence.size())) { ++ans; }
+
+        return ans;
+    }
+private:
+    bool isValidWord(const string& word, size_t start, size_t stop) {
+        if (start == stop) { return false; }
+
+        size_t hyphenCount = 0;
+
+        for (size_t i = start; i < stop; ++i) {
+            char c = word[i];
+
+            if (isdigit(c)) { return false; }
+            if (c == '-') {
+                if (++hyphenCount > 1) { return false; }
+                if (i == start || i == stop - 1) { return false; }
+                if (!isalpha(word[i - 1]) || !isalpha(word[i + 1])) { return false; }
+            }
+            else if (c == '.' || c == ',' || c == '!') {
+                if (i != stop - 1) { return false; }
             }
         }
 
