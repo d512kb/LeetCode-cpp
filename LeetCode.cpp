@@ -6,30 +6,20 @@ using namespace std;
 
 class Solution {
 public:
-    int alternatingSubarray(vector<int>& nums) {
+    bool hasSpecialSubstring(string s, int k) {
         int len = 1;
-        int longestLen = 1;
-        int sign = 1;
 
-        for (int i = 0; i < nums.size() - 1; ) {
-            if (nums[i] + sign == nums[i + 1]) {
-                sign = -sign;
-                longestLen = max(longestLen, ++len);
-                ++i;
+        for (int i = 1; i < s.size(); ++i) {
+            if (s[i - 1] != s[i]) {
+                if (len == k) { return true; }
+                len = 1;
             }
             else {
-                if (sign == 1) {
-                    len = 1;
-                    ++i;
-                }
-                else {
-                    len = 1;
-                    sign = -sign;
-                }
+                ++len;
             }
         }
 
-        return longestLen == 1 ? -1 : longestLen;
+        return len == k;
     }
 };
 
