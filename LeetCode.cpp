@@ -6,23 +6,27 @@ using namespace std;
 
 class Solution {
 public:
-    int smallestAbsent(vector<int>& nums) {
-        double sum = 0;
-        unordered_set<int> setNums;
+    bool buddyStrings(string s, string goal) {
+        if (s.size() != goal.size()) { return false; }
 
-        for (int n : nums) {
-            sum += n;
-            setNums.insert(n);
+        vector<int> wrongPos;
+        array<int, 26> rightPos;
+
+        for (int i = 0; i < s.size(); ++i) {
+            if (s[i] != goal[i]) {
+                wrongPos.push_back(i);
+            }
+            else {
+                ++rightPos[s[i] - 'a'];
+            }
+
+            if (wrongPos.size() > 2) { return false; }
         }
 
-        int ans = (sum / nums.size()) + 1;
-        if (ans <= 0) { ans = 1; }
+        if (wrongPos.size() == 1) { return false; }
+        if (wrongPos.empty()) { return find_if(rightPos.begin(), rightPos.end(), [](int c) { return c > 1; }) != rightPos.end(); }
 
-        while (setNums.contains(ans)) {
-            ++ans;
-        }
-
-        return ans;
+        return s[wrongPos[0]] == goal[wrongPos[1]] && s[wrongPos[1]] == goal[wrongPos[0]];
     }
 };
 
