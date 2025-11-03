@@ -6,20 +6,24 @@ using namespace std;
 
 class Solution {
 public:
-    bool hasSpecialSubstring(string s, int k) {
-        int len = 1;
+    int countSegments(string s) {
+        int start = 0;
+        int end = 0;
+        int ans = 0;
 
-        for (int i = 1; i < s.size(); ++i) {
-            if (s[i - 1] != s[i]) {
-                if (len == k) { return true; }
-                len = 1;
+        for (int i = 0; i < s.size(); ++i) {
+            if (s[i] == ' ') {
+                if (end - start > 0) { ++ans; }
+                start = end = i + 1;
             }
             else {
-                ++len;
+                end = i + 1;
             }
         }
 
-        return len == k;
+        if (end - start > 0) { ++ans; }
+
+        return ans;
     }
 };
 
