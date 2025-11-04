@@ -6,37 +6,18 @@ using namespace std;
 
 class Solution {
 public:
-    int numDifferentIntegers(string word) {
-        unordered_set<string> numbers;
-        string num;
-
-        for (char c : word) {
-            if (isdigit(c)) {
-                num.push_back(c);
-            }
-            else {
-                numbers.insert(trimZeroes(num));
-                num.clear();
+    bool checkStraightLine(vector<vector<int>>& coordinates) {
+        for (int i = 2; i < coordinates.size(); ++i) {
+            if (!shareOneLine(coordinates[0], coordinates[1], coordinates[i])) {
+                return false;
             }
         }
 
-        numbers.insert(trimZeroes(num));
-        numbers.erase("");
-
-        return numbers.size();
+        return true;
     }
 private:
-    string trimZeroes(const string& str) {
-        if (str.empty()) { return ""; }
-
-        int pos = 0;
-        for (; pos < str.size(); ++pos) {
-            if (str[pos] != '0') { break; }
-        }
-
-        if (pos == str.size()) { return "0"; }
-
-        return str.substr(pos);
+    inline bool shareOneLine(const vector<int>& p1, const vector<int>& p2, const vector<int>& p3) {
+        return (p2[1] - p1[1]) * (p3[0] - p2[0]) == (p3[1] - p2[1]) * (p2[0] - p1[0]);
     }
 };
 
