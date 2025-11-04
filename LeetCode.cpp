@@ -6,11 +6,37 @@ using namespace std;
 
 class Solution {
 public:
-    bool checkOnesSegment(string s) {
-        auto iter = find(s.begin(), s.end(), '0');
-        iter = find(iter, s.end(), '1');
+    int numDifferentIntegers(string word) {
+        unordered_set<string> numbers;
+        string num;
 
-        return iter == s.end();
+        for (char c : word) {
+            if (isdigit(c)) {
+                num.push_back(c);
+            }
+            else {
+                numbers.insert(trimZeroes(num));
+                num.clear();
+            }
+        }
+
+        numbers.insert(trimZeroes(num));
+        numbers.erase("");
+
+        return numbers.size();
+    }
+private:
+    string trimZeroes(const string& str) {
+        if (str.empty()) { return ""; }
+
+        int pos = 0;
+        for (; pos < str.size(); ++pos) {
+            if (str[pos] != '0') { break; }
+        }
+
+        if (pos == str.size()) { return "0"; }
+
+        return str.substr(pos);
     }
 };
 
