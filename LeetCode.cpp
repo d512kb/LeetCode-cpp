@@ -6,13 +6,34 @@ using namespace std;
 
 class Solution {
 public:
-    int maxRepeating(string sequence, string word) {
-        int ans = 0;
-        string substring = word;
+    int captureForts(vector<int>& forts) {
+        int start = -1;
 
-        while (sequence.find(substring) != string::npos) {
-            ++ans;
-            substring += word;
+        for (int i = 0; i < forts.size(); ++i) {
+            if (forts[i] != 0) {
+                start = i;
+                break;
+            }
+        }
+
+        if (start == -1) { return 0; }
+        int stop = 0;
+        int ans = 0;
+
+        while (start < forts.size()) {
+            stop = start + 1;
+
+            while (stop < forts.size() && forts[stop] == 0) {
+                ++stop;
+            }
+
+            if (stop == forts.size()) { return ans; }
+
+            if (forts[start] + forts[stop] == 0) {
+                ans = max(ans, stop - start - 1);
+            }
+
+            start = stop;
         }
 
         return ans;
