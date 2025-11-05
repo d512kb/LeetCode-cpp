@@ -6,35 +6,19 @@ using namespace std;
 
 class Solution {
 public:
-    int captureForts(vector<int>& forts) {
-        int start = -1;
-
-        for (int i = 0; i < forts.size(); ++i) {
-            if (forts[i] != 0) {
-                start = i;
-                break;
-            }
-        }
-
-        if (start == -1) { return 0; }
-        int stop = 0;
+    int distanceTraveled(int mainTank, int additionalTank) {
         int ans = 0;
 
-        while (start < forts.size()) {
-            stop = start + 1;
+        while (mainTank >= 5) {
+            int injections = mainTank / 5;
+            mainTank -= injections * 5;
+            ans += injections * 5 * 10;
 
-            while (stop < forts.size() && forts[stop] == 0) {
-                ++stop;
-            }
-
-            if (stop == forts.size()) { return ans; }
-
-            if (forts[start] + forts[stop] == 0) {
-                ans = max(ans, stop - start - 1);
-            }
-
-            start = stop;
+            mainTank += min(injections, additionalTank);
+            additionalTank -= min(injections, additionalTank);
         }
+
+        ans += mainTank * 10;
 
         return ans;
     }
