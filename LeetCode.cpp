@@ -6,16 +6,18 @@ using namespace std;
 
 class Solution {
 public:
-    bool checkIfExist(vector<int>& arr) {
-        unordered_set<int> nums;
+    bool canAliceWin(int n) {
+        bool ans = false;
+        int deduct = 10;
 
-        for (int n : arr) {
-            if (n % 2 == 0 && nums.contains(n / 2) || nums.contains(n * 2)) { return true; }
+        while (n >= deduct) {
+            n -= deduct;
+            --deduct;
 
-            nums.insert(n);
+            ans = !ans;
         }
 
-        return false;
+        return ans;
     }
 };
 
