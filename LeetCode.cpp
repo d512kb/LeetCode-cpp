@@ -6,29 +6,14 @@ using namespace std;
 
 class Solution {
 public:
-    bool canThreePartsEqualSum(vector<int>& arr) {
-        int totalSum = accumulate(arr.begin(), arr.end(), 0);
-        int leftSum = 0;
-        int leftIndex = 0;
+    bool isUgly(int n) {
+        if (n <= 0) { return false; }
 
-        for (int i = 0; i < arr.size() - 2; ++i) {
-            leftSum += arr[i];
-            totalSum -= arr[i];
+        while (n % 2 == 0) { n /= 2; }
+        while (n % 3 == 0) { n /= 3; }
+        while (n % 5 == 0) { n /= 5; }
 
-            if (leftSum * 2 == totalSum) {
-                int centerSum = 0;
-
-                for (int j = i + 1; j < arr.size() - 1; ++j) {
-                    centerSum += arr[j];
-
-                    if (centerSum == leftSum) { return true; }
-                }
-
-                return false;
-            }
-        }
-
-        return false;
+        return n == 1;
     }
 };
 
