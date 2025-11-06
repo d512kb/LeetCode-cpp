@@ -6,22 +6,29 @@ using namespace std;
 
 class Solution {
 public:
-    int minNumberOfHours(int initialEnergy, int initialExperience, vector<int>& energy, vector<int>& experience) {
-        int neededEnergy = 0;
-        int neededExperience = 0;
+    bool canThreePartsEqualSum(vector<int>& arr) {
+        int totalSum = accumulate(arr.begin(), arr.end(), 0);
+        int leftSum = 0;
+        int leftIndex = 0;
 
-        for (int i = 0; i < energy.size(); ++i) {
-            neededEnergy += energy[i];
+        for (int i = 0; i < arr.size() - 2; ++i) {
+            leftSum += arr[i];
+            totalSum -= arr[i];
 
-            if (initialExperience <= experience[i]) {
-                neededExperience += experience[i] - initialExperience + 1;
-                initialExperience = experience[i] + 1;;
+            if (leftSum * 2 == totalSum) {
+                int centerSum = 0;
+
+                for (int j = i + 1; j < arr.size() - 1; ++j) {
+                    centerSum += arr[j];
+
+                    if (centerSum == leftSum) { return true; }
+                }
+
+                return false;
             }
-
-            initialExperience += experience[i];
         }
 
-        return max(0, neededEnergy + 1 - initialEnergy) + neededExperience;
+        return false;
     }
 };
 
