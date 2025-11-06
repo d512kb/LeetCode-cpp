@@ -6,21 +6,29 @@ using namespace std;
 
 class Solution {
 public:
-    int distanceTraveled(int mainTank, int additionalTank) {
-        int ans = 0;
+    int buttonWithLongestTime(vector<vector<int>>& events) {
+        map<int, int> pushTimes;
+        int prevTime = 0;
 
-        while (mainTank >= 5) {
-            int injections = mainTank / 5;
-            mainTank -= injections * 5;
-            ans += injections * 5 * 10;
-
-            mainTank += min(injections, additionalTank);
-            additionalTank -= min(injections, additionalTank);
+        for (const auto& push : events) {
+            pushTimes[push[0]] = max(pushTimes[push[0]], push[1] - prevTime);
+            prevTime = push[1];
         }
 
-        ans += mainTank * 10;
+        vector<int> longestPush(2);
 
-        return ans;
+        for (const auto& [id, pushTime] : pushTimes) {
+            if (pushTime > longestPush[1]) {
+                longestPush[0] = id;
+                longestPush[1] = pushTime;
+            }
+            else if (pushTime == longestPush[1] && id < longestPush[0]) {
+                longestPush[0] = id;
+                longestPush[1] = pushTime;
+            }
+        }
+
+        return longestPush[0];
     }
 };
 
