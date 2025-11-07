@@ -6,14 +6,37 @@ using namespace std;
 
 class Solution {
 public:
-    bool isUgly(int n) {
-        if (n <= 0) { return false; }
+    string maximumTime(string time) {
+        if (time[0] == '?' && time[1] == '?') {
+            time[0] = '2';
+            time[1] = '3';
+        }
+        else if (time[0] == '?') {
+            if (time[1] > '3') {
+                time[0] = '1';
+            }
+            else {
+                time[0] = '2';
+            }
+        }
+        else if (time[1] == '?') {
+            if (time[0] == '2') {
+                time[1] = '3';
+            }
+            else {
+                time[1] = '9';
+            }
+        }
 
-        while (n % 2 == 0) { n /= 2; }
-        while (n % 3 == 0) { n /= 3; }
-        while (n % 5 == 0) { n /= 5; }
+        if (time[3] == '?') {
+            time[3] = '5';
+        }
 
-        return n == 1;
+        if (time[4] == '?') {
+            time[4] = '9';
+        }
+
+        return time;
     }
 };
 
