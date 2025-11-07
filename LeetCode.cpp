@@ -6,37 +6,25 @@ using namespace std;
 
 class Solution {
 public:
-    string maximumTime(string time) {
-        if (time[0] == '?' && time[1] == '?') {
-            time[0] = '2';
-            time[1] = '3';
-        }
-        else if (time[0] == '?') {
-            if (time[1] > '3') {
-                time[0] = '1';
-            }
-            else {
-                time[0] = '2';
-            }
-        }
-        else if (time[1] == '?') {
-            if (time[0] == '2') {
-                time[1] = '3';
-            }
-            else {
-                time[1] = '9';
+    int minimumSubarrayLength(vector<int>& nums, int k) {
+        int minLen = nums.size() + 1;
+
+        for (int i = 0; i < nums.size(); ++i) {
+            int len = 0;
+            int val = 0;
+
+            for (int j = i; j < nums.size(); ++j) {
+                val |= nums[j];
+                ++len;
+
+                if (val >= k) {
+                    minLen = min(minLen, len);
+                    break;
+                }
             }
         }
 
-        if (time[3] == '?') {
-            time[3] = '5';
-        }
-
-        if (time[4] == '?') {
-            time[4] = '9';
-        }
-
-        return time;
+        return minLen > nums.size() ? -1 : minLen;
     }
 };
 
