@@ -6,15 +6,24 @@ using namespace std;
 
 class Solution {
 public:
-    string triangleType(vector<int>& nums) {
-        if (nums[0] == nums[1] && nums[1] == nums[2]) { return "equilateral"; }
+    vector<int> findErrorNums(vector<int>& nums) {
+        unordered_set<int> duplicates;
+        int dup = 0;
 
-        for (int i = 0; i < 3; ++i) {
-            if (nums[i] + nums[(i + 1) % 3] <= nums[(i + 2) % 3]) { return "none"; }
-            if (nums[i] == nums[(i + 1) % 3]) { return "isosceles"; }
+        for (int n : nums) {
+            if (!duplicates.insert(n).second) {
+                dup = n;
+                break;
+            }
         }
 
-        return "scalene";
+        int origSum = nums.size() * (nums.size() + 1) / 2;
+        int sum = accumulate(nums.begin(), nums.end(), 0);
+
+        vector<int> result{ dup, 0 };
+        result[1] = dup + (origSum - sum);
+
+        return result;
     }
 };
 
