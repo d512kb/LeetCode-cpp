@@ -6,25 +6,15 @@ using namespace std;
 
 class Solution {
 public:
-    int minimumSubarrayLength(vector<int>& nums, int k) {
-        int minLen = nums.size() + 1;
+    string triangleType(vector<int>& nums) {
+        if (nums[0] == nums[1] && nums[1] == nums[2]) { return "equilateral"; }
 
-        for (int i = 0; i < nums.size(); ++i) {
-            int len = 0;
-            int val = 0;
-
-            for (int j = i; j < nums.size(); ++j) {
-                val |= nums[j];
-                ++len;
-
-                if (val >= k) {
-                    minLen = min(minLen, len);
-                    break;
-                }
-            }
+        for (int i = 0; i < 3; ++i) {
+            if (nums[i] + nums[(i + 1) % 3] <= nums[(i + 2) % 3]) { return "none"; }
+            if (nums[i] == nums[(i + 1) % 3]) { return "isosceles"; }
         }
 
-        return minLen > nums.size() ? -1 : minLen;
+        return "scalene";
     }
 };
 
