@@ -6,21 +6,18 @@ using namespace std;
 
 class Solution {
 public:
-    int minimumSumSubarray(vector<int>& nums, int l, int r) {
-        int ans = numeric_limits<int>::max();
+    bool satisfiesConditions(vector<vector<int>>& grid) {
+        const int rows = grid.size();
+        const int cols = grid.front().size();
 
-        for (int i = 0; i < nums.size(); ++i) {
-            int sum = 0;
-
-            for (int c = 1, j = i; j < nums.size(); ++j, ++c) {
-                sum += nums[j];
-
-                if (c > r) { break; }
-                if (c >= l && sum > 0) { ans = min(ans, sum); }
+        for (int row = rows - 1; row >= 0; --row) {
+            for (int col = cols - 1; col >= 0; --col) {
+                if (row < rows - 1 && grid[row][col] != grid[row + 1][col]) { return false; }
+                if (col < cols - 1 && grid[row][col] == grid[row][col + 1]) { return false; }
             }
         }
 
-        return ans == numeric_limits<int>::max() ? -1 : ans;
+        return true;
     }
 };
 
