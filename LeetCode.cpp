@@ -6,20 +6,28 @@ using namespace std;
 
 class Solution {
 public:
-    string modifyString(string s) {
-        const int sz = s.size();
+    vector<int> addToArrayForm(vector<int>& num, int k) {
+        vector<int> ans;
+        ans.reserve(num.size());
 
-        for (int i = 0; i < sz; ++i) {
-            if (s[i] == '?') {
-                s[i] = 'a';
+        int pos = num.size() - 1;
+        for (; pos >= 0; --pos) {
+            ans.push_back(k % 10 + num[pos]);
+            k /= 10;
 
-                while ((i > 0 && s[i] == s[i - 1]) || (i < sz - 1 && s[i] == s[i + 1])) {
-                    ++s[i];
-                }
+            if (ans.back() > 9) {
+                ans.back() %= 10;
+                k += 1;
             }
         }
 
-        return s;
+        while (k) {
+            ans.push_back(k % 10);
+            k /= 10;
+        }
+
+        reverse(ans.begin(), ans.end());
+        return ans;
     }
 };
 
