@@ -6,24 +6,19 @@ using namespace std;
 
 class Solution {
 public:
-    vector<int> findErrorNums(vector<int>& nums) {
-        unordered_set<int> duplicates;
-        int dup = 0;
+    int maxHeightOfTriangle(int red, int blue) {
+        return max(canPlace(red, blue), canPlace(blue, red));
+    }
+private:
+    int canPlace(int first, int second) {
+        int rowLen = 0;
 
-        for (int n : nums) {
-            if (!duplicates.insert(n).second) {
-                dup = n;
-                break;
-            }
+        while ((first - rowLen - 1) >= 0) {
+            first -= ++rowLen;
+            swap(first, second);
         }
 
-        int origSum = nums.size() * (nums.size() + 1) / 2;
-        int sum = accumulate(nums.begin(), nums.end(), 0);
-
-        vector<int> result{ dup, 0 };
-        result[1] = dup + (origSum - sum);
-
-        return result;
+        return rowLen;
     }
 };
 
