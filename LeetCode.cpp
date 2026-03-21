@@ -6,28 +6,11 @@ using namespace std;
 
 class Solution {
 public:
-    vector<int> addToArrayForm(vector<int>& num, int k) {
-        vector<int> ans;
-        ans.reserve(num.size());
+    int maximumProduct(vector<int>& nums) {
+        const auto sz = nums.size();
+        sort(nums.begin(), nums.end());
 
-        int pos = num.size() - 1;
-        for (; pos >= 0; --pos) {
-            ans.push_back(k % 10 + num[pos]);
-            k /= 10;
-
-            if (ans.back() > 9) {
-                ans.back() %= 10;
-                k += 1;
-            }
-        }
-
-        while (k) {
-            ans.push_back(k % 10);
-            k /= 10;
-        }
-
-        reverse(ans.begin(), ans.end());
-        return ans;
+        return max(nums[0] * nums[1] * nums[sz - 1], nums[sz - 1] * nums[sz - 2] * nums[sz - 3]);
     }
 };
 
