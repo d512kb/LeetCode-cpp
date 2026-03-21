@@ -6,21 +6,21 @@ using namespace std;
 
 class Solution {
 public:
-    int findMinimumOperations(string s1, string s2, string s3) {
-        const int minLen = min(min(s1.size(), s2.size()), s3.size());
-        const int totalLen = s1.size() + s2.size() + s3.size();
-        int ans = totalLen;
+    int minimumSumSubarray(vector<int>& nums, int l, int r) {
+        int ans = numeric_limits<int>::max();
 
-        for (int i = 0; i < minLen; ++i) {
-            if (s1[i] == s2[i] && s2[i] == s3[i]) {
-                ans -= 3;
-            }
-            else {
-                break;
+        for (int i = 0; i < nums.size(); ++i) {
+            int sum = 0;
+
+            for (int c = 1, j = i; j < nums.size(); ++j, ++c) {
+                sum += nums[j];
+
+                if (c > r) { break; }
+                if (c >= l && sum > 0) { ans = min(ans, sum); }
             }
         }
 
-        return ans == totalLen ? -1 : ans;
+        return ans == numeric_limits<int>::max() ? -1 : ans;
     }
 };
 
