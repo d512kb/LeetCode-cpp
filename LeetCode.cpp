@@ -6,19 +6,21 @@ using namespace std;
 
 class Solution {
 public:
-    int maxHeightOfTriangle(int red, int blue) {
-        return max(canPlace(red, blue), canPlace(blue, red));
-    }
-private:
-    int canPlace(int first, int second) {
-        int rowLen = 0;
+    int findMinimumOperations(string s1, string s2, string s3) {
+        const int minLen = min(min(s1.size(), s2.size()), s3.size());
+        const int totalLen = s1.size() + s2.size() + s3.size();
+        int ans = totalLen;
 
-        while ((first - rowLen - 1) >= 0) {
-            first -= ++rowLen;
-            swap(first, second);
+        for (int i = 0; i < minLen; ++i) {
+            if (s1[i] == s2[i] && s2[i] == s3[i]) {
+                ans -= 3;
+            }
+            else {
+                break;
+            }
         }
 
-        return rowLen;
+        return ans == totalLen ? -1 : ans;
     }
 };
 
