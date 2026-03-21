@@ -6,11 +6,30 @@ using namespace std;
 
 class Solution {
 public:
-    int maximumProduct(vector<int>& nums) {
-        const auto sz = nums.size();
-        sort(nums.begin(), nums.end());
+    int findTheLongestBalancedSubstring(string s) {
+        int ans = 0;
+        int zeroes = 0;
+        int ones = 0;
 
-        return max(nums[0] * nums[1] * nums[sz - 1], nums[sz - 1] * nums[sz - 2] * nums[sz - 3]);
+        for (char c : s) {
+            if (c == '0') {
+                if (ones) {
+                    zeroes = 0;
+                    ones = 0;
+                }
+
+                ++zeroes;
+            }
+            else {
+                ++ones;
+
+                if (ones <= zeroes) {
+                    ans = max(ans, ones * 2);
+                }
+            }
+        }
+
+        return ans;
     }
 };
 
