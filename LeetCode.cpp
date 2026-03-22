@@ -6,24 +6,17 @@ using namespace std;
 
 class Solution {
 public:
-    bool checkPerfectNumber(int num) {
-        if (num == 1) { return false; }
+    bool isGood(vector<int>& nums) {
+        const int maxVal = nums.size() - 1;
+        unordered_map<int, size_t> counts;
 
-        int sumDivisors = 1;
-
-        for (int i = 2; i * i <= num; ++i) {
-            if (num % i == 0) {
-                sumDivisors += i;
-
-                int anotherDivisor = num / i;
-
-                if (anotherDivisor != i) {
-                    sumDivisors += anotherDivisor;
-                }
-            }
+        for (int n : nums) {
+            if (n > maxVal) { return false; }
+            else if (n == maxVal && ++counts[n] > 2) { return false; }
+            else if (n < maxVal && ++counts[n] > 1) { return false; }
         }
 
-        return sumDivisors == num;
+        return true;
     }
 };
 
