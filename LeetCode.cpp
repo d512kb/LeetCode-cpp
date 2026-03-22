@@ -6,22 +6,30 @@ using namespace std;
 
 class Solution {
 public:
-    int areaOfMaxDiagonal(vector<vector<int>>& dimensions) {
-        int ans = 0;
-        size_t longestDiag = 0;
+    int countDaysTogether(string arriveAlice, string leaveAlice, string arriveBob, string leaveBob) {
+        vector<int> days{ 0, 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31 };
+        vector<int> daysCoded(days);
 
-        for (const auto& dim : dimensions) {
-            size_t diag = dim[0] * dim[0] + dim[1] * dim[1];
-            if (diag > longestDiag) {
-                longestDiag = diag;
-                ans = dim[0] * dim[1];
-            }
-            else if (diag == longestDiag) {
-                ans = max(ans, dim[0] * dim[1]);
-            }
+        partial_sum(days.begin(), days.end(), daysCoded.begin());
+
+        auto codeDate = [&](const string& date) -> int {
+            return daysCoded[stoi(date.substr(0, 2)) - 1] + stoi(date.substr(3, 2));
+            };
+
+        int arriveAliceCoded = codeDate(arriveAlice);
+        int leaveAliceCoded = codeDate(leaveAlice);
+        int arriveBobCoded = codeDate(arriveBob);
+        int leaveBobCoded = codeDate(leaveBob);
+
+        if (arriveBobCoded >= arriveAliceCoded && arriveBobCoded <= leaveAliceCoded) {
+            return min(leaveBobCoded, leaveAliceCoded) - arriveBobCoded + 1;
         }
-
-        return ans;
+        else if (arriveAliceCoded >= arriveBobCoded && arriveAliceCoded <= leaveBobCoded) {
+            return min(leaveBobCoded, leaveAliceCoded) - arriveAliceCoded + 1;
+        }
+        else {
+            return 0;
+        }
     }
 };
 
