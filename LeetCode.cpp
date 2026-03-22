@@ -6,24 +6,24 @@ using namespace std;
 
 class Solution {
 public:
-    int maxLength(vector<int>& nums) {
-        int ans = 0;
+    bool checkPerfectNumber(int num) {
+        if (num == 1) { return false; }
 
-        for (int i = 0; i < nums.size(); ++i) {
-            uint64_t gcdArr = nums[i];
-            uint64_t lcmArr = nums[i];
-            uint64_t prodArr = nums[i];
+        int sumDivisors = 1;
 
-            for (int j = i + 1; j < nums.size(); ++j) {
-                gcdArr = gcd(gcdArr, nums[j]);
-                lcmArr = lcm(lcmArr, nums[j]);
-                prodArr *= nums[j];
+        for (int i = 2; i * i <= num; ++i) {
+            if (num % i == 0) {
+                sumDivisors += i;
 
-                if (prodArr == gcdArr * lcmArr) { ans = max(ans, j - i + 1); }
+                int anotherDivisor = num / i;
+
+                if (anotherDivisor != i) {
+                    sumDivisors += anotherDivisor;
+                }
             }
         }
 
-        return ans;
+        return sumDivisors == num;
     }
 };
 
