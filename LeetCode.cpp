@@ -6,26 +6,18 @@ using namespace std;
 
 class Solution {
 public:
-    int findTheLongestBalancedSubstring(string s) {
+    int areaOfMaxDiagonal(vector<vector<int>>& dimensions) {
         int ans = 0;
-        int zeroes = 0;
-        int ones = 0;
+        size_t longestDiag = 0;
 
-        for (char c : s) {
-            if (c == '0') {
-                if (ones) {
-                    zeroes = 0;
-                    ones = 0;
-                }
-
-                ++zeroes;
+        for (const auto& dim : dimensions) {
+            size_t diag = dim[0] * dim[0] + dim[1] * dim[1];
+            if (diag > longestDiag) {
+                longestDiag = diag;
+                ans = dim[0] * dim[1];
             }
-            else {
-                ++ones;
-
-                if (ones <= zeroes) {
-                    ans = max(ans, ones * 2);
-                }
+            else if (diag == longestDiag) {
+                ans = max(ans, dim[0] * dim[1]);
             }
         }
 
