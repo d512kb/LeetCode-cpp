@@ -6,30 +6,18 @@ using namespace std;
 
 class Solution {
 public:
-    int countDaysTogether(string arriveAlice, string leaveAlice, string arriveBob, string leaveBob) {
-        vector<int> days{ 0, 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31 };
-        vector<int> daysCoded(days);
+    bool canBeEqual(string s1, string s2) {
+        bool ans = false;
 
-        partial_sum(days.begin(), days.end(), daysCoded.begin());
+        ans |= s1 == s2;
+        swap(s1[0], s1[2]);
+        ans |= s1 == s2;
+        swap(s1[1], s1[3]);
+        ans |= s1 == s2;
+        swap(s1[0], s1[2]);
+        ans |= s1 == s2;
 
-        auto codeDate = [&](const string& date) -> int {
-            return daysCoded[stoi(date.substr(0, 2)) - 1] + stoi(date.substr(3, 2));
-            };
-
-        int arriveAliceCoded = codeDate(arriveAlice);
-        int leaveAliceCoded = codeDate(leaveAlice);
-        int arriveBobCoded = codeDate(arriveBob);
-        int leaveBobCoded = codeDate(leaveBob);
-
-        if (arriveBobCoded >= arriveAliceCoded && arriveBobCoded <= leaveAliceCoded) {
-            return min(leaveBobCoded, leaveAliceCoded) - arriveBobCoded + 1;
-        }
-        else if (arriveAliceCoded >= arriveBobCoded && arriveAliceCoded <= leaveBobCoded) {
-            return min(leaveBobCoded, leaveAliceCoded) - arriveAliceCoded + 1;
-        }
-        else {
-            return 0;
-        }
+        return ans;
     }
 };
 
