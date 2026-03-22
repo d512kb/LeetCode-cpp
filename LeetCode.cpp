@@ -6,21 +6,24 @@ using namespace std;
 
 class Solution {
 public:
-    bool hasIncreasingSubarrays(vector<int>& nums, int k) {
-        int prevRun = 1, currentRun = 1;
+    int maxLength(vector<int>& nums) {
+        int ans = 0;
 
-        for (int i = 1; i < nums.size(); ++i) {
-            if (nums[i] > nums[i - 1]) {
-                ++currentRun;
-                if (currentRun >= 2 * k || (prevRun >= k && currentRun >= k)) { return true; }
-            }
-            else {
-                prevRun = currentRun;
-                currentRun = 1;
+        for (int i = 0; i < nums.size(); ++i) {
+            uint64_t gcdArr = nums[i];
+            uint64_t lcmArr = nums[i];
+            uint64_t prodArr = nums[i];
+
+            for (int j = i + 1; j < nums.size(); ++j) {
+                gcdArr = gcd(gcdArr, nums[j]);
+                lcmArr = lcm(lcmArr, nums[j]);
+                prodArr *= nums[j];
+
+                if (prodArr == gcdArr * lcmArr) { ans = max(ans, j - i + 1); }
             }
         }
 
-        return currentRun >= 2 * k || (prevRun >= k && currentRun >= k);
+        return ans;
     }
 };
 
