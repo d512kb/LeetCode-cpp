@@ -6,18 +6,21 @@ using namespace std;
 
 class Solution {
 public:
-    bool canBeEqual(string s1, string s2) {
-        bool ans = false;
+    bool hasIncreasingSubarrays(vector<int>& nums, int k) {
+        int prevRun = 1, currentRun = 1;
 
-        ans |= s1 == s2;
-        swap(s1[0], s1[2]);
-        ans |= s1 == s2;
-        swap(s1[1], s1[3]);
-        ans |= s1 == s2;
-        swap(s1[0], s1[2]);
-        ans |= s1 == s2;
+        for (int i = 1; i < nums.size(); ++i) {
+            if (nums[i] > nums[i - 1]) {
+                ++currentRun;
+                if (currentRun >= 2 * k || (prevRun >= k && currentRun >= k)) { return true; }
+            }
+            else {
+                prevRun = currentRun;
+                currentRun = 1;
+            }
+        }
 
-        return ans;
+        return currentRun >= 2 * k || (prevRun >= k && currentRun >= k);
     }
 };
 
