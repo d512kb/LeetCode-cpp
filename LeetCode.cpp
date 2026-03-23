@@ -6,17 +6,20 @@ using namespace std;
 
 class Solution {
 public:
-    bool isGood(vector<int>& nums) {
-        const int maxVal = nums.size() - 1;
-        unordered_map<int, size_t> counts;
+    bool areAlmostEqual(string s1, string s2) {
+        vector<pair<char, char>> swapped;
 
-        for (int n : nums) {
-            if (n > maxVal) { return false; }
-            else if (n == maxVal && ++counts[n] > 2) { return false; }
-            else if (n < maxVal && ++counts[n] > 1) { return false; }
+        for (int i = 0; i < s1.size(); ++i) {
+            if (s1[i] != s2[i]) {
+                swapped.emplace_back(s1[i], s2[i]);
+                if (swapped.size() > 2) { return false; }
+            }
         }
 
-        return true;
+        if (swapped.empty()) { return true; }
+        if (swapped.size() == 1) { return false; }
+
+        return swapped[0].first == swapped[1].second && swapped[0].second == swapped[1].first;
     }
 };
 
