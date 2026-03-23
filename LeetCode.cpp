@@ -6,15 +6,26 @@ using namespace std;
 
 class Solution {
 public:
-    int dayOfYear(string date) {
-        vector<int> monthDays{ 0, 31, 59 ,90, 120, 151, 181, 212, 243, 273, 304, 334 };
-        int year, month, day;
+    vector<int> circularGameLosers(int n, int k) {
+        vector<char> friends(n);
 
-        from_chars(&date[0], &date[4], year);
-        from_chars(&date[5], &date[7], month);
-        from_chars(&date[8], &date[10], day);
+        size_t idx = 0;
+        size_t step = 0;
 
-        return monthDays[month - 1] + day + (month > 2 && year != 1900 && year % 4 == 0);
+        while (friends[idx] == 0) {
+            friends[idx] = 1;
+
+            step += k;
+            idx = (idx + step) % n;
+        }
+
+        vector<int> ans;
+
+        for (int i = 0; i < n; ++i) {
+            if (friends[i] == 0) { ans.push_back(i + 1); }
+        }
+
+        return ans;
     }
 };
 
