@@ -6,19 +6,15 @@ using namespace std;
 
 class Solution {
 public:
-    bool isOneBitCharacter(vector<int>& bits) {
-        size_t i = 0;
+    int dayOfYear(string date) {
+        vector<int> monthDays{ 0, 31, 59 ,90, 120, 151, 181, 212, 243, 273, 304, 334 };
+        int year, month, day;
 
-        while (i < bits.size() - 1) {
-            if (bits[i] == 1) {
-                i += 2;
-            }
-            else {
-                i += 1;
-            }
-        }
+        from_chars(&date[0], &date[4], year);
+        from_chars(&date[5], &date[7], month);
+        from_chars(&date[8], &date[10], day);
 
-        return i != bits.size();
+        return monthDays[month - 1] + day + (month > 2 && year != 1900 && year % 4 == 0);
     }
 };
 
