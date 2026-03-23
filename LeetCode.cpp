@@ -6,23 +6,19 @@ using namespace std;
 
 class Solution {
 public:
-    bool isTrionic(vector<int>& nums) {
-        vector<char> peaks;
+    bool isOneBitCharacter(vector<int>& bits) {
+        size_t i = 0;
 
-        for (int i = 1; i < nums.size() - 1; ++i) {
-            if (nums[i - 1] == nums[i] || nums[i] == nums[i + 1]) { return false; }
-
-            if (nums[i - 1] < nums[i] && nums[i] > nums[i + 1]) {
-                peaks.push_back('^');
+        while (i < bits.size() - 1) {
+            if (bits[i] == 1) {
+                i += 2;
             }
-            else if (nums[i - 1] > nums[i] && nums[i] < nums[i + 1]) {
-                peaks.push_back('v');
+            else {
+                i += 1;
             }
-
-            if (peaks.size() > 2) { return false; }
         }
 
-        return peaks.size() == 2 && peaks[0] == '^' && peaks[1] == 'v';
+        return i != bits.size();
     }
 };
 
