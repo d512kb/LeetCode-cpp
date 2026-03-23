@@ -6,26 +6,22 @@ using namespace std;
 
 class Solution {
 public:
-    vector<int> circularGameLosers(int n, int k) {
-        vector<char> friends(n);
+    bool checkRecord(string s) {
+        size_t absent = 0;
+        size_t late = 0;
 
-        size_t idx = 0;
-        size_t step = 0;
-
-        while (friends[idx] == 0) {
-            friends[idx] = 1;
-
-            step += k;
-            idx = (idx + step) % n;
+        for (char c : s) {
+            if (c == 'A') {
+                if (++absent >= 2) { return false; }
+                late = 0;
+            }
+            else if (c == 'L') {
+                if (++late >= 3) { return false; }
+            }
+            else { late = 0; }
         }
 
-        vector<int> ans;
-
-        for (int i = 0; i < n; ++i) {
-            if (friends[i] == 0) { ans.push_back(i + 1); }
-        }
-
-        return ans;
+        return true;
     }
 };
 
