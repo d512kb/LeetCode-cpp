@@ -6,23 +6,25 @@ using namespace std;
 
 class Solution {
 public:
-    int getMaximumGenerated(int n) {
-        if (n == 0) { return 0; }
+    int hardestWorker(int n, vector<vector<int>>& logs) {
+        int longestTime = 0;
+        int prevTime = 0;
+        int ans = 0;
 
-        vector<int> values(n + 1);
-        values[0] = 0;
-        values[1] = 1;
-        int ans = 1;
+        for (int i = 0; i < logs.size(); ++i) {
+            int diff = logs[i][1] - prevTime;
 
-        for (int i = 2; i <= n; ++i) {
-            if (i % 2) {
-                values[i] = values[i / 2] + values[i / 2 + 1];
+            if (diff > longestTime) {
+                ans = logs[i][0];
+                longestTime = diff;
             }
-            else {
-                values[i] = values[i / 2];
+            else if (diff == longestTime) {
+                if (logs[i][0] < ans) {
+                    ans = logs[i][0];
+                }
             }
 
-            ans = max(ans, values[i]);
+            prevTime = logs[i][1];
         }
 
         return ans;
