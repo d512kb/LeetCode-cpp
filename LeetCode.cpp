@@ -6,22 +6,24 @@ using namespace std;
 
 class Solution {
 public:
-    bool checkRecord(string s) {
-        size_t absent = 0;
-        size_t late = 0;
+    int closestTarget(vector<string>& words, string target, int startIndex) {
+        const size_t sz = words.size();
+        int rightPos = startIndex;
+        int leftPos = startIndex;
 
-        for (char c : s) {
-            if (c == 'A') {
-                if (++absent >= 2) { return false; }
-                late = 0;
-            }
-            else if (c == 'L') {
-                if (++late >= 3) { return false; }
-            }
-            else { late = 0; }
-        }
+        do {
+            if (words[rightPos] == target) { break; }
+            rightPos = (rightPos + 1) % sz;
+        } while (rightPos != startIndex);
 
-        return true;
+        do {
+            if (words[leftPos] == target) { break; }
+            leftPos = (leftPos - 1 + sz) % sz;
+        } while (leftPos != startIndex);
+
+        if (leftPos == startIndex && words[leftPos] != target) { return -1; }
+
+        return min((startIndex - leftPos + sz) % sz, (rightPos - startIndex + sz) % sz);
     }
 };
 
