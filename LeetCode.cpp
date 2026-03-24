@@ -6,24 +6,14 @@ using namespace std;
 
 class Solution {
 public:
-    int closestTarget(vector<string>& words, string target, int startIndex) {
-        const size_t sz = words.size();
-        int rightPos = startIndex;
-        int leftPos = startIndex;
+    bool isPowerOfThree(int n) {
+        if (n <= 0) { return false; }
 
-        do {
-            if (words[rightPos] == target) { break; }
-            rightPos = (rightPos + 1) % sz;
-        } while (rightPos != startIndex);
+        while (n > 1 && n % 3 == 0) {
+            n /= 3;
+        }
 
-        do {
-            if (words[leftPos] == target) { break; }
-            leftPos = (leftPos - 1 + sz) % sz;
-        } while (leftPos != startIndex);
-
-        if (leftPos == startIndex && words[leftPos] != target) { return -1; }
-
-        return min((startIndex - leftPos + sz) % sz, (rightPos - startIndex + sz) % sz);
+        return n == 1;
     }
 };
 
