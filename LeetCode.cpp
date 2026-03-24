@@ -6,28 +6,29 @@ using namespace std;
 
 class Solution {
 public:
-    int hardestWorker(int n, vector<vector<int>>& logs) {
-        int longestTime = 0;
-        int prevTime = 0;
-        int ans = 0;
+    int maxDivScore(vector<int>& nums, vector<int>& divisors) {
+        int bestDivisor = divisors[0];
+        int bestDivisorScore = 0;
 
-        for (int i = 0; i < logs.size(); ++i) {
-            int diff = logs[i][1] - prevTime;
+        for (int d : divisors) {
+            int currentScore = 0;
 
-            if (diff > longestTime) {
-                ans = logs[i][0];
-                longestTime = diff;
-            }
-            else if (diff == longestTime) {
-                if (logs[i][0] < ans) {
-                    ans = logs[i][0];
+            for (int n : nums) {
+                if (n % d == 0) {
+                    ++currentScore;
                 }
             }
 
-            prevTime = logs[i][1];
+            if (currentScore > bestDivisorScore) {
+                bestDivisor = d;
+                bestDivisorScore = currentScore;
+            }
+            else if (currentScore == bestDivisorScore && d < bestDivisor) {
+                bestDivisor = d;
+            }
         }
 
-        return ans;
+        return bestDivisor;
     }
 };
 
