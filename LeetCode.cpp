@@ -6,29 +6,22 @@ using namespace std;
 
 class Solution {
 public:
-    int maxDivScore(vector<int>& nums, vector<int>& divisors) {
-        int bestDivisor = divisors[0];
-        int bestDivisorScore = 0;
+    int findLengthOfLCIS(vector<int>& nums) {
+        int currentSeqLen = 1;
+        int maxSeqLen = 1;
 
-        for (int d : divisors) {
-            int currentScore = 0;
-
-            for (int n : nums) {
-                if (n % d == 0) {
-                    ++currentScore;
+        for (int i = 1; i < nums.size(); ++i) {
+            if (nums[i] > nums[i - 1]) {
+                if (++currentSeqLen > maxSeqLen) {
+                    maxSeqLen = currentSeqLen;
                 }
             }
-
-            if (currentScore > bestDivisorScore) {
-                bestDivisor = d;
-                bestDivisorScore = currentScore;
-            }
-            else if (currentScore == bestDivisorScore && d < bestDivisor) {
-                bestDivisor = d;
+            else {
+                currentSeqLen = 1;
             }
         }
 
-        return bestDivisor;
+        return maxSeqLen;
     }
 };
 
