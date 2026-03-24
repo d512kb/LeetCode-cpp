@@ -6,22 +6,10 @@ using namespace std;
 
 class Solution {
 public:
-    int findLengthOfLCIS(vector<int>& nums) {
-        int currentSeqLen = 1;
-        int maxSeqLen = 1;
+    bool isPowerOfFour(int n) {
+        int mask = 0x55555555;
 
-        for (int i = 1; i < nums.size(); ++i) {
-            if (nums[i] > nums[i - 1]) {
-                if (++currentSeqLen > maxSeqLen) {
-                    maxSeqLen = currentSeqLen;
-                }
-            }
-            else {
-                currentSeqLen = 1;
-            }
-        }
-
-        return maxSeqLen;
+        return n > 0 && (n & n - 1) == 0 && (n & mask);
     }
 };
 
