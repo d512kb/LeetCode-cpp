@@ -6,29 +6,18 @@ using namespace std;
 
 class Solution {
 public:
-    int mostFrequentEven(vector<int>& nums) {
-        unordered_map<int, int> evens;
+    void duplicateZeros(vector<int>& arr) {
+        int shift = count(arr.begin(), arr.end(), 0);
+        const int end = arr.size() - 1;
 
-        for (int n : nums) {
-            if (n % 2 == 0) {
-                ++evens[n];
+        for (int i = end; i >= 0; --i) {
+            if (arr[i] == 0) {
+                if (i + shift <= end) { arr[i + shift] = 0; }
+                --shift;
             }
+
+            if (i + shift <= end) { arr[i + shift] = arr[i]; }
         }
-
-        int maxElem = -1;
-        int count = 0;
-
-        for (const auto& even : evens) {
-            if (even.second > count) {
-                maxElem = even.first;
-                count = even.second;
-            }
-            else if (even.second == count && even.first < maxElem) {
-                maxElem = even.first;
-            }
-        }
-
-        return maxElem;
     }
 };
 
