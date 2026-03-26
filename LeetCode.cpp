@@ -6,15 +6,21 @@ using namespace std;
 
 class Solution {
 public:
-    int maxOperations(vector<int>& nums) {
-        const int targetScore = nums[0] + nums[1];
-        int ans = 0;
+    bool isPrefixString(string s, vector<string>& words) {
+        size_t startPos = 0;
 
-        for (int i = 0; i + 1 < nums.size() && nums[i] + nums[i + 1] == targetScore; i += 2) {
-            ++ans;
+        for (const auto& word : words) {
+            if (startPos == s.size()) { return true; }
+
+            if (s.find(word, startPos) == startPos) {
+                startPos += word.size();
+            }
+            else {
+                return false;
+            }
         }
 
-        return ans;
+        return startPos == s.size();
     }
 };
 
