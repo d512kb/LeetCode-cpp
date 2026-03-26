@@ -6,20 +6,19 @@ using namespace std;
 
 class Solution {
 public:
-    bool isFascinating(int n) {
-        array<int, 10> digits{};
+    bool canMakeSquare(vector<vector<char>>& grid) {
+        auto check = [&](int row, int col) {
+            int ans = 0;
 
-        int m = 2 * n;
-        while (m) { ++digits[m % 10]; m /= 10; }
-        m = 3 * n;
-        while (m) { ++digits[m % 10]; m /= 10; }
-        while (n) { ++digits[n % 10]; n /= 10; }
+            if (grid[row][col] == 'W') { ++ans; }
+            if (grid[row][col + 1] == 'W') { ++ans; }
+            if (grid[row + 1][col] == 'W') { ++ans; }
+            if (grid[row + 1][col + 1] == 'W') { ++ans; }
 
-        for (int i = 1; i < 10; ++i) {
-            if (digits[i] != 1) { return false; }
-        }
+            return ans != 2;
+            };
 
-        return true;
+        return check(0, 0) || check(0, 1) || check(1, 0) || check(1, 1);
     }
 };
 
