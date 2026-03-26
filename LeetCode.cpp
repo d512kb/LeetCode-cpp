@@ -6,21 +6,20 @@ using namespace std;
 
 class Solution {
 public:
-    bool isPrefixString(string s, vector<string>& words) {
-        size_t startPos = 0;
+    bool isFascinating(int n) {
+        array<int, 10> digits{};
 
-        for (const auto& word : words) {
-            if (startPos == s.size()) { return true; }
+        int m = 2 * n;
+        while (m) { ++digits[m % 10]; m /= 10; }
+        m = 3 * n;
+        while (m) { ++digits[m % 10]; m /= 10; }
+        while (n) { ++digits[n % 10]; n /= 10; }
 
-            if (s.find(word, startPos) == startPos) {
-                startPos += word.size();
-            }
-            else {
-                return false;
-            }
+        for (int i = 1; i < 10; ++i) {
+            if (digits[i] != 1) { return false; }
         }
 
-        return startPos == s.size();
+        return true;
     }
 };
 
