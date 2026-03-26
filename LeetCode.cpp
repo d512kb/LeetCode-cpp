@@ -6,42 +6,22 @@ using namespace std;
 
 class Solution {
 public:
-    string reformat(string s) {
-        vector<char> chars;
-        vector<char> digits;
+    int countBeautifulPairs(vector<int>& nums) {
+        array<int, 10> countDigits{};
+        int ans = 0;
 
-        for (char c : s) {
-            if (isdigit(c)) {
-                digits.push_back(c);
-            }
-            else {
-                chars.push_back(c);
-            }
-        }
+        for (int i = 0; i < nums.size(); ++i) {
+            int a = nums[i];
+            char d = a % 10;
 
-        if (abs(static_cast<int>(digits.size()) - static_cast<int>(chars.size())) > 1) { return ""; }
+            for (int j = 1; j < 10; ++j) {
+                if (gcd(j, d) == 1) {
+                    ans += countDigits[j];
+                }
+            }
 
-        string ans;
-
-        if (digits.size() > chars.size()) {
-            while (digits.size() > 1) {
-                ans.push_back(digits.back());
-                digits.pop_back();
-                ans.push_back(chars.back());
-                chars.pop_back();
-            }
-            ans.push_back(digits.back());
-        }
-        else {
-            while (!digits.empty()) {
-                ans.push_back(chars.back());
-                chars.pop_back();
-                ans.push_back(digits.back());
-                digits.pop_back();
-            }
-            if (!chars.empty()) {
-                ans.push_back(chars.back());
-            }
+            while (a >= 10) { a /= 10; }
+            ++countDigits[a];
         }
 
         return ans;
