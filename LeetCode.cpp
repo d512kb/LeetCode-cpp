@@ -6,8 +6,29 @@ using namespace std;
 
 class Solution {
 public:
-    string winningPlayer(int x, int y) {
-        return min(x, y / 4) % 2 ? "Alice" : "Bob";
+    int mostFrequentEven(vector<int>& nums) {
+        unordered_map<int, int> evens;
+
+        for (int n : nums) {
+            if (n % 2 == 0) {
+                ++evens[n];
+            }
+        }
+
+        int maxElem = -1;
+        int count = 0;
+
+        for (const auto& even : evens) {
+            if (even.second > count) {
+                maxElem = even.first;
+                count = even.second;
+            }
+            else if (even.second == count && even.first < maxElem) {
+                maxElem = even.first;
+            }
+        }
+
+        return maxElem;
     }
 };
 
