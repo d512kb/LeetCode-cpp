@@ -6,25 +6,23 @@ using namespace std;
 
 class Solution {
 public:
-    int countBeautifulPairs(vector<int>& nums) {
-        array<int, 10> countDigits{};
-        int ans = 0;
+    int dominantIndex(vector<int>& nums) {
+        int largest = 0;
+        int large = 0;
+        int ans = -1;
 
         for (int i = 0; i < nums.size(); ++i) {
-            int a = nums[i];
-            char d = a % 10;
-
-            for (int j = 1; j < 10; ++j) {
-                if (gcd(j, d) == 1) {
-                    ans += countDigits[j];
-                }
+            if (nums[i] > largest) {
+                large = largest;
+                largest = nums[i];
+                ans = i;
             }
-
-            while (a >= 10) { a /= 10; }
-            ++countDigits[a];
+            else if (nums[i] > large) {
+                large = nums[i];
+            }
         }
 
-        return ans;
+        return largest >= large * 2 ? ans : -1;
     }
 };
 
