@@ -6,26 +6,25 @@ using namespace std;
 
 class Solution {
 public:
-    bool checkValid(vector<vector<int>>& matrix) {
-        const auto sz = matrix.size();
+    int secondHighest(string s) {
+        int large = -1;
+        int largest = -1;
 
-        for (int row = 0; row < sz; ++row) {
-            vector<char> counter(sz + 1);
+        for (char c : s) {
+            if (isdigit(c)) {
+                int n = c - '0';
 
-            for (int col = 0; col < sz; ++col) {
-                if (++counter[matrix[row][col]] > 1) { return false; }
+                if (n > largest) {
+                    large = largest;
+                    largest = n;
+                }
+                else if (n > large && n < largest) {
+                    large = n;
+                }
             }
         }
 
-        for (int col = 0; col < sz; ++col) {
-            vector<char> counter(sz + 1);
-
-            for (int row = 0; row < sz; ++row) {
-                if (++counter[matrix[row][col]] > 1) { return false; }
-            }
-        }
-
-        return true;
+        return large;
     }
 };
 
