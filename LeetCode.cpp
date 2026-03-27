@@ -6,25 +6,26 @@ using namespace std;
 
 class Solution {
 public:
-    int largestSumAfterKNegations(vector<int>& nums, int k) {
-        sort(nums.begin(), nums.end());
+    string thousandSeparator(int n) {
+        if (n == 0) { return "0"; }
 
-        for (int i = 0; i < nums.size() && nums[i] < 0 && k > 0; ++i, --k) {
-            nums[i] = -nums[i];
-        }
+        string result;
+        char counter = 0;
 
-        int ans = accumulate(nums.begin(), nums.end(), 0);
+        while (n) {
+            result.push_back('0' + n % 10);
+            n /= 10;
 
-        if (k > 0) {
-            if (k % 2 == 0) {
-                return ans;
-            }
-            else {
-                return ans - 2 * *min_element(nums.begin(), nums.end());
+            if (++counter == 3) {
+                result.push_back('.');
+                counter = 0;
             }
         }
 
-        return ans;
+        if (result.back() == '.') { result.pop_back(); }
+        reverse(result.begin(), result.end());
+
+        return result;
     }
 };
 
