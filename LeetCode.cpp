@@ -6,15 +6,15 @@ using namespace std;
 
 class Solution {
 public:
-    int countOdds(int low, int high) {
-        if (low == high) { return low % 2; }
+    string getSmallestString(string s) {
+        for (int i = 1; i < s.size(); ++i) {
+            if (s[i - 1] > s[i] && (s[i - 1] - '0') % 2 == (s[i] - '0') % 2) {
+                swap(s[i - 1], s[i]);
+                return s;
+            }
+        }
 
-        int ans = 0;
-
-        if (low % 2) { ++ans; ++low; }
-        if (high % 2) { ++ans; --high; }
-
-        return ans + (high - low) / 2;
+        return s;
     }
 };
 
