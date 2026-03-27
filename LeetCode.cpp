@@ -6,16 +6,25 @@ using namespace std;
 
 class Solution {
 public:
-    vector<bool> prefixesDivBy5(vector<int>& nums) {
-        vector<bool> result(nums.size());
-        int val = 0;
+    int largestSumAfterKNegations(vector<int>& nums, int k) {
+        sort(nums.begin(), nums.end());
 
-        for (int i = 0; i < nums.size(); ++i) {
-            val = (val * 2 + nums[i]) % 5;
-            result[i] = val == 0;
+        for (int i = 0; i < nums.size() && nums[i] < 0 && k > 0; ++i, --k) {
+            nums[i] = -nums[i];
         }
 
-        return result;
+        int ans = accumulate(nums.begin(), nums.end(), 0);
+
+        if (k > 0) {
+            if (k % 2 == 0) {
+                return ans;
+            }
+            else {
+                return ans - 2 * *min_element(nums.begin(), nums.end());
+            }
+        }
+
+        return ans;
     }
 };
 
