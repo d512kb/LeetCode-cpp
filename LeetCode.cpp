@@ -6,24 +6,25 @@ using namespace std;
 
 class Solution {
 public:
-    string convertToBase7(int num) {
-        if (num == 0) { return "0"; }
+    ListNode* removeElements(ListNode* head, int val) {
+        ListNode preHead;
+        preHead.next = head;
 
-        string result;
-        bool minus = num < 0;
+        ListNode* prev = &preHead;
 
-        if (minus) { num = -num; }
-
-        while (num) {
-            result.push_back('0' + num % 7);
-            num /= 7;
+        while (head) {
+            if (head->val == val) {
+                prev->next = head->next;
+                delete head;
+                head = prev->next;
+            }
+            else {
+                prev = head;
+                head = head->next;
+            }
         }
 
-        if (minus) { result.push_back('-'); }
-
-        reverse(result.begin(), result.end());
-
-        return result;
+        return preHead.next;
     }
 };
 
