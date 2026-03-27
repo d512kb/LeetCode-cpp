@@ -5,16 +5,44 @@
 using namespace std;
 
 class Solution {
-public:
-    string getSmallestString(string s) {
-        for (int i = 1; i < s.size(); ++i) {
-            if (s[i - 1] > s[i] && (s[i - 1] - '0') % 2 == (s[i] - '0') % 2) {
-                swap(s[i - 1], s[i]);
-                return s;
-            }
+private:
+    class DSet {
+        vector<int> m_parent;
+
+    public:
+        DSet(int n) : m_parent(n, -1) {};
+
+        int findParent(int n) {
+            if (m_parent[n] < 0) { return n; }
+            return m_parent[n] = findParent(m_parent[n]);
         }
 
-        return s;
+        void join(int a, int b) {
+            int parentA = findParent(a);
+            int parentB = findParent(b);
+
+            if (parentA == parentB) { return; }
+
+            if (m_parent[parentA] < m_parent[parentB]) {
+                m_parent[parentA] += m_parent[parentB];
+                m_parent[parentB] = parentA;
+            }
+            else {
+                m_parent[parentB] += m_parent[parentA];
+                m_parent[parentA] = parentB;
+            }
+        }
+    };
+
+public:
+    bool validPath(int n, vector<vector<int>>& edges, int source, int destination) {
+        DSet dset(n);
+
+        for (const auto& edge : edges) {
+            dset.join(edge[0], edge[1]);
+        }
+
+        return dset.findParent(source) == dset.findParent(destination);
     }
 };
 
