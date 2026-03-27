@@ -6,18 +6,15 @@ using namespace std;
 
 class Solution {
 public:
-    int getMinDistance(vector<int>& nums, int target, int start) {
-        int ans = nums.size();
+    int countOdds(int low, int high) {
+        if (low == high) { return low % 2; }
 
-        for (int i = 0; i < nums.size(); ++i) {
-            if (nums[i] == target) {
-                if (abs(i - start) < ans) {
-                    ans = abs(i - start);
-                }
-            }
-        }
+        int ans = 0;
 
-        return ans;
+        if (low % 2) { ++ans; ++low; }
+        if (high % 2) { ++ans; --high; }
+
+        return ans + (high - low) / 2;
     }
 };
 
