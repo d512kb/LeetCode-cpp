@@ -6,25 +6,18 @@ using namespace std;
 
 class Solution {
 public:
-    ListNode* removeElements(ListNode* head, int val) {
-        ListNode preHead;
-        preHead.next = head;
+    int getMinDistance(vector<int>& nums, int target, int start) {
+        int ans = nums.size();
 
-        ListNode* prev = &preHead;
-
-        while (head) {
-            if (head->val == val) {
-                prev->next = head->next;
-                delete head;
-                head = prev->next;
-            }
-            else {
-                prev = head;
-                head = head->next;
+        for (int i = 0; i < nums.size(); ++i) {
+            if (nums[i] == target) {
+                if (abs(i - start) < ans) {
+                    ans = abs(i - start);
+                }
             }
         }
 
-        return preHead.next;
+        return ans;
     }
 };
 
