@@ -6,22 +6,23 @@ using namespace std;
 
 class Solution {
 public:
-    int minNumber(vector<int>& nums1, vector<int>& nums2) {
-        sort(nums1.begin(), nums1.end());
-        sort(nums2.begin(), nums2.end());
+    int distanceBetweenBusStops(vector<int>& distance, int start, int destination) {
+        const int sz = distance.size();
+        int distRight = 0;
+        int distLeft = 0;
 
-        vector<int> intersec;
-
-        set_intersection(nums1.begin(), nums1.end(), nums2.begin(), nums2.end(), back_inserter(intersec));
-
-        if (!intersec.empty()) { return intersec.front(); }
-
-        if (nums1.front() < nums2.front()) {
-            return nums1.front() * 10 + nums2.front();
+        for (int i = start; i != destination; i = (i + 1) % sz) {
+            distRight += distance[i];
         }
-        else {
-            return nums2.front() * 10 + nums1.front();
+
+        for (int i = start; i != destination;) {
+            --i;
+            if (i < 0) { i = sz - 1; }
+
+            distLeft += distance[i];
         }
+
+        return min(distRight, distLeft);
     }
 };
 
