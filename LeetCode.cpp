@@ -6,18 +6,16 @@ using namespace std;
 
 class Solution {
 public:
-    void duplicateZeros(vector<int>& arr) {
-        int shift = count(arr.begin(), arr.end(), 0);
-        const int end = arr.size() - 1;
+    vector<bool> prefixesDivBy5(vector<int>& nums) {
+        vector<bool> result(nums.size());
+        int val = 0;
 
-        for (int i = end; i >= 0; --i) {
-            if (arr[i] == 0) {
-                if (i + shift <= end) { arr[i + shift] = 0; }
-                --shift;
-            }
-
-            if (i + shift <= end) { arr[i + shift] = arr[i]; }
+        for (int i = 0; i < nums.size(); ++i) {
+            val = (val * 2 + nums[i]) % 5;
+            result[i] = val == 0;
         }
+
+        return result;
     }
 };
 
