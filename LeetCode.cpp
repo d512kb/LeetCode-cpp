@@ -6,31 +6,20 @@ using namespace std;
 
 class Solution {
 public:
-    vector<vector<int>> largeGroupPositions(string s) {
-        int a = 0;
-        int b = 0;
-        vector<vector<int>> result;
+    int vowelConsonantScore(string s) {
+        int v = 0;
+        int c = 0;
 
-        while (b < s.size()) {
-            if (s[a] == s[b]) {
-                ++b;
+        for (char ch : s) {
+            if (ch == 'a' || ch == 'e' || ch == 'i' || ch == 'o' || ch == 'u') {
+                ++v;
             }
-            else {
-                if (b - a >= 3) {
-                    result.push_back({ a, b - 1 });
-                }
-
-                a = b;
+            else if (isalpha(ch)) {
+                ++c;
             }
         }
 
-        if (b - a >= 3) {
-            result.push_back({ a, b - 1 });
-        }
-
-        sort(result.begin(), result.end());
-
-        return result;
+        return c > 0 ? v / c : 0;
     }
 };
 
