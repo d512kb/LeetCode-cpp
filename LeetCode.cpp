@@ -6,24 +6,29 @@ using namespace std;
 
 class Solution {
 public:
-    string thousandSeparator(int n) {
-        if (n == 0) { return "0"; }
+    vector<vector<int>> largeGroupPositions(string s) {
+        int a = 0;
+        int b = 0;
+        vector<vector<int>> result;
 
-        string result;
-        char counter = 0;
+        while (b < s.size()) {
+            if (s[a] == s[b]) {
+                ++b;
+            }
+            else {
+                if (b - a >= 3) {
+                    result.push_back({ a, b - 1 });
+                }
 
-        while (n) {
-            result.push_back('0' + n % 10);
-            n /= 10;
-
-            if (++counter == 3) {
-                result.push_back('.');
-                counter = 0;
+                a = b;
             }
         }
 
-        if (result.back() == '.') { result.pop_back(); }
-        reverse(result.begin(), result.end());
+        if (b - a >= 3) {
+            result.push_back({ a, b - 1 });
+        }
+
+        sort(result.begin(), result.end());
 
         return result;
     }
