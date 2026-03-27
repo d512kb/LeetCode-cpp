@@ -6,25 +6,24 @@ using namespace std;
 
 class Solution {
 public:
-    int secondHighest(string s) {
-        int large = -1;
-        int largest = -1;
+    string convertToBase7(int num) {
+        if (num == 0) { return "0"; }
 
-        for (char c : s) {
-            if (isdigit(c)) {
-                int n = c - '0';
+        string result;
+        bool minus = num < 0;
 
-                if (n > largest) {
-                    large = largest;
-                    largest = n;
-                }
-                else if (n > large && n < largest) {
-                    large = n;
-                }
-            }
+        if (minus) { num = -num; }
+
+        while (num) {
+            result.push_back('0' + num % 7);
+            num /= 7;
         }
 
-        return large;
+        if (minus) { result.push_back('-'); }
+
+        reverse(result.begin(), result.end());
+
+        return result;
     }
 };
 
