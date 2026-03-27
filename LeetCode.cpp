@@ -6,23 +6,22 @@ using namespace std;
 
 class Solution {
 public:
-    int distanceBetweenBusStops(vector<int>& distance, int start, int destination) {
-        const int sz = distance.size();
-        int distRight = 0;
-        int distLeft = 0;
+    bool strongPasswordCheckerII(string password) {
+        if (password.size() < 8) { return false; }
 
-        for (int i = start; i != destination; i = (i + 1) % sz) {
-            distRight += distance[i];
+        string specials("!@#$%^&*()-+");
+        bitset<4> flags;
+
+        for (int i = 0; i < password.size(); ++i) {
+            if (i > 0 && password[i - 1] == password[i]) { return false; }
+
+            if (islower(password[i])) { flags[0] = 1; }
+            if (isupper(password[i])) { flags[1] = 1; }
+            if (isdigit(password[i])) { flags[2] = 1; }
+            if (specials.contains(password[i])) { flags[3] = 1; }
         }
 
-        for (int i = start; i != destination;) {
-            --i;
-            if (i < 0) { i = sz - 1; }
-
-            distLeft += distance[i];
-        }
-
-        return min(distRight, distLeft);
+        return flags.all();
     }
 };
 
