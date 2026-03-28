@@ -6,20 +6,28 @@ using namespace std;
 
 class Solution {
 public:
-    string toHex(int num) {
-        if (num == 0) { return "0"; }
-
-        constexpr auto codeTable("0123456789abcdef");
-        string result;
-        uint32_t n = num;
+    long long sumAndMultiply(int n) {
+        int x = 0;
 
         while (n) {
-            result.push_back(codeTable[n & 0b1111]);
-            n >>= 4;
+            if (n % 10) {
+                x = x * 10 + n % 10;
+            }
+
+            n /= 10;
         }
 
-        reverse(result.begin(), result.end());
-        return result;
+        int sum = 0;
+        long long xRev = 0;
+
+        while (x) {
+            sum += x % 10;
+            xRev = xRev * 10 + x % 10;
+
+            x /= 10;
+        }
+
+        return xRev * sum;
     }
 };
 
