@@ -6,28 +6,16 @@ using namespace std;
 
 class Solution {
 public:
-    long long sumAndMultiply(int n) {
-        int x = 0;
+    bool check(vector<int>& nums) {
+        int drops = 0;
 
-        while (n) {
-            if (n % 10) {
-                x = x * 10 + n % 10;
+        for (int i = 1; i < nums.size(); ++i) {
+            if (nums[i - 1] > nums[i]) {
+                ++drops;
             }
-
-            n /= 10;
         }
 
-        int sum = 0;
-        long long xRev = 0;
-
-        while (x) {
-            sum += x % 10;
-            xRev = xRev * 10 + x % 10;
-
-            x /= 10;
-        }
-
-        return xRev * sum;
+        return drops == 0 || (drops == 1 && nums.front() >= nums.back());
     }
 };
 
