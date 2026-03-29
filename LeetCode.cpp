@@ -6,10 +6,20 @@ using namespace std;
 
 class Solution {
 public:
-    bool detectCapitalUse(string word) {
-        auto caps = count_if(word.begin(), word.end(), [](char c) { return isupper(c); });
+    bool scoreBalance(string s) {
+        auto rightSum = accumulate(s.begin(), s.end(), 0, [](int a, char b) { return a + b - 'a' + 1; });
+        int leftSum = 0;
 
-        return caps == 0 || (caps == 1 && isupper(word[0])) || caps == word.size();
+        for (char c : s) {
+            int val = c - 'a' + 1;
+
+            leftSum += val;
+            rightSum -= val;
+
+            if (leftSum == rightSum) { return true; }
+        }
+
+        return false;
     }
 };
 
