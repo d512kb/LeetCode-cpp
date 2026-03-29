@@ -6,22 +6,19 @@ using namespace std;
 
 class Solution {
 public:
-    bool canFormArray(vector<int>& arr, vector<vector<int>>& pieces) {
-        unordered_map<int, int> mapping;
+    int minimumRightShifts(vector<int>& nums) {
+        int pos = 0;
+        bool seen = false;
 
-        for (int i = 0; i < arr.size(); ++i) { mapping[arr[i]] = i; }
-
-        for (const auto& piece : pieces) {
-            int pos = mapping[piece.front()];
-
-            if (arr.size() - pos < piece.size()) { return false; }
-
-            if (!equal(piece.begin(), piece.end(), arr.begin() + pos)) {
-                return false;
+        for (int i = 0; i < nums.size(); ++i) {
+            if (nums[i] > nums[(i + 1) % nums.size()]) {
+                if (seen) { return -1; }
+                seen = true;
+                pos = i;
             }
         }
 
-        return true;
+        return nums.size() - pos - 1;
     }
 };
 
