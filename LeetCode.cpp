@@ -6,19 +6,31 @@ using namespace std;
 
 class Solution {
 public:
-    int minimumRightShifts(vector<int>& nums) {
-        int pos = 0;
-        bool seen = false;
+    vector<int> maxSubsequence(vector<int>& nums, int k) {
+        priority_queue<pair<int, int>, vector<pair<int, int>>, greater<>> pq;
 
-        for (int i = 0; i < nums.size(); ++i) {
-            if (nums[i] > nums[(i + 1) % nums.size()]) {
-                if (seen) { return -1; }
-                seen = true;
-                pos = i;
+        for (int i = 0; i < k; ++i) {
+            pq.emplace(nums[i], i);
+        }
+
+        for (int i = k; i < nums.size(); ++i) {
+            if (nums[i] > pq.top().first) {
+                pq.pop();
+                pq.emplace(nums[i], i);
             }
         }
 
-        return nums.size() - pos - 1;
+        vector<int> result;
+
+        while (!pq.empty()) {
+            result.push_back(pq.top().second);
+            pq.pop();
+        }
+
+        sort(result.begin(), result.end());
+        transform(result.begin(), result.end(), result.begin(), [&nums](int i) { return nums[i]; });
+
+        return result;
     }
 };
 
