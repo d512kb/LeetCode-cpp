@@ -6,10 +6,8 @@ using namespace std;
 
 class Solution {
 public:
-    int numberOfCuts(int n) {
-        if (n == 1) { return 0; }
-        if (n % 2) { return n; }
-        return n / 2;
+    int accountBalanceAfterPurchase(int purchaseAmount) {
+        return 100 - (purchaseAmount + 5) / 10 * 10;
     }
 };
 
