@@ -6,8 +6,10 @@ using namespace std;
 
 class Solution {
 public:
-    int accountBalanceAfterPurchase(int purchaseAmount) {
-        return 100 - (purchaseAmount + 5) / 10 * 10;
+    bool detectCapitalUse(string word) {
+        auto caps = count_if(word.begin(), word.end(), [](char c) { return isupper(c); });
+
+        return caps == 0 || (caps == 1 && isupper(word[0])) || caps == word.size();
     }
 };
 
