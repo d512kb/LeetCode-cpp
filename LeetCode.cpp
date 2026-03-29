@@ -6,20 +6,22 @@ using namespace std;
 
 class Solution {
 public:
-    bool scoreBalance(string s) {
-        auto rightSum = accumulate(s.begin(), s.end(), 0, [](int a, char b) { return a + b - 'a' + 1; });
-        int leftSum = 0;
+    bool canFormArray(vector<int>& arr, vector<vector<int>>& pieces) {
+        unordered_map<int, int> mapping;
 
-        for (char c : s) {
-            int val = c - 'a' + 1;
+        for (int i = 0; i < arr.size(); ++i) { mapping[arr[i]] = i; }
 
-            leftSum += val;
-            rightSum -= val;
+        for (const auto& piece : pieces) {
+            int pos = mapping[piece.front()];
 
-            if (leftSum == rightSum) { return true; }
+            if (arr.size() - pos < piece.size()) { return false; }
+
+            if (!equal(piece.begin(), piece.end(), arr.begin() + pos)) {
+                return false;
+            }
         }
 
-        return false;
+        return true;
     }
 };
 
