@@ -6,16 +6,10 @@ using namespace std;
 
 class Solution {
 public:
-    bool check(vector<int>& nums) {
-        int drops = 0;
-
-        for (int i = 1; i < nums.size(); ++i) {
-            if (nums[i - 1] > nums[i]) {
-                ++drops;
-            }
-        }
-
-        return drops == 0 || (drops == 1 && nums.front() >= nums.back());
+    int numberOfCuts(int n) {
+        if (n == 1) { return 0; }
+        if (n % 2) { return n; }
+        return n / 2;
     }
 };
 
