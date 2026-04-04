@@ -6,14 +6,20 @@ using namespace std;
 
 class Solution {
 public:
-    int findPoisonedDuration(vector<int>& timeSeries, int duration) {
+    int minimumMoves(string s) {
         int ans = 0;
 
-        for (int i = 1; i < timeSeries.size(); ++i) {
-            ans += min(timeSeries[i] - timeSeries[i - 1], duration);
+        for (int i = 0; i < s.size();) {
+            if (s[i] == 'X') {
+                ans += 1;
+                i += 3;
+            }
+            else {
+                ++i;
+            }
         }
 
-        return ans + duration;
+        return ans;
     }
 };
 
