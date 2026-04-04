@@ -6,31 +6,21 @@ using namespace std;
 
 class Solution {
 public:
-    vector<int> maxSubsequence(vector<int>& nums, int k) {
-        priority_queue<pair<int, int>, vector<pair<int, int>>, greater<>> pq;
+    int incremovableSubarrayCount(vector<int>& nums) {
+        auto sortedUntil = is_sorted_until(nums.begin(), nums.end(), less_equal{});
+        int ans = distance(nums.begin(), sortedUntil);
+        if (ans == nums.size()) { --ans; } // we need this in case the array is sorted to correct last increase
 
-        for (int i = 0; i < k; ++i) {
-            pq.emplace(nums[i], i);
+        for (int i = nums.size() - 1; i > 0; --i) {
+            if (i < nums.size() - 1 && nums[i] >= nums[i + 1]) { break; }
+            sortedUntil = upper_bound(nums.begin(), sortedUntil, nums[i] - 1);
+
+            // add length of the prefix that can be joined with the suffix, and also add the case when there is
+            // something in between to remove
+            ans += distance(nums.begin(), sortedUntil) + (distance(nums.begin(), sortedUntil) != i);
         }
 
-        for (int i = k; i < nums.size(); ++i) {
-            if (nums[i] > pq.top().first) {
-                pq.pop();
-                pq.emplace(nums[i], i);
-            }
-        }
-
-        vector<int> result;
-
-        while (!pq.empty()) {
-            result.push_back(pq.top().second);
-            pq.pop();
-        }
-
-        sort(result.begin(), result.end());
-        transform(result.begin(), result.end(), result.begin(), [&nums](int i) { return nums[i]; });
-
-        return result;
+        return ans + 1; // + case when we remove all the items
     }
 };
 
