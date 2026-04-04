@@ -6,16 +6,32 @@ using namespace std;
 
 class Solution {
 public:
-    int maxCount(int m, int n, vector<vector<int>>& ops) {
-        int row = m;
-        int col = n;
+    vector<int> findMode(TreeNode* root) {
+        unordered_map<int, int> freq;
 
-        for (const auto& op : ops) {
-            row = min(row, op[0]);
-            col = min(col, op[1]);
+        countMode(root, freq);
+
+        int maxFreq = 0;
+        for (const auto& [val, freq] : freq) {
+            if (freq > maxFreq) { maxFreq = freq; }
         }
 
-        return row * col;
+        vector<int> result;
+
+        for (const auto& [val, freq] : freq) {
+            if (freq == maxFreq) { result.push_back(val); }
+        }
+
+        return result;
+    }
+private:
+    void countMode(TreeNode* node, unordered_map<int, int>& freq) {
+        if (!node) { return; }
+
+        ++freq[node->val];
+
+        countMode(node->left, freq);
+        countMode(node->right, freq);
     }
 };
 
