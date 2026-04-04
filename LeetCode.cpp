@@ -6,21 +6,14 @@ using namespace std;
 
 class Solution {
 public:
-    int incremovableSubarrayCount(vector<int>& nums) {
-        auto sortedUntil = is_sorted_until(nums.begin(), nums.end(), less_equal{});
-        int ans = distance(nums.begin(), sortedUntil);
-        if (ans == nums.size()) { --ans; } // we need this in case the array is sorted to correct last increase
+    int findPoisonedDuration(vector<int>& timeSeries, int duration) {
+        int ans = 0;
 
-        for (int i = nums.size() - 1; i > 0; --i) {
-            if (i < nums.size() - 1 && nums[i] >= nums[i + 1]) { break; }
-            sortedUntil = upper_bound(nums.begin(), sortedUntil, nums[i] - 1);
-
-            // add length of the prefix that can be joined with the suffix, and also add the case when there is
-            // something in between to remove
-            ans += distance(nums.begin(), sortedUntil) + (distance(nums.begin(), sortedUntil) != i);
+        for (int i = 1; i < timeSeries.size(); ++i) {
+            ans += min(timeSeries[i] - timeSeries[i - 1], duration);
         }
 
-        return ans + 1; // + case when we remove all the items
+        return ans + duration;
     }
 };
 
