@@ -6,41 +6,16 @@ using namespace std;
 
 class Solution {
 public:
-    int findShortestSubArray(vector<int>& nums) {
-        struct Number {
-            int counter = 0;
-            int firstPos = 0;
-            int lastPos = 0;
-        };
+    int maxCount(int m, int n, vector<vector<int>>& ops) {
+        int row = m;
+        int col = n;
 
-        int maxDegree = 0;
-        unordered_map<int, Number> numbers;
-
-        for (int i = 0; i < nums.size(); ++i) {
-            auto& numData = numbers[nums[i]];
-            if (numData.counter == 0) { numData.firstPos = i; }
-            numData.lastPos = i;
-
-            if (++numData.counter > maxDegree) {
-                maxDegree = numData.counter;
-            }
+        for (const auto& op : ops) {
+            row = min(row, op[0]);
+            col = min(col, op[1]);
         }
 
-        unordered_set<int> maxNumbers;
-
-        for (const auto& [num, numData] : numbers) {
-            if (numData.counter == maxDegree) {
-                maxNumbers.insert(num);
-            }
-        }
-
-        int ans = nums.size();
-
-        for (int n : maxNumbers) {
-            ans = min(ans, 1 + numbers[n].lastPos - numbers[n].firstPos);
-        }
-
-        return ans;
+        return row * col;
     }
 };
 
