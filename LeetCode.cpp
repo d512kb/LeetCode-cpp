@@ -6,32 +6,19 @@ using namespace std;
 
 class Solution {
 public:
-    vector<int> findMode(TreeNode* root) {
-        unordered_map<int, int> freq;
+    int distinctAverages(vector<int>& nums) {
+        sort(nums.begin(), nums.end());
 
-        countMode(root, freq);
+        int ans = 0;
+        unordered_set<int> averages;
 
-        int maxFreq = 0;
-        for (const auto& [val, freq] : freq) {
-            if (freq > maxFreq) { maxFreq = freq; }
+        for (int left = 0, right = nums.size() - 1; left < right; ++left, --right) {
+            if (averages.insert(nums[left] + nums[right]).second) {
+                ++ans;
+            }
         }
 
-        vector<int> result;
-
-        for (const auto& [val, freq] : freq) {
-            if (freq == maxFreq) { result.push_back(val); }
-        }
-
-        return result;
-    }
-private:
-    void countMode(TreeNode* node, unordered_map<int, int>& freq) {
-        if (!node) { return; }
-
-        ++freq[node->val];
-
-        countMode(node->left, freq);
-        countMode(node->right, freq);
+        return ans;
     }
 };
 
