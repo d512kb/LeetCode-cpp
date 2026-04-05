@@ -6,18 +6,27 @@ using namespace std;
 
 class Solution {
 public:
-    int winningPlayerCount(int n, vector<vector<int>>& pick) {
-        vector<vector<int>> players(n, vector<int>(11));
+    int maxSum(vector<int>& nums) {
+        array<vector<int>, 10> numbers;
 
-        for (const auto& p : pick) {
-            ++players[p[0]][p[1]];
+        for (int n : nums) {
+            int dig = 0;
+            int a = n;
+
+            while (a) {
+                dig = max(dig, a % 10);
+                a /= 10;
+            }
+
+            numbers[dig].push_back(n);
         }
 
-        int ans = 0;
+        int ans = -1;
 
-        for (int i = 0; i < n; ++i) {
-            if (any_of(players[i].begin(), players[i].end(), [i](const auto& c) { return c > i; })) {
-                ++ans;
+        for (auto& n : numbers) {
+            if (n.size() > 1) {
+                sort(n.begin(), n.end());
+                ans = max(ans, *n.rbegin() + *(n.rbegin() + 1));
             }
         }
 
