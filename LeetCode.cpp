@@ -6,14 +6,24 @@ using namespace std;
 
 class Solution {
 public:
-    bool isPossibleToSplit(vector<int>& nums) {
-        array<char, 101> count{};
+    int minDiffInBST(TreeNode* root) {
+        int result = numeric_limits<int>::max();
+        int prevVal = numeric_limits<int>::max();
 
-        for (int n : nums) {
-            if (++count[n] > 2) { return false; }
-        }
+        inOrder(root, prevVal, result);
 
-        return true;
+        return result;
+    }
+private:
+    void inOrder(TreeNode* node, int& prevVal, int& result) {
+        if (!node) { return; }
+
+        inOrder(node->left, prevVal, result);
+
+        result = min(result, abs(node->val - prevVal));
+        prevVal = node->val;
+
+        inOrder(node->right, prevVal, result);
     }
 };
 
