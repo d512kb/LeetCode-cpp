@@ -6,41 +6,30 @@ using namespace std;
 
 class Solution {
 public:
-    int numPrimeArrangements(int n) {
-        size_t primeCount = 0;
-        size_t compositeCount = 0;
+    vector<int> sortByReflection(vector<int>& nums) {
+        auto cmp = [](int a, int b) {
+            int aRefl = 0;
+            int bRefl = 0;
 
-        for (int i = 1; i <= n; ++i) {
-            if (isPrime(i)) {
-                ++primeCount;
+            int aCopy = a;
+            while (aCopy) {
+                aRefl = (aRefl << 1) + aCopy % 2;
+                aCopy >>= 1;
             }
-            else {
-                ++compositeCount;
+
+            int bCopy = b;
+            while (bCopy) {
+                bRefl = (bRefl << 1) + bCopy % 2;
+                bCopy >>= 1;
             }
-        }
 
-        return (fact(primeCount) * fact(compositeCount)) % 1000000007;
-    }
-private:
-    bool isPrime(size_t n) {
-        if (n <= 1) { return false; }
-        if (n <= 3) { return true; }
+            if (aRefl == bRefl) { return a < b; }
+            return aRefl < bRefl;
+            };
 
-        for (size_t i = 2; i * i <= n; ++i) {
-            if (n % i == 0) { return false; }
-        }
+        sort(nums.begin(), nums.end(), cmp);
 
-        return true;
-    }
-
-    size_t fact(size_t n) {
-        size_t result = 1;
-
-        for (int i = 2; i <= n; ++i) {
-            result = (result * i) % 1000000007;
-        }
-
-        return result;
+        return nums;
     }
 };
 
