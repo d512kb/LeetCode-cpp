@@ -6,18 +6,18 @@ using namespace std;
 
 class Solution {
 public:
-    int maxPower(string s) {
-        int ans = 1;
-        int cnt = 1;
+    int winningPlayerCount(int n, vector<vector<int>>& pick) {
+        vector<vector<int>> players(n, vector<int>(11));
 
-        for (int i = 1; i < s.size(); ++i) {
-            if (s[i - 1] == s[i]) {
-                if (++cnt > ans) {
-                    ans = cnt;
-                }
-            }
-            else {
-                cnt = 1;
+        for (const auto& p : pick) {
+            ++players[p[0]][p[1]];
+        }
+
+        int ans = 0;
+
+        for (int i = 0; i < n; ++i) {
+            if (any_of(players[i].begin(), players[i].end(), [i](const auto& c) { return c > i; })) {
+                ++ans;
             }
         }
 
