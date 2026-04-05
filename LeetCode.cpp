@@ -6,23 +6,32 @@ using namespace std;
 
 class Solution {
 public:
-    char slowestKey(vector<int>& releaseTimes, string keysPressed) {
-        int dur = releaseTimes[0];
-        char key = keysPressed[0];
+    vector<string> findRestaurant(vector<string>& list1, vector<string>& list2) {
+        unordered_map<string, int> listIndexes;
 
-        for (int i = 1; i < releaseTimes.size(); ++i) {
-            int diff = releaseTimes[i] - releaseTimes[i - 1];
+        for (int i = 0; i < list1.size(); ++i) {
+            listIndexes[list1[i]] = i;
+        }
 
-            if (diff > dur) {
-                dur = diff;
-                key = keysPressed[i];
-            }
-            else if (diff == dur && keysPressed[i] > key) {
-                key = keysPressed[i];
+        int leastIndexSum = list1.size() + list2.size();
+        vector<string> result;
+
+        for (int i = 0; i < list2.size(); ++i) {
+            auto commonIter = listIndexes.find(list2[i]);
+
+            if (commonIter != listIndexes.end()) {
+                if (commonIter->second + i < leastIndexSum) {
+                    result.clear();
+                    result.push_back(commonIter->first);
+                    leastIndexSum = commonIter->second + i;
+                }
+                else if (commonIter->second + i == leastIndexSum) {
+                    result.push_back(commonIter->first);
+                }
             }
         }
 
-        return key;
+        return result;
     }
 };
 
