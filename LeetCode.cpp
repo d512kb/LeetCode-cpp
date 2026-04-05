@@ -6,12 +6,22 @@ using namespace std;
 
 class Solution {
 public:
-    int minOperations(vector<int>& nums) {
-        for (int i = 1; i < nums.size(); ++i) {
-            if (nums[i - 1] != nums[i]) { return 1; }
+    int maxPower(string s) {
+        int ans = 1;
+        int cnt = 1;
+
+        for (int i = 1; i < s.size(); ++i) {
+            if (s[i - 1] == s[i]) {
+                if (++cnt > ans) {
+                    ans = cnt;
+                }
+            }
+            else {
+                cnt = 1;
+            }
         }
 
-        return 0;
+        return ans;
     }
 };
 
