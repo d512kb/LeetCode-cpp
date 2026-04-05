@@ -6,19 +6,16 @@ using namespace std;
 
 class Solution {
 public:
-    int distinctAverages(vector<int>& nums) {
-        sort(nums.begin(), nums.end());
+    string dayOfTheWeek(int day, int month, int year) {
+        vector<int> monthDays{ 0, 0, 31, 59, 90, 120, 151, 181, 212, 243, 273, 304, 334 };
+        vector<string> weekDays{ "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday" };
 
-        int ans = 0;
-        unordered_set<int> averages;
+        int shift = year == 1971 ? 0 : (year - 1972) / 4 + 1;
+        if (year == 2100 || (year % 4 == 0 && month <= 2 && day <= 29)) { --shift; }
 
-        for (int left = 0, right = nums.size() - 1; left < right; ++left, --right) {
-            if (averages.insert(nums[left] + nums[right]).second) {
-                ++ans;
-            }
-        }
+        int dayNumber = (year - 1971) * 365 + monthDays[month] + day + shift - 1;
 
-        return ans;
+        return weekDays[(dayNumber + 5) % 7];
     }
 };
 
