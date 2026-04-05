@@ -6,16 +6,21 @@ using namespace std;
 
 class Solution {
 public:
-    string dayOfTheWeek(int day, int month, int year) {
-        vector<int> monthDays{ 0, 0, 31, 59, 90, 120, 151, 181, 212, 243, 273, 304, 334 };
-        vector<string> weekDays{ "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday" };
+    vector<int> getNoZeroIntegers(int n) {
+        for (int i = 1; i <= n / 2; ++i) {
+            if (noZero(i) && noZero(n - i)) { return { i, n - i }; }
+        }
 
-        int shift = year == 1971 ? 0 : (year - 1972) / 4 + 1;
-        if (year == 2100 || (year % 4 == 0 && month <= 2 && day <= 29)) { --shift; }
+        return {};
+    }
+private:
+    bool noZero(int a) {
+        while (a) {
+            if (a % 10 == 0) { return false; }
+            a /= 10;
+        }
 
-        int dayNumber = (year - 1971) * 365 + monthDays[month] + day + shift - 1;
-
-        return weekDays[(dayNumber + 5) % 7];
+        return true;
     }
 };
 
