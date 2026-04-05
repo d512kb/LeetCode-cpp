@@ -6,24 +6,22 @@ using namespace std;
 
 class Solution {
 public:
-    int minimumDistance(vector<int>& nums) {
-        int maxDistance = nums.size() * 3;
+    int numEquivDominoPairs(vector<vector<int>>& dominoes) {
+        int ans = 0;
+        array<int, 100> domCount{};
 
-        for (int i = 0; i < nums.size(); ++i) {
-            for (int j = i + 1; j < nums.size(); ++j) {
-                for (int k = j + 1; k < nums.size(); ++k) {
-                    if (nums[i] == nums[j] && nums[j] == nums[k]) {
-                        int dist = abs(i - j) + abs(i - k) + abs(j - k);
-
-                        if (dist < maxDistance) {
-                            maxDistance = dist;
-                        }
-                    }
-                }
+        for (const auto& dom : dominoes) {
+            if (dom[0] != dom[1]) {
+                ans += domCount[dom[0] * 10 + dom[1]] + domCount[dom[1] * 10 + dom[0]];
             }
+            else {
+                ans += domCount[dom[0] * 10 + dom[1]];
+            }
+
+            ++domCount[dom[0] * 10 + dom[1]];
         }
 
-        return maxDistance < nums.size() * 3 ? maxDistance : -1;
+        return ans;
     }
 };
 
