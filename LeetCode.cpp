@@ -6,30 +6,13 @@ using namespace std;
 
 class Solution {
 public:
-    vector<string> findRestaurant(vector<string>& list1, vector<string>& list2) {
-        unordered_map<string, int> listIndexes;
+    vector<int> intersect(vector<int>& nums1, vector<int>& nums2) {
+        sort(nums1.begin(), nums1.end());
+        sort(nums2.begin(), nums2.end());
 
-        for (int i = 0; i < list1.size(); ++i) {
-            listIndexes[list1[i]] = i;
-        }
+        vector<int> result;
 
-        int leastIndexSum = list1.size() + list2.size();
-        vector<string> result;
-
-        for (int i = 0; i < list2.size(); ++i) {
-            auto commonIter = listIndexes.find(list2[i]);
-
-            if (commonIter != listIndexes.end()) {
-                if (commonIter->second + i < leastIndexSum) {
-                    result.clear();
-                    result.push_back(commonIter->first);
-                    leastIndexSum = commonIter->second + i;
-                }
-                else if (commonIter->second + i == leastIndexSum) {
-                    result.push_back(commonIter->first);
-                }
-            }
-        }
+        set_intersection(nums1.begin(), nums1.end(), nums2.begin(), nums2.end(), back_inserter(result));
 
         return result;
     }
