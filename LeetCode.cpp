@@ -6,8 +6,23 @@ using namespace std;
 
 class Solution {
 public:
-    bool canWinNim(int n) {
-        return n % 4;
+    char slowestKey(vector<int>& releaseTimes, string keysPressed) {
+        int dur = releaseTimes[0];
+        char key = keysPressed[0];
+
+        for (int i = 1; i < releaseTimes.size(); ++i) {
+            int diff = releaseTimes[i] - releaseTimes[i - 1];
+
+            if (diff > dur) {
+                dur = diff;
+                key = keysPressed[i];
+            }
+            else if (diff == dur && keysPressed[i] > key) {
+                key = keysPressed[i];
+            }
+        }
+
+        return key;
     }
 };
 
