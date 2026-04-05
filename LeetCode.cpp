@@ -6,18 +6,41 @@ using namespace std;
 
 class Solution {
 public:
-    string findValidPair(string s) {
-        array<char, 10> count{};
+    int numPrimeArrangements(int n) {
+        size_t primeCount = 0;
+        size_t compositeCount = 0;
 
-        for (char c : s) { ++count[c - '0']; }
-
-        for (int i = 1; i < s.size(); ++i) {
-            if (s[i - 1] != s[i] && count[s[i - 1] - '0'] == s[i - 1] - '0' && count[s[i] - '0'] == s[i] - '0') {
-                return s.substr(i - 1, 2);
+        for (int i = 1; i <= n; ++i) {
+            if (isPrime(i)) {
+                ++primeCount;
+            }
+            else {
+                ++compositeCount;
             }
         }
 
-        return "";
+        return (fact(primeCount) * fact(compositeCount)) % 1000000007;
+    }
+private:
+    bool isPrime(size_t n) {
+        if (n <= 1) { return false; }
+        if (n <= 3) { return true; }
+
+        for (size_t i = 2; i * i <= n; ++i) {
+            if (n % i == 0) { return false; }
+        }
+
+        return true;
+    }
+
+    size_t fact(size_t n) {
+        size_t result = 1;
+
+        for (int i = 2; i <= n; ++i) {
+            result = (result * i) % 1000000007;
+        }
+
+        return result;
     }
 };
 
