@@ -6,14 +6,16 @@ using namespace std;
 
 class Solution {
 public:
-    int kItemsWithMaximumSum(int numOnes, int numZeros, int numNegOnes, int k) {
-        int ans = min(k, numOnes);
-        k -= numOnes;
+    vector<int> findIndices(vector<int>& nums, int indexDifference, int valueDifference) {
+        for (int i = 0; i < nums.size(); ++i) {
+            for (int j = i + indexDifference; j < nums.size(); ++j) {
+                if (abs(nums[i] - nums[j]) >= valueDifference) {
+                    return { i, j };
+                }
+            }
+        }
 
-        if (k > 0) { k -= numZeros; }
-        if (k > 0) { ans -= k; }
-
-        return ans;
+        return { -1, -1 };
     }
 };
 
