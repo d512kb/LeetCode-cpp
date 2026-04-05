@@ -6,15 +6,29 @@ using namespace std;
 
 class Solution {
 public:
-    vector<int> intersect(vector<int>& nums1, vector<int>& nums2) {
-        sort(nums1.begin(), nums1.end());
-        sort(nums2.begin(), nums2.end());
+    int fillCups(vector<int>& amount) {
+        priority_queue<int> pq(amount.begin(), amount.end());
+        if (pq.top() == 0) { return 0; }
 
-        vector<int> result;
+        int ans = 0;
 
-        set_intersection(nums1.begin(), nums1.end(), nums2.begin(), nums2.end(), back_inserter(result));
+        while (pq.size() > 1) {
+            int a = pq.top();
+            pq.pop();
+            int b = pq.top();
+            pq.pop();
 
-        return result;
+            ++ans;
+            --a;
+            --b;
+
+            if (a > 0) { pq.push(a); }
+            if (b > 0) { pq.push(b); }
+        }
+
+        if (!pq.empty()) { ans += pq.top(); }
+
+        return ans;
     }
 };
 
