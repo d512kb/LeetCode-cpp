@@ -6,31 +6,24 @@ using namespace std;
 
 class Solution {
 public:
-    int maxSum(vector<int>& nums) {
-        array<vector<int>, 10> numbers;
+    int minimumDistance(vector<int>& nums) {
+        int maxDistance = nums.size() * 3;
 
-        for (int n : nums) {
-            int dig = 0;
-            int a = n;
+        for (int i = 0; i < nums.size(); ++i) {
+            for (int j = i + 1; j < nums.size(); ++j) {
+                for (int k = j + 1; k < nums.size(); ++k) {
+                    if (nums[i] == nums[j] && nums[j] == nums[k]) {
+                        int dist = abs(i - j) + abs(i - k) + abs(j - k);
 
-            while (a) {
-                dig = max(dig, a % 10);
-                a /= 10;
-            }
-
-            numbers[dig].push_back(n);
-        }
-
-        int ans = -1;
-
-        for (auto& n : numbers) {
-            if (n.size() > 1) {
-                sort(n.begin(), n.end());
-                ans = max(ans, *n.rbegin() + *(n.rbegin() + 1));
+                        if (dist < maxDistance) {
+                            maxDistance = dist;
+                        }
+                    }
+                }
             }
         }
 
-        return ans;
+        return maxDistance < nums.size() * 3 ? maxDistance : -1;
     }
 };
 
