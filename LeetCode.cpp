@@ -6,30 +6,14 @@ using namespace std;
 
 class Solution {
 public:
-    vector<int> sortByReflection(vector<int>& nums) {
-        auto cmp = [](int a, int b) {
-            int aRefl = 0;
-            int bRefl = 0;
+    bool isPossibleToSplit(vector<int>& nums) {
+        array<char, 101> count{};
 
-            int aCopy = a;
-            while (aCopy) {
-                aRefl = (aRefl << 1) + aCopy % 2;
-                aCopy >>= 1;
-            }
+        for (int n : nums) {
+            if (++count[n] > 2) { return false; }
+        }
 
-            int bCopy = b;
-            while (bCopy) {
-                bRefl = (bRefl << 1) + bCopy % 2;
-                bCopy >>= 1;
-            }
-
-            if (aRefl == bRefl) { return a < b; }
-            return aRefl < bRefl;
-            };
-
-        sort(nums.begin(), nums.end(), cmp);
-
-        return nums;
+        return true;
     }
 };
 
