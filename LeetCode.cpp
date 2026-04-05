@@ -6,21 +6,21 @@ using namespace std;
 
 class Solution {
 public:
-    vector<int> getNoZeroIntegers(int n) {
-        for (int i = 1; i <= n / 2; ++i) {
-            if (noZero(i) && noZero(n - i)) { return { i, n - i }; }
-        }
+    bool isCousins(TreeNode* root, int x, int y) {
+        auto heightX = calcHeight(root, nullptr, x, 0);
+        auto heightY = calcHeight(root, nullptr, y, 0);
 
-        return {};
+        return heightX.first != heightY.first && heightX.second == heightY.second;
     }
 private:
-    bool noZero(int a) {
-        while (a) {
-            if (a % 10 == 0) { return false; }
-            a /= 10;
-        }
+    pair<TreeNode*, int> calcHeight(TreeNode* node, TreeNode* parent, int v, int h) {
+        if (!node) { return {}; }
+        if (node->val == v) { return { parent, h }; }
 
-        return true;
+        auto heightLeft = calcHeight(node->left, node, v, h + 1);
+        if (heightLeft.first) { return heightLeft; }
+
+        return calcHeight(node->right, node, v, h + 1);
     }
 };
 
