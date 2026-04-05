@@ -6,24 +6,16 @@ using namespace std;
 
 class Solution {
 public:
-    int minDiffInBST(TreeNode* root) {
-        int result = numeric_limits<int>::max();
-        int prevVal = numeric_limits<int>::max();
+    int countSubarrays(vector<int>& nums) {
+        int ans = 0;
 
-        inOrder(root, prevVal, result);
+        for (int i = 2; i < nums.size(); ++i) {
+            if (2 * (nums[i - 2] + nums[i]) == nums[i - 1]) {
+                ++ans;
+            }
+        }
 
-        return result;
-    }
-private:
-    void inOrder(TreeNode* node, int& prevVal, int& result) {
-        if (!node) { return; }
-
-        inOrder(node->left, prevVal, result);
-
-        result = min(result, abs(node->val - prevVal));
-        prevVal = node->val;
-
-        inOrder(node->right, prevVal, result);
+        return ans;
     }
 };
 
