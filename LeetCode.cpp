@@ -6,16 +6,16 @@ using namespace std;
 
 class Solution {
 public:
-    int countSubarrays(vector<int>& nums) {
-        int ans = 0;
+    int largestPerimeter(vector<int>& nums) {
+        sort(nums.begin(), nums.end(), greater{});
 
         for (int i = 2; i < nums.size(); ++i) {
-            if (2 * (nums[i - 2] + nums[i]) == nums[i - 1]) {
-                ++ans;
+            if (nums[i] + nums[i - 1] > nums[i - 2]) {
+                return nums[i] + nums[i - 1] + nums[i - 2];
             }
         }
 
-        return ans;
+        return 0;
     }
 };
 
