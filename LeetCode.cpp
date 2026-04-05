@@ -6,22 +6,18 @@ using namespace std;
 
 class Solution {
 public:
-    int numEquivDominoPairs(vector<vector<int>>& dominoes) {
-        int ans = 0;
-        array<int, 100> domCount{};
+    string findValidPair(string s) {
+        array<char, 10> count{};
 
-        for (const auto& dom : dominoes) {
-            if (dom[0] != dom[1]) {
-                ans += domCount[dom[0] * 10 + dom[1]] + domCount[dom[1] * 10 + dom[0]];
-            }
-            else {
-                ans += domCount[dom[0] * 10 + dom[1]];
-            }
+        for (char c : s) { ++count[c - '0']; }
 
-            ++domCount[dom[0] * 10 + dom[1]];
+        for (int i = 1; i < s.size(); ++i) {
+            if (s[i - 1] != s[i] && count[s[i - 1] - '0'] == s[i - 1] - '0' && count[s[i] - '0'] == s[i] - '0') {
+                return s.substr(i - 1, 2);
+            }
         }
 
-        return ans;
+        return "";
     }
 };
 
