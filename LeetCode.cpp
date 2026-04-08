@@ -6,28 +6,15 @@ using namespace std;
 
 class Solution {
 public:
-    string oddString(vector<string>& words) {
-        const int wordSz = words.front().size();
+    bool isThree(int n) {
+        if (n <= 3) { return false; }
 
-        sort(words.begin(), words.end(), [wordSz](const auto& word1, const auto& word2) {
-            for (int i = 1; i < wordSz; ++i) {
-                int a = word1[i] - word1[i - 1];
-                int b = word2[i] - word2[i - 1];
-
-                if (a != b) { return a < b; }
-            }
-
-            return false;
-        });
-
-        for (int i = 1; i < wordSz; ++i) {
-            int a = words[0][i] - words[0][i - 1];
-            int b = words[1][i] - words[1][i - 1];
-
-            if (a != b) { return words.front(); }
+        int divCount = 0;
+        for (int i = 1; i <= n; ++i) {
+            if (n % i == 0) { if (++divCount > 3) { return false; } }
         }
 
-        return words.back();
+        return divCount == 3;
     }
 };
 
