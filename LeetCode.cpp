@@ -6,16 +6,9 @@ using namespace std;
 
 class Solution {
 public:
-    int largestPerimeter(vector<int>& nums) {
-        sort(nums.begin(), nums.end(), greater{});
-
-        for (int i = 2; i < nums.size(); ++i) {
-            if (nums[i] + nums[i - 1] > nums[i - 2]) {
-                return nums[i] + nums[i - 1] + nums[i - 2];
-            }
-        }
-
-        return 0;
+    int distinctIntegers(int n) {
+        if (n == 1) { return 1; }
+        return n - 1;
     }
 };
 
