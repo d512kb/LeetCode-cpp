@@ -6,10 +6,28 @@ using namespace std;
 
 class Solution {
 public:
-    int findLUSlength(string a, string b) {
-        if (a.size() > b.size()) { return a.size(); }
+    vector<int> lastVisitedIntegers(vector<int>& nums) {
+        vector<int> seen;
+        vector<int> ans;
+        int negCount = 0;
 
-        return a == b ? -1 : b.size();
+        for (int n : nums) {
+            if (n > 0) {
+                seen.push_back(n);
+                negCount = 0;
+            }
+            else {
+                if (negCount < seen.size()) {
+                    ans.push_back(*(seen.rbegin() + negCount));
+                }
+                else {
+                    ans.push_back(-1);
+                }
+                ++negCount;
+            }
+        }
+
+        return ans;
     }
 };
 
