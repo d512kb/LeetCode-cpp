@@ -6,15 +6,27 @@ using namespace std;
 
 class Solution {
 public:
-    int minOperations(vector<int>& nums, int k) {
-        unordered_set<int> row;
+    bool checkZeroOnes(string s) {
+        int ones = 0;
+        int maxOnes = 0;
+        int zeros = 0;
+        int maxZeros = 0;
 
-        for (int i = nums.size() - 1; i >= 0; --i) {
-            if (nums[i] <= k) { row.insert(nums[i]); }
-            if (row.size() == k) { return nums.size() - i; }
+        for (char c : s) {
+            if (c == '0') {
+                maxOnes = max(maxOnes, exchange(ones, 0));
+                ++zeros;
+            }
+            else {
+                maxZeros = max(maxZeros, exchange(zeros, 0));
+                ++ones;
+            }
         }
 
-        return nums.size();
+        maxOnes = max(maxOnes, ones);
+        maxZeros = max(maxZeros, zeros);
+
+        return maxOnes > maxZeros;
     }
 };
 
