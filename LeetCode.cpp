@@ -6,25 +6,19 @@ using namespace std;
 
 class Solution {
 public:
-    bool checkPrimeFrequency(vector<int>& nums) {
-        array<int, 101> counts{};
+    int sumOfLeftLeaves(TreeNode* root) {
+        int s = 0;
 
-        for (int n : nums) {
-            ++counts[n];
+        if (root->left) {
+            if (root->left->left == nullptr && root->left->right == nullptr) { s += root->left->val; }
+
+            s += sumOfLeftLeaves(root->left);
+        }
+        if (root->right) {
+            s += sumOfLeftLeaves(root->right);
         }
 
-        auto prime = [](int n) {
-            if (n <= 1) { return false; }
-            if (n <= 3) { return true; }
-
-            for (int i = 2; i * i <= n; ++i) {
-                if (n % i == 0) { return false; }
-            }
-
-            return true;
-            };
-
-        return any_of(counts.begin(), counts.end(), prime);
+        return s;
     }
 };
 
