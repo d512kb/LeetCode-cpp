@@ -6,27 +6,25 @@ using namespace std;
 
 class Solution {
 public:
-    bool checkZeroOnes(string s) {
-        int ones = 0;
-        int maxOnes = 0;
-        int zeros = 0;
-        int maxZeros = 0;
+    bool checkPrimeFrequency(vector<int>& nums) {
+        array<int, 101> counts{};
 
-        for (char c : s) {
-            if (c == '0') {
-                maxOnes = max(maxOnes, exchange(ones, 0));
-                ++zeros;
-            }
-            else {
-                maxZeros = max(maxZeros, exchange(zeros, 0));
-                ++ones;
-            }
+        for (int n : nums) {
+            ++counts[n];
         }
 
-        maxOnes = max(maxOnes, ones);
-        maxZeros = max(maxZeros, zeros);
+        auto prime = [](int n) {
+            if (n <= 1) { return false; }
+            if (n <= 3) { return true; }
 
-        return maxOnes > maxZeros;
+            for (int i = 2; i * i <= n; ++i) {
+                if (n % i == 0) { return false; }
+            }
+
+            return true;
+            };
+
+        return any_of(counts.begin(), counts.end(), prime);
     }
 };
 
