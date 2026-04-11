@@ -6,28 +6,15 @@ using namespace std;
 
 class Solution {
 public:
-    vector<int> lastVisitedIntegers(vector<int>& nums) {
-        vector<int> seen;
-        vector<int> ans;
-        int negCount = 0;
+    int minOperations(vector<int>& nums, int k) {
+        unordered_set<int> row;
 
-        for (int n : nums) {
-            if (n > 0) {
-                seen.push_back(n);
-                negCount = 0;
-            }
-            else {
-                if (negCount < seen.size()) {
-                    ans.push_back(*(seen.rbegin() + negCount));
-                }
-                else {
-                    ans.push_back(-1);
-                }
-                ++negCount;
-            }
+        for (int i = nums.size() - 1; i >= 0; --i) {
+            if (nums[i] <= k) { row.insert(nums[i]); }
+            if (row.size() == k) { return nums.size() - i; }
         }
 
-        return ans;
+        return nums.size();
     }
 };
 
